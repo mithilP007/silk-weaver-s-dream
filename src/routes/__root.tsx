@@ -77,16 +77,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Sri Kamatchi Silk — Premium Kanchipuram & Luxury Silk Sarees" },
+      {
+        name: "description",
+        content:
+          "Discover handcrafted luxury silk sarees at Sri Kamatchi Silk. Shop Kanchipuram, semi silk, cotton silk, luxury & celebrity-inspired sarees for weddings and festivals.",
+      },
+      { name: "author", content: "Sri Kamatchi Silk" },
+      { property: "og:title", content: "Sri Kamatchi Silk — Premium Silk Sarees" },
+      {
+        property: "og:description",
+        content: "Handcrafted luxury silk sarees for weddings, festivals and everyday elegance.",
+      },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,
