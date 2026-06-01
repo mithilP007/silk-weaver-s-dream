@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SilkSareesRouteImport } from './routes/silk-sarees'
+import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ShippingPolicyRouteImport } from './routes/shipping-policy'
 import { Route as ReturnPolicyRouteImport } from './routes/return-policy'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
@@ -25,6 +27,16 @@ const WishlistRoute = WishlistRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SilkSareesRoute = SilkSareesRouteImport.update({
+  id: '/silk-sarees',
+  path: '/silk-sarees',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShippingPolicyRoute = ShippingPolicyRouteImport.update({
@@ -59,6 +71,8 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/return-policy': typeof ReturnPolicyRoute
   '/shipping-policy': typeof ShippingPolicyRoute
+  '/shop': typeof ShopRoute
+  '/silk-sarees': typeof SilkSareesRoute
   '/terms': typeof TermsRoute
   '/wishlist': typeof WishlistRoute
 }
@@ -68,6 +82,8 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/return-policy': typeof ReturnPolicyRoute
   '/shipping-policy': typeof ShippingPolicyRoute
+  '/shop': typeof ShopRoute
+  '/silk-sarees': typeof SilkSareesRoute
   '/terms': typeof TermsRoute
   '/wishlist': typeof WishlistRoute
 }
@@ -78,6 +94,8 @@ export interface FileRoutesById {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/return-policy': typeof ReturnPolicyRoute
   '/shipping-policy': typeof ShippingPolicyRoute
+  '/shop': typeof ShopRoute
+  '/silk-sarees': typeof SilkSareesRoute
   '/terms': typeof TermsRoute
   '/wishlist': typeof WishlistRoute
 }
@@ -89,6 +107,8 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/return-policy'
     | '/shipping-policy'
+    | '/shop'
+    | '/silk-sarees'
     | '/terms'
     | '/wishlist'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +118,8 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/return-policy'
     | '/shipping-policy'
+    | '/shop'
+    | '/silk-sarees'
     | '/terms'
     | '/wishlist'
   id:
@@ -107,6 +129,8 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/return-policy'
     | '/shipping-policy'
+    | '/shop'
+    | '/silk-sarees'
     | '/terms'
     | '/wishlist'
   fileRoutesById: FileRoutesById
@@ -117,6 +141,8 @@ export interface RootRouteChildren {
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ReturnPolicyRoute: typeof ReturnPolicyRoute
   ShippingPolicyRoute: typeof ShippingPolicyRoute
+  ShopRoute: typeof ShopRoute
+  SilkSareesRoute: typeof SilkSareesRoute
   TermsRoute: typeof TermsRoute
   WishlistRoute: typeof WishlistRoute
 }
@@ -135,6 +161,20 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/silk-sarees': {
+      id: '/silk-sarees'
+      path: '/silk-sarees'
+      fullPath: '/silk-sarees'
+      preLoaderRoute: typeof SilkSareesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shipping-policy': {
@@ -181,6 +221,8 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ReturnPolicyRoute: ReturnPolicyRoute,
   ShippingPolicyRoute: ShippingPolicyRoute,
+  ShopRoute: ShopRoute,
+  SilkSareesRoute: SilkSareesRoute,
   TermsRoute: TermsRoute,
   WishlistRoute: WishlistRoute,
 }
