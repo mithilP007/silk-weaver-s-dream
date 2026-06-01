@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/store/EmptyState";
 import { products as mockProducts } from "@/data/products";
 import { subcategories as mockSubcategories } from "@/data/categories";
 import { useState, useEffect, useMemo } from "react";
+import { API_BASE } from "@/lib/api";
 
 export const Route = createFileRoute("/category/$slug")({
   head: () => ({ meta: [{ title: "Saree Collection — Sri Kamatchi Silk" }] }),
@@ -23,8 +24,8 @@ function CategoryPage() {
     const loadData = async () => {
       try {
         const [prodRes, catRes] = await Promise.all([
-          fetch("http://localhost:5000/api/products"),
-          fetch("http://localhost:5000/api/categories")
+          fetch(`${API_BASE}/api/products`),
+          fetch(`${API_BASE}/api/categories`)
         ]);
 
         const prods = await prodRes.json();
@@ -46,7 +47,7 @@ function CategoryPage() {
     return dbProducts.map((p) => {
       const img = p.image?.startsWith("http")
         ? p.image
-        : (p.image ? `http://localhost:5000${p.image}` : "");
+        : (p.image ? `${API_BASE}${p.image}` : "");
       return {
         id: p.id,
         slug: p.slug,

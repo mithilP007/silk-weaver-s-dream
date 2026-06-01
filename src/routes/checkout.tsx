@@ -5,6 +5,7 @@ import { CreditCard, Banknote, Lock, Loader2, Sparkles, AlertTriangle, ShieldChe
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { useStore } from "@/store/StoreContext";
 import { formatINR } from "@/lib/format";
+import { API_BASE } from "@/lib/api";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({ meta: [{ title: "Checkout — Sri Kamatchi Silk" }] }),
@@ -84,7 +85,7 @@ function CheckoutPage() {
         pincode,
       };
 
-      const response = await fetch("http://localhost:5000/api/orders", {
+      const response = await fetch(`${API_BASE}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +112,7 @@ function CheckoutPage() {
       } else {
         // Razorpay Payment flow
         // Fetch simulated Razorpay Order ID from backend
-        const rzpRes = await fetch("http://localhost:5000/api/payments/create-order", {
+        const rzpRes = await fetch(`${API_BASE}/api/payments/create-order`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -146,7 +147,7 @@ function CheckoutPage() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch("http://localhost:5000/api/payments/verify", {
+      const response = await fetch(`${API_BASE}/api/payments/verify`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

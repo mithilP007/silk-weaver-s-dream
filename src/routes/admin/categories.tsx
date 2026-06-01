@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Search, Plus, Edit2, Trash2, Folder, X, Loader2 } from "lucide-react";
 import { subcategories as initialSubs } from "@/data/categories";
+import { API_BASE } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/categories")({
   component: AdminCategories,
@@ -22,7 +23,7 @@ function AdminCategories() {
   const fetchCategories = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/categories");
+      const response = await fetch(`${API_BASE}/api/categories`);
       const res = await response.json();
       if (res.success) {
         const mapped = res.data.map((c: any) => {
@@ -75,7 +76,7 @@ function AdminCategories() {
     if (confirm("Are you sure you want to delete this saree category? This action requires associated products to be re-assigned first.")) {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:5000/api/categories/${id}`, {
+        const response = await fetch(`${API_BASE}/api/categories/${id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -110,8 +111,8 @@ function AdminCategories() {
       }
 
       const url = editingSub 
-        ? `http://localhost:5000/api/categories/${editingSub.id}`
-        : "http://localhost:5000/api/categories";
+        ? `${API_BASE}/api/categories/${editingSub.id}`
+        : `${API_BASE}/api/categories`;
       
       const method = editingSub ? "PUT" : "POST";
 

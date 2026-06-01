@@ -5,6 +5,8 @@ import { Mail, Lock, User, Phone, Loader2 } from "lucide-react";
 import { StoreLayout } from "@/components/store/StoreLayout";
 import saree2 from "@/assets/saree-2.jpg";
 
+import { API_BASE } from "@/lib/api";
+
 export const Route = createFileRoute("/register")({
   head: () => ({ meta: [{ title: "Create Account — Sri Kamatchi Silk" }] }),
   component: RegisterPage,
@@ -25,7 +27,7 @@ function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${API_BASE}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -14,6 +14,7 @@ import {
   FileImage,
   Loader2,
 } from "lucide-react";
+import { API_BASE } from "@/lib/api";
 import { FABRICS, COLORS } from "@/data/categories";
 import { formatINR, discountPercent } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -57,7 +58,7 @@ function AdminProducts() {
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/products");
+      const response = await fetch(`${API_BASE}/api/products`);
       const res = await response.json();
       if (res.success) {
         setProductList(res.data);
@@ -74,7 +75,7 @@ function AdminProducts() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/categories");
+      const response = await fetch(`${API_BASE}/api/categories`);
       const res = await response.json();
       if (res.success) {
         setCategories(res.data);
@@ -94,7 +95,7 @@ function AdminProducts() {
     return productList.map((p) => {
       const img = p.image?.startsWith("http")
         ? p.image
-        : (p.image ? `http://localhost:5000${p.image}` : "");
+        : (p.image ? `${API_BASE}${p.image}` : "");
       return {
         id: p.id,
         slug: p.slug,
@@ -187,7 +188,7 @@ function AdminProducts() {
           throw new Error("Authorization token not found. Please log in.");
         }
 
-        const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+        const response = await fetch(`${API_BASE}/api/products/${id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -227,7 +228,7 @@ function AdminProducts() {
         const formData = new FormData();
         formData.append("image", imageFile);
 
-        const uploadResponse = await fetch("http://localhost:5000/api/uploads/product", {
+        const uploadResponse = await fetch(`${API_BASE}/api/uploads/product`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -271,7 +272,7 @@ function AdminProducts() {
 
       if (editingProduct) {
         // PUT
-        const response = await fetch(`http://localhost:5000/api/products/${editingProduct.id}`, {
+        const response = await fetch(`${API_BASE}/api/products/${editingProduct.id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -288,7 +289,7 @@ function AdminProducts() {
         toast.success("Saree updated successfully");
       } else {
         // POST
-        const response = await fetch("http://localhost:5000/api/products", {
+        const response = await fetch(`${API_BASE}/api/products`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -15,6 +15,7 @@ import {
   X,
   Loader2,
 } from "lucide-react";
+import { API_BASE } from "@/lib/api";
 import { dummyOrders as initialOrders } from "@/data/store";
 import { formatINR } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -34,7 +35,7 @@ function AdminOrders() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/orders", {
+      const response = await fetch(`${API_BASE}/api/orders`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -96,7 +97,7 @@ function AdminOrders() {
   const handleUpdateStatus = async (orderId: string, newStatus: string) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+      const response = await fetch(`${API_BASE}/api/orders/${orderId}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

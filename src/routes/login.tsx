@@ -5,6 +5,8 @@ import { Mail, Lock, Loader2 } from "lucide-react";
 import { StoreLayout } from "@/components/store/StoreLayout";
 import heroSaree from "@/assets/hero-saree.jpg";
 
+import { API_BASE } from "@/lib/api";
+
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Login — Sri Kamatchi Silk" }] }),
   component: LoginPage,
@@ -23,7 +25,7 @@ function LoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

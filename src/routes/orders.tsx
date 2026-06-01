@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/store/EmptyState";
 import { dummyOrders as mockOrders } from "@/data/store";
 import { formatINR } from "@/lib/format";
 import { useState, useEffect } from "react";
+import { API_BASE } from "@/lib/api";
 
 export const Route = createFileRoute("/orders")({
   head: () => ({ meta: [{ title: "My Orders — Sri Kamatchi Silk" }] }),
@@ -35,7 +36,7 @@ function OrdersPage() {
       }
 
       try {
-        const response = await fetch("http://localhost:5000/api/orders/my-orders", {
+        const response = await fetch(`${API_BASE}/api/orders/my-orders`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

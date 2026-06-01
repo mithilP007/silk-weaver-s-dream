@@ -15,6 +15,7 @@ import { formatINR } from "@/lib/format";
 import { dummyOrders as mockOrders } from "@/data/store";
 import { products as mockProducts } from "@/data/products";
 import { useState, useEffect, useMemo } from "react";
+import { API_BASE } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
@@ -64,8 +65,8 @@ function AdminDashboard() {
       try {
         const token = localStorage.getItem("token");
         const [prodRes, orderRes] = await Promise.all([
-          fetch("http://localhost:5000/api/products"),
-          fetch("http://localhost:5000/api/orders", {
+          fetch(`${API_BASE}/api/products`),
+          fetch(`${API_BASE}/api/orders`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);
@@ -87,7 +88,7 @@ function AdminDashboard() {
     return dbProducts.map((p) => {
       const img = p.image?.startsWith("http")
         ? p.image
-        : (p.image ? `http://localhost:5000${p.image}` : "");
+        : (p.image ? `${API_BASE}${p.image}` : "");
       return {
         ...p,
         image: img

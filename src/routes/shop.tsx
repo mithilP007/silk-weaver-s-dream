@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/store/EmptyState";
 import { products as mockProducts } from "@/data/products";
 import { subcategories as mockSubcategories, FABRICS, COLORS, OCCASION_LIST } from "@/data/categories";
 import { formatINR } from "@/lib/format";
+import { API_BASE } from "@/lib/api";
 
 export const Route = createFileRoute("/shop")({
   validateSearch: (s: Record<string, unknown>): { q?: string } => ({
@@ -43,8 +44,8 @@ function ShopPage() {
     const loadData = async () => {
       try {
         const [prodRes, catRes] = await Promise.all([
-          fetch("http://localhost:5000/api/products"),
-          fetch("http://localhost:5000/api/categories")
+          fetch(`${API_BASE}/api/products`),
+          fetch(`${API_BASE}/api/categories`)
         ]);
 
         const prods = await prodRes.json();
@@ -67,7 +68,7 @@ function ShopPage() {
     return dbProducts.map((p) => {
       const img = p.image?.startsWith("http")
         ? p.image
-        : (p.image ? `http://localhost:5000${p.image}` : "");
+        : (p.image ? `${API_BASE}${p.image}` : "");
       return {
         id: p.id,
         slug: p.slug,

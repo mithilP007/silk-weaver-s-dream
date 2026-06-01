@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Search, Edit, FileText, Globe, ToggleLeft, ToggleRight, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { API_BASE } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/pages")({
   component: AdminPages,
@@ -17,7 +18,6 @@ const INITIAL_PAGES = [
   { id: "6", title: "Return Policy", slug: "return-policy", status: true, lastUpdated: "May 15, 2026" },
 ];
 
-import { useEffect } from "react";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 
 function AdminPages() {
@@ -33,7 +33,7 @@ function AdminPages() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/pages", {
+      const response = await fetch(`${API_BASE}/api/pages`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -76,7 +76,7 @@ function AdminPages() {
   const handleToggleStatus = async (id: string, currentStatus: boolean) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/pages/${id}`, {
+      const response = await fetch(`${API_BASE}/api/pages/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -102,7 +102,7 @@ function AdminPages() {
     if (!confirm("Are you sure you want to delete this CMS page?")) return;
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/pages/${id}`, {
+      const response = await fetch(`${API_BASE}/api/pages/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -126,8 +126,8 @@ function AdminPages() {
     
     const isNew = selectedPage.id === "new";
     const url = isNew 
-      ? "http://localhost:5000/api/pages" 
-      : `http://localhost:5000/api/pages/${selectedPage.id}`;
+      ? `${API_BASE}/api/pages` 
+      : `${API_BASE}/api/pages/${selectedPage.id}`;
     const method = isNew ? "POST" : "PUT";
 
     try {

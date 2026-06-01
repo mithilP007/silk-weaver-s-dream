@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Search, Mail, Shield, User, ToggleLeft, ToggleRight, Loader2 } from "lucide-react";
 import { dummyUsers as initialUsers } from "@/data/store";
 import { cn } from "@/lib/utils";
+import { API_BASE } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/users")({
   component: AdminUsers,
@@ -18,7 +19,7 @@ function AdminUsers() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/users", {
+      const response = await fetch(`${API_BASE}/api/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,7 +58,7 @@ function AdminUsers() {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/users/${userId}/role`, {
+      const response = await fetch(`${API_BASE}/api/users/${userId}/role`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

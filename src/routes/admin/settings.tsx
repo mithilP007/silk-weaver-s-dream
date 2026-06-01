@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { ShieldCheck, Truck, Sparkles, HelpCircle, Save, Settings, ToggleLeft, ToggleRight, Loader2, Image } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { API_BASE } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/settings")({
   component: AdminSettings,
@@ -46,7 +47,7 @@ function AdminSettings() {
       }
 
       // 1. Fetch Shipping Settings
-      const shipRes = await fetch("http://localhost:5000/api/settings/shipping");
+      const shipRes = await fetch(`${API_BASE}/api/settings/shipping`);
       const shipData = await shipRes.json();
       if (shipData.success && shipData.data) {
         setShipFreeAbove(shipData.data.freeShippingAbove);
@@ -57,7 +58,7 @@ function AdminSettings() {
 
       // 2. Fetch Payment Settings (Protected)
       if (token) {
-        const payRes = await fetch("http://localhost:5000/api/settings/payment", { headers });
+        const payRes = await fetch(`${API_BASE}/api/settings/payment`, { headers });
         const payData = await payRes.json();
         if (payData.success && payData.data) {
           setRzpActive(payData.data.razorpayEnabled);
@@ -68,7 +69,7 @@ function AdminSettings() {
       }
 
       // 3. Fetch Home Settings
-      const homeRes = await fetch("http://localhost:5000/api/settings/home");
+      const homeRes = await fetch(`${API_BASE}/api/settings/home`);
       const homeData = await homeRes.json();
       if (homeData.success && homeData.data) {
         setHeroTitle(homeData.data.heroTitle || "");
@@ -101,14 +102,14 @@ function AdminSettings() {
       let body = {};
 
       if (type === "Payment Gateway") {
-        url = "http://localhost:5000/api/settings/payment";
+        url = `${API_BASE}/api/settings/payment`;
         body = {
           razorpayKeyId: rzpKeyId,
           razorpaySecret: rzpSecret,
           razorpayEnabled: rzpActive,
         };
       } else if (type === "Logistics & Shipping") {
-        url = "http://localhost:5000/api/settings/shipping";
+        url = `${API_BASE}/api/settings/shipping`;
         body = {
           freeShippingAbove: shipFreeAbove,
           shippingCharge: shipCharge,
@@ -116,7 +117,7 @@ function AdminSettings() {
           deliveryDays: shipDays,
         };
       } else if (type === "Homepage Banners") {
-        url = "http://localhost:5000/api/settings/home";
+        url = `${API_BASE}/api/settings/home`;
         body = {
           heroTitle,
           heroSubtitle,

@@ -11,6 +11,7 @@ import { products as mockProducts, getProductBySlug as mockGetProductBySlug, get
 import { useStore } from "@/store/StoreContext";
 import { formatINR, discountPercent } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { API_BASE } from "@/lib/api";
 
 export const Route = createFileRoute("/product/$slug")({
   head: () => ({ meta: [{ title: "Saree Details — Sri Kamatchi Silk" }] }),
@@ -26,7 +27,7 @@ function ProductPage() {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/products");
+        const response = await fetch(`${API_BASE}/api/products`);
         const res = await response.json();
         if (res.success) {
           setDbProducts(res.data);
@@ -45,7 +46,7 @@ function ProductPage() {
     return dbProducts.map((p) => {
       const img = p.image?.startsWith("http")
         ? p.image
-        : (p.image ? `http://localhost:5000${p.image}` : "");
+        : (p.image ? `${API_BASE}${p.image}` : "");
       return {
         id: p.id,
         slug: p.slug,

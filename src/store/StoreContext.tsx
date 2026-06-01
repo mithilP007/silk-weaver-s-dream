@@ -8,6 +8,7 @@ import {
 } from "react";
 import { toast } from "sonner";
 import type { Product } from "@/data/types";
+import { API_BASE } from "@/lib/api";
 
 export interface CartItem {
   product: Product;
@@ -77,7 +78,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
       try {
         // 1. Fetch Cart
-        const cartRes = await fetch("http://localhost:5000/api/cart", {
+        const cartRes = await fetch(`${API_BASE}/api/cart`, {
           headers: getHeaders(),
         });
         const cartData = await cartRes.json();
@@ -85,7 +86,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           const mappedCart: CartItem[] = cartData.data.map((item: any) => {
             const img = item.product.image?.startsWith("http")
               ? item.product.image
-              : (item.product.image ? `http://localhost:5000${item.product.image}` : "");
+              : (item.product.image ? `${API_BASE}${item.product.image}` : "");
             return {
               product: {
                 id: item.product.id,
@@ -122,7 +123,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         }
 
         // 2. Fetch Wishlist
-        const wishRes = await fetch("http://localhost:5000/api/wishlist", {
+        const wishRes = await fetch(`${API_BASE}/api/wishlist`, {
           headers: getHeaders(),
         });
         const wishData = await wishRes.json();
@@ -130,7 +131,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           const mappedWish = wishData.data.map((item: any) => {
             const img = item.product.image?.startsWith("http")
               ? item.product.image
-              : (item.product.image ? `http://localhost:5000${item.product.image}` : "");
+              : (item.product.image ? `${API_BASE}${item.product.image}` : "");
             return {
               id: item.product.id,
               slug: item.product.slug,
@@ -189,7 +190,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        await fetch("http://localhost:5000/api/cart", {
+        await fetch(`${API_BASE}/api/cart`, {
           method: "POST",
           headers: getHeaders(),
           body: JSON.stringify({ productId: product.id, quantity }),
@@ -207,7 +208,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const token = localStorage.getItem("token");
     if (token && targetItem?.dbId) {
       try {
-        await fetch(`http://localhost:5000/api/cart/${targetItem.dbId}`, {
+        await fetch(`${API_BASE}/api/cart/${targetItem.dbId}`, {
           method: "DELETE",
           headers: getHeaders(),
         });
@@ -230,7 +231,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const token = localStorage.getItem("token");
     if (token && targetItem?.dbId) {
       try {
-        await fetch(`http://localhost:5000/api/cart/${targetItem.dbId}`, {
+        await fetch(`${API_BASE}/api/cart/${targetItem.dbId}`, {
           method: "PUT",
           headers: getHeaders(),
           body: JSON.stringify({ quantity: qty }),
@@ -247,7 +248,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        await fetch("http://localhost:5000/api/cart", {
+        await fetch(`${API_BASE}/api/cart`, {
           method: "DELETE",
           headers: getHeaders(),
         });
@@ -273,12 +274,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (token) {
       try {
         if (isSaved) {
-          await fetch(`http://localhost:5000/api/wishlist/product/${product.id}`, {
+          await fetch(`${API_BASE}/api/wishlist/product/${product.id}`, {
             method: "DELETE",
             headers: getHeaders(),
           });
         } else {
-          await fetch("http://localhost:5000/api/wishlist", {
+          await fetch(`${API_BASE}/api/wishlist`, {
             method: "POST",
             headers: getHeaders(),
             body: JSON.stringify({ productId: product.id }),
