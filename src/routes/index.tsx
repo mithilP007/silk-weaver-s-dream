@@ -71,8 +71,8 @@ function HomePage() {
   return (
     <StoreLayout>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-champagne">
-        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:py-20">
+      <section className="relative overflow-hidden bg-gradient-champagne border-b border-border/40">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:py-28">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -147,7 +147,7 @@ function HomePage() {
       </section>
 
       {/* Main category highlight */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:py-32">
         <SectionHeading
           eyebrow="The House of Silk"
           title="Silk Sarees"
@@ -187,7 +187,7 @@ function HomePage() {
       </section>
 
       {/* Trending */}
-      <section className="bg-secondary/40 py-16 lg:py-20">
+      <section className="bg-secondary/20 border-y border-border/45 py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex items-end justify-between">
             <SectionHeading eyebrow="Most Loved" title="Trending Sarees" align="left" />
@@ -207,7 +207,7 @@ function HomePage() {
       </section>
 
       {/* Offer banner */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
         <div className="grid gap-5 lg:grid-cols-2">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-maroon p-8 text-primary-foreground sm:p-12">
             <span className="text-xs font-medium uppercase tracking-[0.3em] text-gold">
@@ -259,7 +259,7 @@ function HomePage() {
       </section>
 
       {/* New arrivals */}
-      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
+      <section className="mx-auto max-w-7xl px-4 pb-24 sm:pb-32">
         <SectionHeading
           eyebrow="Fresh Off the Loom"
           title="New Arrivals"
@@ -273,7 +273,7 @@ function HomePage() {
       </section>
 
       {/* Find by occasion */}
-      <section className="bg-secondary/40 py-16 lg:py-20">
+      <section className="bg-secondary/20 border-y border-border/45 py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <SectionHeading
             eyebrow="Curated for You"
@@ -305,7 +305,7 @@ function HomePage() {
       </section>
 
       {/* Celebrity inspired */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:py-32">
         <div className="flex items-end justify-between">
           <SectionHeading
             eyebrow="As Seen on Stars"
@@ -328,7 +328,7 @@ function HomePage() {
       </section>
 
       {/* Why choose us */}
-      <section className="bg-gradient-champagne py-16 lg:py-20">
+      <section className="bg-gradient-champagne border-y border-border/45 py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <SectionHeading
             eyebrow="The Promise"
@@ -356,7 +356,7 @@ function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:py-32">
         <SectionHeading eyebrow="Loved by Thousands" title="What Our Customers Say" />
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {testimonials.map((t, i) => (

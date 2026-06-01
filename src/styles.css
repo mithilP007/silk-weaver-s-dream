@@ -170,10 +170,72 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.015em;
   }
 
   h1, h2, h3, h4, .font-display {
     font-family: var(--font-display);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+
+  /* Luxury global transition and interaction states */
+  button, a {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Exquisite input, select, and textarea focus alignments */
+  input, textarea, select {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--gold) 20%, transparent) !important;
+    background-color: white !important;
+  }
+
+  /* Premium luxury button styles */
+  .bg-primary {
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .bg-primary:hover {
+    background-color: oklch(0.3 0.1 18) !important;
+    transform: translateY(-1.5px);
+    box-shadow: var(--shadow-gold);
+  }
+
+  /* Nalli-inspired Premium Table Styling */
+  table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
+  th {
+    font-family: var(--font-sans) !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.16em !important;
+    color: var(--muted-foreground) !important;
+    background-color: oklch(0.995 0.005 90) !important;
+    border-bottom: 2px solid var(--border) !important;
+    padding: 1.1rem 1.4rem !important;
+    text-transform: uppercase;
+  }
+  td {
+    padding: 1.3rem 1.4rem !important;
+    border-bottom: 1px solid color-mix(in oklab, var(--border) 45%, transparent) !important;
+    transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  tr:hover td {
+    background-color: color-mix(in oklab, var(--champagne) 25%, transparent) !important;
+  }
+
+  /* Elevated Sidebar Shadowing */
+  aside {
+    box-shadow: 12px 0 35px -15px color-mix(in oklab, var(--maroon) 16%, transparent) !important;
   }
 }
 
@@ -182,7 +244,7 @@
     font-family: var(--font-serif);
   }
   .text-gradient-gold {
-    background: linear-gradient(105deg, var(--gold), oklch(0.82 0.09 70), var(--rose-gold));
+    background: linear-gradient(105deg, var(--gold), oklch(0.84 0.08 75), var(--rose-gold));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -203,11 +265,12 @@
     box-shadow: var(--shadow-gold);
   }
   .hover-lift {
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease;
   }
   .hover-lift:hover {
-    transform: translateY(-6px);
+    transform: translateY(-8px);
     box-shadow: var(--shadow-card);
+    border-color: var(--gold) !important;
   }
   .gold-divider {
     height: 1px;

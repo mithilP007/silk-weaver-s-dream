@@ -62,7 +62,7 @@ function CartPage() {
                           <Plus size={14} />
                         </button>
                       </div>
-                      <span className="font-semibold text-primary">{formatINR(item.product.discountPrice * item.quantity)}</span>
+                      <span className="font-semibold text-primary">{formatINR((item.product.discountPrice ?? item.product.price) * item.quantity)}</span>
                     </div>
                   </div>
                 </div>

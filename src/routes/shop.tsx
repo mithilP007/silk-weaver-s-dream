@@ -1,15 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { SlidersHorizontal, X, Search } from "lucide-react";
+import { useMemo, useState, useEffect } from "react";
+import { SlidersHorizontal, X, Search, Loader2 } from "lucide-react";
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { ProductCard } from "@/components/store/ProductCard";
 import { EmptyState } from "@/components/store/EmptyState";
-import { products } from "@/data/products";
-import { subcategories, FABRICS, COLORS, OCCASION_LIST } from "@/data/categories";
+import { products as mockProducts } from "@/data/products";
+import { subcategories as mockSubcategories, FABRICS, COLORS, OCCASION_LIST } from "@/data/categories";
 import { formatINR } from "@/lib/format";
 
 export const Route = createFileRoute("/shop")({
-  validateSearch: (s: Record<string, unknown>) => ({ q: (s.q as string) || "" }),
+  validateSearch: (s: Record<string, unknown>): { q?: string } => ({
+    q: s.q ? String(s.q) : undefined,
+  }),
   head: () => ({ meta: [{ title: "Shop All Sarees — Sri Kamatchi Silk" }] }),
   component: ShopPage,
 });
@@ -32,24 +34,111 @@ function ShopPage() {
   const [sort, setSort] = useState("latest");
   const [drawer, setDrawer] = useState(false);
 
+  // Live database states
+  const [dbProducts, setDbProducts] = useState<any[]>([]);
+  const [dbCategories, setDbCategories] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [prodRes, catRes] = await Promise.all([
+          fetch("http://localhost:5000/api/products"),
+          fetch("http://localhost:5000/api/categories")
+        ]);
+
+        const prods = await prodRes.json();
+        const cats = await catRes.json();
+
+        if (prods.success) setDbProducts(prods.data);
+        if (cats.success) setDbCategories(cats.data);
+      } catch (err) {
+        console.error("Storefront API fetch offline, using mock backup", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
+  // Map db products to frontend spec model
+  const liveProducts = useMemo(() => {
+    if (dbProducts.length === 0) return mockProducts;
+    return dbProducts.map((p) => {
+      const img = p.image?.startsWith("http")
+        ? p.image
+        : (p.image ? `http://localhost:5000${p.image}` : "");
+      return {
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        price: p.price,
+        discountPrice: p.discountPrice || p.price,
+        rating: 4.9,
+        reviews: 21,
+        image: img,
+        gallery: [img],
+        category: p.category?.name || "Silk Sarees",
+        subcategory: p.category?.name || "Semi Silks",
+        subcategorySlug: p.category?.slug || "semi-silks",
+        stock: p.stock,
+        fabric: p.fabric || "Pure Silk",
+        color: p.color || "Gold",
+        sareeLength: p.sareeLength || "6.3 metres",
+        blouseLength: p.blouseLength || "0.8 metres",
+        blouseIncluded: p.blouseIncluded !== false,
+        featured: p.isFeatured || false,
+        trending: p.isTrending || false,
+        offer: p.isOffer || false,
+        newArrival: true,
+        description: p.description,
+        categoryId: p.categoryId,
+        occasion: ["Wedding", "Reception"],
+      };
+    });
+  }, [dbProducts]);
+
+  const liveSubcategories = useMemo(() => {
+    if (dbCategories.length === 0) return mockSubcategories;
+    return dbCategories.map((c) => {
+      const localMatch = mockSubcategories.find((m) => m.slug === c.slug);
+      return {
+        id: c.id,
+        name: c.name,
+        slug: c.slug,
+        description: localMatch?.description || "Handcrafted saree division.",
+        image: c.image || localMatch?.image || mockSubcategories[0].image,
+      };
+    });
+  }, [dbCategories]);
+
   const toggle = (arr: string[], set: (v: string[]) => void, v: string) =>
     set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 
   const filtered = useMemo(() => {
-    let list = products.filter((p) => {
+    let list = liveProducts.filter((p) => {
       if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false;
-      if (subs.length && !subs.includes(p.subcategory)) return false;
-      if (fabrics.length && !fabrics.includes(p.fabric)) return false;
-      if (colors.length && !colors.includes(p.color)) return false;
-      if (occ.length && !p.occasion.some((o) => occ.includes(o))) return false;
-      if (p.discountPrice > maxPrice) return false;
+      if (subs.length && (!p.subcategory || !subs.includes(p.subcategory))) return false;
+      if (fabrics.length && (!p.fabric || !fabrics.includes(p.fabric))) return false;
+      if (colors.length && (!p.color || !colors.includes(p.color))) return false;
+      if (occ.length) {
+        if (!p.occasion) return false;
+        const pOccasions = Array.isArray(p.occasion)
+          ? p.occasion
+          : typeof p.occasion === "string"
+          ? p.occasion.split(",").map((s) => s.trim())
+          : [];
+        if (!pOccasions.some((o: string) => occ.includes(o))) return false;
+      }
+      const priceVal = p.discountPrice ?? p.price;
+      if (priceVal > maxPrice) return false;
       return true;
     });
-    if (sort === "low") list = [...list].sort((a, b) => a.discountPrice - b.discountPrice);
-    if (sort === "high") list = [...list].sort((a, b) => b.discountPrice - a.discountPrice);
-    if (sort === "popular") list = [...list].sort((a, b) => b.reviews - a.reviews);
+    if (sort === "low") list = [...list].sort((a, b) => (a.discountPrice ?? a.price) - (b.discountPrice ?? b.price));
+    if (sort === "high") list = [...list].sort((a, b) => (b.discountPrice ?? b.price) - (a.discountPrice ?? a.price));
+    if (sort === "popular") list = [...list].sort((a, b) => (b.reviews ?? 0) - (a.reviews ?? 0));
     return list;
-  }, [search, subs, fabrics, colors, occ, maxPrice, sort]);
+  }, [liveProducts, search, subs, fabrics, colors, occ, maxPrice, sort]);
 
   const CheckList = ({ title, items, state, set }: { title: string; items: string[]; state: string[]; set: (v: string[]) => void }) => (
     <div className="border-b border-border py-5">
@@ -67,7 +156,7 @@ function ShopPage() {
 
   const Filters = () => (
     <>
-      <CheckList title="Subcategory" items={subcategories.map((s) => s.name)} state={subs} set={setSubs} />
+      <CheckList title="Subcategory" items={liveSubcategories.map((s) => s.name)} state={subs} set={setSubs} />
       <CheckList title="Fabric" items={FABRICS} state={fabrics} set={setFabrics} />
       <CheckList title="Color" items={COLORS} state={colors} set={setColors} />
       <CheckList title="Occasion" items={OCCASION_LIST} state={occ} set={setOcc} />

@@ -1,16 +1,26 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Heart, ShoppingBag, Eye } from "lucide-react";
+import { Heart, ShoppingBag, Eye, Check, ShoppingCart, ArrowRight } from "lucide-react";
+import { useState } from "react";
 import type { Product } from "@/data/types";
 import { useStore } from "@/store/StoreContext";
 import { formatINR, discountPercent } from "@/lib/format";
 import { StarRating } from "./StarRating";
 import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const { addToCart, toggleWishlist, isWishlisted } = useStore();
   const wished = isWishlisted(product.id);
-  const off = discountPercent(product.price, product.discountPrice);
+  const off = product.discountPrice ? discountPercent(product.price, product.discountPrice) : 0;
+  const [open, setOpen] = useState(false);
 
   return (
     <motion.div
@@ -63,14 +73,96 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           >
             <ShoppingBag size={14} /> Add to Cart
           </button>
-          <Link
-            to="/product/$slug"
-            params={{ slug: product.slug }}
-            aria-label="Quick view"
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-card text-foreground shadow-md transition-colors hover:bg-accent"
-          >
-            <Eye size={16} />
-          </Link>
+          
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <button
+                aria-label="Quick view"
+                className="grid h-10 w-10 shrink-0 cursor-pointer place-items-center rounded-full bg-card text-foreground shadow-md transition-colors hover:bg-accent"
+              >
+                <Eye size={16} />
+              </button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl overflow-y-auto max-h-[90vh] rounded-2xl border-border bg-card p-6 shadow-card">
+              <DialogHeader>
+                <DialogTitle className="font-display text-2xl font-bold text-foreground pr-6 text-left">
+                  {product.name}
+                </DialogTitle>
+                <DialogDescription className="text-left text-xs uppercase tracking-wider text-gold font-semibold mt-1">
+                  {product.subcategory} — Heritage Silk Sarees
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-6 mt-4 md:grid-cols-2">
+                <div className="overflow-hidden rounded-xl bg-muted border border-border">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="aspect-[4/5] w-full object-cover"
+                  />
+                </div>
+                <div className="flex flex-col justify-between">
+                  <div>
+                    <StarRating rating={product.rating || 5} reviews={product.reviews || 0} showValue />
+                    <div className="mt-4 flex items-center gap-3">
+                      <span className="text-2xl font-bold text-primary">
+                        {formatINR(product.discountPrice ?? product.price)}
+                      </span>
+                      {off > 0 && (
+                        <span className="text-base text-muted-foreground line-through">
+                          {formatINR(product.price)}
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="mt-3 text-xs leading-relaxed text-muted-foreground line-clamp-4">
+                      {product.description}
+                    </p>
+
+                    <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-border pt-4 text-xs">
+                      <div>
+                        <dt className="text-muted-foreground">Fabric</dt>
+                        <dd className="font-semibold text-foreground mt-0.5">{product.fabric}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-muted-foreground">Color</dt>
+                        <dd className="font-semibold text-foreground mt-0.5">{product.color}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-muted-foreground">Saree Length</dt>
+                        <dd className="font-semibold text-foreground mt-0.5">{product.sareeLength}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-muted-foreground">Blouse Included</dt>
+                        <dd className="font-semibold text-foreground mt-0.5">
+                          {product.blouseIncluded ? "Yes" : "No"}
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+
+                  <div className="mt-6 space-y-3">
+                    <button
+                      onClick={() => {
+                        addToCart(product);
+                        setOpen(false);
+                      }}
+                      className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
+                    >
+                      <ShoppingCart size={16} /> Add to Cart
+                    </button>
+                    <Link
+                      to="/product/$slug"
+                      params={{ slug: product.slug }}
+                      className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card py-3 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
+                    >
+                      View Full Details <ArrowRight size={16} />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -83,10 +175,10 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             {product.name}
           </h3>
         </Link>
-        <StarRating rating={product.rating} reviews={product.reviews} showValue className="mt-2" />
+        <StarRating rating={product.rating || 5} reviews={product.reviews || 0} showValue className="mt-2" />
         <div className="mt-3 flex items-center gap-2">
           <span className="text-lg font-semibold text-primary">
-            {formatINR(product.discountPrice)}
+            {formatINR(product.discountPrice ?? product.price)}
           </span>
           {off > 0 && (
             <span className="text-sm text-muted-foreground line-through">
@@ -98,3 +190,4 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     </motion.div>
   );
 }
+

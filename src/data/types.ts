@@ -3,27 +3,27 @@ export interface Product {
   name: string;
   slug: string;
   price: number;
-  discountPrice: number;
-  rating: number;
-  reviews: number;
+  discountPrice?: number | null;
+  rating?: number;
+  reviews?: number;
   image: string;
-  gallery: string[];
+  gallery?: string[];
   category: string;
-  subcategory: string;
-  subcategorySlug: string;
-  color: string;
-  fabric: string;
-  occasion: string[];
-  sareeLength: string;
-  blouseLength: string;
-  blouseIncluded: boolean;
+  subcategory?: string;
+  subcategorySlug?: string;
+  color?: string | null;
+  fabric?: string | null;
+  occasion?: string[] | string | null;
+  sareeLength?: string;
+  blouseLength?: string;
+  blouseIncluded?: boolean;
   stock: number;
   description: string;
-  featured: boolean;
-  trending: boolean;
-  newArrival: boolean;
-  offer: boolean;
-  bestSeller: boolean;
+  featured?: boolean;
+  trending?: boolean;
+  newArrival?: boolean;
+  offer?: boolean;
+  bestSeller?: boolean;
 }
 
 export interface Subcategory {

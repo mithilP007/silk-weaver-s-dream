@@ -1,13 +1,13 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
-import { useState } from "react";
-import { Heart, Minus, Plus, ShoppingBag, Zap, Truck, RotateCcw, ShieldCheck, Check } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Heart, Minus, Plus, ShoppingBag, Zap, Truck, RotateCcw, ShieldCheck, Check, Loader2 } from "lucide-react";
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { SectionHeading } from "@/components/store/SectionHeading";
 import { ProductCard } from "@/components/store/ProductCard";
 import { StarRating } from "@/components/store/StarRating";
 import { EmptyState } from "@/components/store/EmptyState";
 import { Search } from "lucide-react";
-import { getProductBySlug, getRelated } from "@/data/products";
+import { products as mockProducts, getProductBySlug as mockGetProductBySlug, getRelated as mockGetRelated } from "@/data/products";
 import { useStore } from "@/store/StoreContext";
 import { formatINR, discountPercent } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -19,10 +19,81 @@ export const Route = createFileRoute("/product/$slug")({
 
 function ProductPage() {
   const { slug } = useParams({ from: "/product/$slug" });
-  const product = getProductBySlug(slug);
+
+  const [dbProducts, setDbProducts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/products");
+        const res = await response.json();
+        if (res.success) {
+          setDbProducts(res.data);
+        }
+      } catch (err) {
+        console.error("Storefront API fetch offline, using mock backup", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadProducts();
+  }, [slug]);
+
+  const liveProducts = useMemo(() => {
+    if (dbProducts.length === 0) return mockProducts;
+    return dbProducts.map((p) => {
+      const img = p.image?.startsWith("http")
+        ? p.image
+        : (p.image ? `http://localhost:5000${p.image}` : "");
+      return {
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        price: p.price,
+        discountPrice: p.discountPrice || p.price,
+        rating: 4.9,
+        reviews: 21,
+        image: img,
+        gallery: [img],
+        category: p.category?.name || "Silk Sarees",
+        subcategory: p.category?.name || "Semi Silks",
+        subcategorySlug: p.category?.slug || "semi-silks",
+        stock: p.stock,
+        fabric: p.fabric || "Pure Silk",
+        color: p.color || "Gold",
+        sareeLength: p.sareeLength || "6.3 metres",
+        blouseLength: p.blouseLength || "0.8 metres",
+        blouseIncluded: p.blouseIncluded !== false,
+        featured: p.isFeatured || false,
+        trending: p.isTrending || false,
+        offer: p.isOffer || false,
+        newArrival: true,
+        description: p.description,
+        categoryId: p.categoryId,
+        occasion: ["Wedding", "Reception"],
+      };
+    });
+  }, [dbProducts]);
+
+  const product = useMemo(() => {
+    return liveProducts.find((p) => p.slug === slug);
+  }, [liveProducts, slug]);
+
   const { addToCart, toggleWishlist, isWishlisted } = useStore();
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
+
+  if (isLoading) {
+    return (
+      <StoreLayout>
+        <div className="flex justify-center items-center py-32">
+          <Loader2 className="animate-spin text-primary mr-2" size={24} />
+          <span className="text-sm text-muted-foreground">Loading saree specifications...</span>
+        </div>
+      </StoreLayout>
+    );
+  }
 
   if (!product) {
     return (
@@ -34,16 +105,22 @@ function ProductPage() {
     );
   }
 
-  const off = discountPercent(product.price, product.discountPrice);
-  const related = getRelated(product);
+  const off = product.discountPrice ? discountPercent(product.price, product.discountPrice) : 0;
+  const related = liveProducts.filter((p) => p.subcategory === product.subcategory && p.id !== product.id).slice(0, 4);
+  const occasionStr = Array.isArray(product.occasion)
+    ? product.occasion.join(", ")
+    : (typeof product.occasion === "string" ? product.occasion : "Bridal / Wedding / Festival");
+  
   const specs = [
-    { label: "Color", value: product.color },
-    { label: "Fabric", value: product.fabric },
-    { label: "Occasion", value: product.occasion.join(", ") },
-    { label: "Saree Length", value: product.sareeLength },
-    { label: "Blouse Length", value: product.blouseLength },
+    { label: "Color", value: product.color || "Royal Maroon" },
+    { label: "Fabric", value: product.fabric || "Pure Kanchipuram Silk" },
+    { label: "Occasion", value: occasionStr },
+    { label: "Saree Length", value: product.sareeLength || "5.5 Meters" },
+    { label: "Blouse Length", value: product.blouseLength || "0.8 Meters" },
     { label: "Blouse Included", value: product.blouseIncluded ? "Yes" : "No" },
   ];
+
+  const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : [product.image];
 
   return (
     <StoreLayout>
@@ -57,24 +134,24 @@ function ProductPage() {
         <div className="mt-6 grid gap-10 lg:grid-cols-2">
           <div className="flex flex-col-reverse gap-4 sm:flex-row">
             <div className="flex gap-3 sm:flex-col">
-              {product.gallery.map((img, i) => (
+              {gallery.map((img, i) => (
                 <button key={i} onClick={() => setActiveImg(i)} className={cn("h-20 w-16 overflow-hidden rounded-lg border-2", activeImg === i ? "border-gold" : "border-transparent")}>
                   <img src={img} alt="thumbnail" className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>
             <div className="relative flex-1 overflow-hidden rounded-2xl border border-border bg-muted">
-              <img src={product.gallery[activeImg]} alt={product.name} className="aspect-[4/5] w-full object-cover" />
+              <img src={gallery[activeImg] || product.image} alt={product.name} className="aspect-[4/5] w-full object-cover" />
               {off > 0 && <span className="absolute left-4 top-4 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">{off}% OFF</span>}
             </div>
           </div>
 
           <div>
-            <span className="text-xs uppercase tracking-wider text-gold">{product.subcategory}</span>
+            <span className="text-xs uppercase tracking-wider text-gold">{product.subcategory || "Heritage Silks"}</span>
             <h1 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">{product.name}</h1>
-            <StarRating rating={product.rating} reviews={product.reviews} showValue className="mt-3" />
+            <StarRating rating={product.rating || 5} reviews={product.reviews || 0} showValue className="mt-3" />
             <div className="mt-5 flex items-center gap-3">
-              <span className="text-3xl font-bold text-primary">{formatINR(product.discountPrice)}</span>
+              <span className="text-3xl font-bold text-primary">{formatINR(product.discountPrice ?? product.price)}</span>
               {off > 0 && <span className="text-lg text-muted-foreground line-through">{formatINR(product.price)}</span>}
               {off > 0 && <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-primary">Save {off}%</span>}
             </div>
