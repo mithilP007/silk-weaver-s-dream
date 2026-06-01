@@ -1,4 +1,9 @@
 import type { Subcategory } from "./types";
+import saree1 from "@/assets/saree-1.jpg";
+import saree3 from "@/assets/saree-3.jpg";
+import saree4 from "@/assets/saree-4.jpg";
+import saree5 from "@/assets/saree-5.jpg";
+import saree6 from "@/assets/saree-6.jpg";
 
 export const MAIN_CATEGORY = {
   name: "Silk Sarees",
