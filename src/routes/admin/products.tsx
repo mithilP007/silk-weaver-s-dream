@@ -574,10 +574,10 @@ function AdminProducts() {
                     value={formSub}
                     disabled={isSubmitting}
                     onChange={(e) => setFormSub(e.target.value)}
-                    className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
+                    className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 text-[#2c2623] outline-none focus:border-[#d4af37] cursor-pointer"
                   >
                     {categories.map((sub) => (
-                      <option key={sub.id} value={sub.id}>
+                      <option key={sub.id} value={sub.id} className="text-[#2c2623] bg-white">
                         {sub.name}
                       </option>
                     ))}
@@ -627,10 +627,10 @@ function AdminProducts() {
                     value={formFabric}
                     disabled={isSubmitting}
                     onChange={(e) => setFormFabric(e.target.value)}
-                    className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
+                    className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 text-[#2c2623] outline-none focus:border-[#d4af37] cursor-pointer"
                   >
                     {FABRICS.map((fab) => (
-                      <option key={fab} value={fab}>
+                      <option key={fab} value={fab} className="text-[#2c2623] bg-white">
                         {fab}
                       </option>
                     ))}
@@ -642,10 +642,10 @@ function AdminProducts() {
                     value={formColor}
                     disabled={isSubmitting}
                     onChange={(e) => setFormColor(e.target.value)}
-                    className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
+                    className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 text-[#2c2623] outline-none focus:border-[#d4af37] cursor-pointer"
                   >
                     {COLORS.map((col) => (
-                      <option key={col} value={col}>
+                      <option key={col} value={col} className="text-[#2c2623] bg-white">
                         {col}
                       </option>
                     ))}
