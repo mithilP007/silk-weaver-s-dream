@@ -11,6 +11,7 @@ const createOrder = async (req, res) => {
       city,
       state,
       pincode,
+      country = "India",
     } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -20,9 +21,47 @@ const createOrder = async (req, res) => {
       });
     }
 
+    // 1. Only Cash on Delivery is allowed through this direct orders endpoint
+    const isCod = paymentMethod === "Cash on Delivery" || paymentMethod === "COD";
+    if (!isCod) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment method for this endpoint. Use the Razorpay payment API for online checkout.",
+      });
+    }
+
+    // 2. COD is allowed only for India
+    if (!country || country.trim().toLowerCase() !== "india") {
+      return res.status(400).json({
+        success: false,
+        message: "Cash on Delivery is only allowed within India.",
+      });
+    }
+
+    // 3. Indian pincode format check
+    if (!pincode || !/^\d{6}$/.test(pincode.trim())) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Indian pincode. Must be exactly 6 digits.",
+      });
+    }
+
+    // 4. Fetch dynamic logistics configurations
+    const shippingSettings = await prisma.shippingSettings.findFirst();
+    const freeShippingCap = shippingSettings ? shippingSettings.freeShippingAbove : 4999;
+    const standardShippingFee = shippingSettings ? shippingSettings.shippingCharge : 99;
+    const codEnabled = shippingSettings ? shippingSettings.codEnabled : true;
+
+    if (!codEnabled) {
+      return res.status(400).json({
+        success: false,
+        message: "Cash on Delivery (COD) is currently disabled in the store settings.",
+      });
+    }
+
     // Run transaction
     const result = await prisma.$transaction(async (tx) => {
-      let totalAmount = 0;
+      let subtotal = 0;
       const orderItemsData = [];
 
       for (const item of items) {
@@ -40,7 +79,7 @@ const createOrder = async (req, res) => {
 
         // Calculate price (use discountPrice if available, else standard price)
         const price = product.discountPrice !== null ? product.discountPrice : product.price;
-        totalAmount += price * item.quantity;
+        subtotal += price * item.quantity;
 
         orderItemsData.push({
           productId: product.id,
@@ -57,18 +96,26 @@ const createOrder = async (req, res) => {
         });
       }
 
+      // Apply India Shipping Fee Logic
+      const shippingFee = subtotal >= freeShippingCap ? 0 : standardShippingFee;
+      const totalAmount = subtotal + shippingFee;
+
       // Create order
       const order = await tx.order.create({
         data: {
           userId: req.user.id,
           totalAmount,
-          paymentMethod,
+          shippingFee,
+          paymentMethod: "COD",
+          paymentStatus: "Pending",
+          orderStatus: "Pending",
           customerName,
           customerPhone,
           address,
           city,
           state,
           pincode,
+          country: "India",
           orderItems: {
             create: orderItemsData,
           },
@@ -82,12 +129,17 @@ const createOrder = async (req, res) => {
         },
       });
 
+      // Clear customer's cart
+      await tx.cart.deleteMany({
+        where: { userId: req.user.id },
+      });
+
       return order;
     });
 
     res.status(201).json({
       success: true,
-      message: "Order created successfully",
+      message: "COD Order created successfully",
       data: result,
     });
   } catch (error) {

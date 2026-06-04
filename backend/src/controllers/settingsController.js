@@ -82,6 +82,7 @@ const getPaymentSettings = async (req, res) => {
         data: {
           razorpayKeyId: "rzp_test_Kamatchi90281",
           razorpaySecret: "dummysecretvalue12345678",
+          razorpayMode: "test",
           razorpayEnabled: true,
         },
       });
@@ -108,7 +109,7 @@ const getPaymentSettings = async (req, res) => {
 
 const updatePaymentSettings = async (req, res) => {
   try {
-    const { razorpayKeyId, razorpaySecret, razorpayEnabled } = req.body;
+    const { razorpayKeyId, razorpaySecret, razorpayEnabled, razorpayMode } = req.body;
 
     let settings = await prisma.paymentSettings.findFirst();
 
@@ -119,12 +120,14 @@ const updatePaymentSettings = async (req, res) => {
       updateData.razorpaySecret = razorpaySecret;
     }
     if (razorpayEnabled !== undefined) updateData.razorpayEnabled = razorpayEnabled;
+    if (razorpayMode !== undefined) updateData.razorpayMode = razorpayMode;
 
     if (!settings) {
       settings = await prisma.paymentSettings.create({
         data: {
           razorpayKeyId: razorpayKeyId || "rzp_test_Kamatchi90281",
           razorpaySecret: razorpaySecret && !razorpaySecret.includes("••••") ? razorpaySecret : "dummysecretvalue12345678",
+          razorpayMode: razorpayMode || "test",
           razorpayEnabled: razorpayEnabled !== undefined ? razorpayEnabled : true,
         },
       });

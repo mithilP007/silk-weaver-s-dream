@@ -107,6 +107,7 @@ function AdminSettings() {
           razorpayKeyId: rzpKeyId,
           razorpaySecret: rzpSecret,
           razorpayEnabled: rzpActive,
+          razorpayMode: rzpMode,
         };
       } else if (type === "Logistics & Shipping") {
         url = `${API_BASE}/api/settings/shipping`;

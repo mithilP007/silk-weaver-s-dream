@@ -40,7 +40,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/pages", pageRoutes);
 app.use("/api/settings", settingsRoutes);
-app.use("/api/payments", paymentRoutes);
+app.use("/api/payments/razorpay", paymentRoutes);
 
 const PORT = process.env.PORT || 5000;
 

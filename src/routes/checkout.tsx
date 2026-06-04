@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { CreditCard, Banknote, Lock, Loader2, Sparkles, AlertTriangle, ShieldCheck } from "lucide-react";
+import { CreditCard, Banknote, Lock, Loader2, AlertTriangle } from "lucide-react";
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { useStore } from "@/store/StoreContext";
 import { formatINR } from "@/lib/format";
@@ -12,18 +12,30 @@ export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
 });
 
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 function CheckoutPage() {
   const { cart, cartSubtotal, clearCart } = useStore();
   const [pay, setPay] = useState<"razorpay" | "cod">("razorpay");
-  const shipping = cartSubtotal > 4999 || cartSubtotal === 0 ? 0 : 99;
-  const total = cartSubtotal + shipping;
 
-  const navigate = useNavigate();
+  // Dynamic logistics settings states
+  const [shippingCharge, setShippingCharge] = useState(99);
+  const [freeShippingAbove, setFreeShippingAbove] = useState(4999);
+  const [codEnabled, setCodEnabled] = useState(true);
 
   // Address & Form states
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [country, setCountry] = useState("India");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
@@ -31,11 +43,26 @@ function CheckoutPage() {
   const [landmark, setLandmark] = useState("");
 
   const [isPlacing, setIsPlacing] = useState(false);
-  const [showSimulatedRzp, setShowSimulatedRzp] = useState(false);
-  const [simulatedRzpOrderId, setSimulatedRzpOrderId] = useState("");
-  const [simulatedDbOrderId, setSimulatedDbOrderId] = useState("");
 
-  // Load user data if logged in
+  // 1. Fetch shipping logistics settings from Neon dynamically
+  useEffect(() => {
+    const fetchShipping = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/api/settings/shipping`);
+        const res = await response.json();
+        if (res.success && res.data) {
+          setShippingCharge(res.data.shippingCharge);
+          setFreeShippingAbove(res.data.freeShippingAbove);
+          setCodEnabled(res.data.codEnabled);
+        }
+      } catch (err) {
+        console.error("Error loading shipping settings:", err);
+      }
+    };
+    fetchShipping();
+  }, []);
+
+  // 2. Load user data if logged in
   useEffect(() => {
     try {
       const userStr = localStorage.getItem("user");
@@ -49,6 +76,32 @@ function CheckoutPage() {
       console.error(e);
     }
   }, []);
+
+  // 3. Shipping fee calculations based on dynamic rules
+  const shipping = country.trim().toLowerCase() === "india"
+    ? (cartSubtotal >= freeShippingAbove || cartSubtotal === 0 ? 0 : shippingCharge)
+    : 0;
+  const total = cartSubtotal + shipping;
+
+  const navigate = useNavigate();
+
+  const handleWhatsAppContact = () => {
+    const cartSummary = cart
+      .map((i) => `${i.product.name} (Qty: ${i.quantity})`)
+      .join(", ");
+    
+    const text = `Hello Sri Kamatchi Silk, I would like to place an international order.
+Order Details:
+- Items: ${cartSummary}
+- Subtotal: ${formatINR(cartSubtotal)}
+- Customer Name: ${name || "Guest"}
+- Country: ${country}
+- City: ${city || "N/A"}`;
+
+    const encodedText = encodeURIComponent(text);
+    const whatsappUrl = `https://wa.me/919443210987?text=${encodedText}`;
+    window.open(whatsappUrl, "_blank");
+  };
 
   const placeOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,60 +120,79 @@ function CheckoutPage() {
       return;
     }
 
+    // Gating check
+    if (country.trim().toLowerCase() !== "india") {
+      toast.error("Direct checkout is blocked for international addresses.");
+      return;
+    }
+
+    // Pincode validation
+    if (!/^\d{6}$/.test(pincode.trim())) {
+      toast.error("Invalid pincode", {
+        description: "Please enter a valid 6-digit Indian postal code.",
+      });
+      return;
+    }
+
     setIsPlacing(true);
 
     try {
-      // 1. Create order on the backend
-      const orderPayload = {
-        items: cart.map((i) => ({
-          productId: i.product.id,
-          quantity: i.quantity,
-        })),
-        paymentMethod: pay === "cod" ? "Cash on Delivery" : "Razorpay",
-        customerName: name,
-        customerPhone: phone,
-        address: landmark ? `${address} (Landmark: ${landmark})` : address,
-        city,
-        state,
-        pincode,
-      };
-
-      const response = await fetch(`${API_BASE}/api/orders`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(orderPayload),
-      });
-
-      const resData = await response.json();
-
-      if (!response.ok || !resData.success) {
-        throw new Error(resData.message || "Failed to create order on server.");
-      }
-
-      const dbOrder = resData.data;
-
-      // 2. Handle payment method routing
       if (pay === "cod") {
-        toast.success("Order placed successfully!", {
+        // COD creation flow
+        const orderPayload = {
+          items: cart.map((i) => ({
+            productId: i.product.id,
+            quantity: i.quantity,
+          })),
+          paymentMethod: "COD",
+          customerName: name,
+          customerPhone: phone,
+          address: landmark ? `${address} (Landmark: ${landmark})` : address,
+          city,
+          state,
+          pincode,
+          country,
+        };
+
+        const response = await fetch(`${API_BASE}/api/orders`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(orderPayload),
+        });
+
+        const resData = await response.json();
+        if (!response.ok || !resData.success) {
+          throw new Error(resData.message || "Failed to create COD order.");
+        }
+
+        toast.success("Order placed successfully via Cash on Delivery!", {
           description: "Thank you for shopping at Sri Kamatchi Silk.",
         });
         clearCart();
         navigate({ to: "/orders" });
       } else {
-        // Razorpay Payment flow
-        // Fetch simulated Razorpay Order ID from backend
-        const rzpRes = await fetch(`${API_BASE}/api/payments/create-order`, {
+        // Real Razorpay Payments standard checkout flow
+        const rzpRes = await fetch(`${API_BASE}/api/payments/razorpay/create-order`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            orderId: dbOrder.id,
-            amount: total,
+            items: cart.map((i) => ({
+              productId: i.product.id,
+              quantity: i.quantity,
+            })),
+            customerName: name,
+            customerPhone: phone,
+            address: landmark ? `${address} (Landmark: ${landmark})` : address,
+            city,
+            state,
+            pincode,
+            country,
           }),
         });
 
@@ -129,52 +201,74 @@ function CheckoutPage() {
           throw new Error(rzpData.message || "Razorpay order creation failed.");
         }
 
-        // Open custom simulated sandbox widget overlay
-        setSimulatedRzpOrderId(rzpData.id);
-        setSimulatedDbOrderId(dbOrder.id);
-        setShowSimulatedRzp(true);
+        // Load dynamic Razorpay script
+        const scriptLoaded = await loadRazorpayScript();
+        if (!scriptLoaded) {
+          throw new Error("Razorpay billing widget failed to initialize. Please check connection.");
+        }
+
+        const options = {
+          key: rzpData.keyId,
+          amount: Math.round(total * 100),
+          currency: rzpData.currency,
+          name: "Sri Kamatchi Silk",
+          description: "Premium Handloom Saree Order",
+          order_id: rzpData.razorpayOrderId,
+          handler: async function (response: any) {
+            setIsPlacing(true);
+            try {
+              const verifyRes = await fetch(`${API_BASE}/api/payments/razorpay/verify`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature,
+                }),
+              });
+
+              const verifyData = await verifyRes.json();
+              if (!verifyRes.ok || !verifyData.success) {
+                throw new Error(verifyData.message || "Payment verification failed.");
+              }
+
+              toast.success("Payment successful! Order confirmed.", {
+                description: "Your handloom saree is being prepped for dispatch.",
+              });
+              clearCart();
+              navigate({ to: "/orders" });
+            } catch (err: any) {
+              console.error(err);
+              toast.error(err.message || "Payment verification failed.");
+            } finally {
+              setIsPlacing(false);
+            }
+          },
+          prefill: {
+            name: name,
+            contact: phone,
+            email: email,
+          },
+          theme: {
+            color: "#3a1d13",
+          },
+          modal: {
+            ondismiss: function () {
+              setIsPlacing(false);
+              toast.error("Payment cancelled by customer.");
+            },
+          },
+        };
+
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
       }
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || "Checkout failed. Please try again.");
-    } finally {
-      setIsPlacing(false);
-    }
-  };
-
-  const handleSimulatedPaymentSuccess = async () => {
-    setIsPlacing(true);
-    const token = localStorage.getItem("token");
-
-    try {
-      const response = await fetch(`${API_BASE}/api/payments/verify`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          razorpay_payment_id: `pay_${Math.random().toString(36).substring(2, 12)}`,
-          razorpay_order_id: simulatedRzpOrderId,
-          razorpay_signature: "simulated_signature_hash_value",
-          receipt_order_id: simulatedDbOrderId,
-        }),
-      });
-
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Payment verification failed.");
-      }
-
-      toast.success("Payment successful! Order confirmed.", {
-        description: "Your handloom saree is being prepped for dispatch.",
-      });
-      setShowSimulatedRzp(false);
-      clearCart();
-      navigate({ to: "/orders" });
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err.message || "Payment confirmation failed");
     } finally {
       setIsPlacing(false);
     }
@@ -229,6 +323,29 @@ function CheckoutPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isPlacing}
                 />
+                <div className="sm:col-span-2 space-y-1">
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Country</label>
+                  <select
+                    value={country}
+                    onChange={(e) => {
+                      setCountry(e.target.value);
+                      if (e.target.value !== "India") {
+                        setPay("razorpay"); // reset default selection
+                      }
+                    }}
+                    disabled={isPlacing}
+                    className={`${field} cursor-pointer`}
+                  >
+                    <option value="India">India</option>
+                    <option value="United States">United States</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="Malaysia">Malaysia</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Other">Other Country</option>
+                  </select>
+                </div>
                 <input
                   required
                   placeholder="Address line"
@@ -271,21 +388,38 @@ function CheckoutPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-              <h2 className="text-lg font-semibold text-foreground">Payment Method</h2>
-              <div className="mt-4 space-y-3">
-                <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 ${pay === "razorpay" ? "border-gold bg-secondary/50" : "border-border"}`}>
-                  <input type="radio" checked={pay === "razorpay"} onChange={() => setPay("razorpay")} disabled={isPlacing} className="accent-[var(--primary)]" />
-                  <CreditCard size={20} className="text-primary" />
-                  <span className="text-sm font-medium">Razorpay (Cards, UPI, Netbanking)</span>
-                </label>
-                <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 ${pay === "cod" ? "border-gold bg-secondary/50" : "border-border"}`}>
-                  <input type="radio" checked={pay === "cod"} onChange={() => setPay("cod")} disabled={isPlacing} className="accent-[var(--primary)]" />
-                  <Banknote size={20} className="text-primary" />
-                  <span className="text-sm font-medium">Cash on Delivery</span>
-                </label>
+            {/* Payment Method Option Panel */}
+            {country.trim().toLowerCase() === "india" ? (
+              <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
+                <h2 className="text-lg font-semibold text-foreground">Payment Method</h2>
+                <div className="mt-4 space-y-3">
+                  <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 ${pay === "razorpay" ? "border-gold bg-secondary/50" : "border-border"}`}>
+                    <input type="radio" checked={pay === "razorpay"} onChange={() => setPay("razorpay")} disabled={isPlacing} className="accent-[var(--primary)]" />
+                    <CreditCard size={20} className="text-primary" />
+                    <span className="text-sm font-medium">Razorpay (Cards, UPI, Netbanking)</span>
+                  </label>
+                  {codEnabled && (
+                    <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 ${pay === "cod" ? "border-gold bg-secondary/50" : "border-border"}`}>
+                      <input type="radio" checked={pay === "cod"} onChange={() => setPay("cod")} disabled={isPlacing} className="accent-[var(--primary)]" />
+                      <Banknote size={20} className="text-primary" />
+                      <span className="text-sm font-medium">Cash on Delivery (COD)</span>
+                    </label>
+                  )}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="rounded-2xl border border-amber-200 bg-amber-50/50 p-6 shadow-soft space-y-4">
+                <div className="flex gap-3 text-amber-800">
+                  <AlertTriangle className="shrink-0 text-amber-600 mt-0.5" size={20} />
+                  <div>
+                    <h4 className="font-bold text-sm">International Checkout Restriction</h4>
+                    <p className="text-xs text-amber-700 mt-1 leading-relaxed font-semibold">
+                      Direct online checkout is currently available only within India. For international orders, please contact Sri Kamatchi Silk directly.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="h-fit rounded-2xl border border-border bg-card p-6 shadow-soft">
@@ -294,69 +428,64 @@ function CheckoutPage() {
               {cart.map((i) => (
                 <div key={i.product.id} className="flex items-center gap-3">
                   <img src={i.product.image} alt={i.product.name} className="h-14 w-12 rounded-lg object-cover" />
-                  <div className="flex-1 text-sm"><p className="line-clamp-1 font-medium">{i.product.name}</p><p className="text-muted-foreground">Qty {i.quantity}</p></div>
-                  <span className="text-sm font-medium">{formatINR((i.product.discountPrice ?? i.product.price) * i.quantity)}</span>
+                  <div className="flex-1 text-sm">
+                    <p className="line-clamp-1 font-medium">{i.product.name}</p>
+                    <p className="text-muted-foreground">Qty {i.quantity}</p>
+                  </div>
+                  <span className="text-sm font-medium">
+                    {formatINR((i.product.discountPrice ?? i.product.price) * i.quantity)}
+                  </span>
                 </div>
               ))}
-              {cart.length === 0 && <p className="text-sm text-muted-foreground">Your cart is empty. <Link to="/shop" className="text-primary">Shop now</Link></p>}
+              {cart.length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  Your cart is empty. <Link to="/shop" className="text-primary">Shop now</Link>
+                </p>
+              )}
             </div>
             <dl className="mt-5 space-y-3 border-t border-border pt-4 text-sm">
-              <div className="flex justify-between"><dt className="text-muted-foreground">Subtotal</dt><dd>{formatINR(cartSubtotal)}</dd></div>
-              <div className="flex justify-between"><dt className="text-muted-foreground">Shipping</dt><dd>{shipping === 0 ? "Free" : formatINR(shipping)}</dd></div>
-              <div className="flex justify-between border-t border-border pt-3 text-base font-bold"><dt>Total</dt><dd className="text-primary">{formatINR(total)}</dd></div>
+              <div className="flex justify-between">
+                <dt className="text-muted-foreground">Subtotal</dt>
+                <dd>{formatINR(cartSubtotal)}</dd>
+              </div>
+              {country.trim().toLowerCase() === "india" ? (
+                <>
+                  <div className="flex justify-between">
+                    <dt className="text-muted-foreground">Shipping</dt>
+                    <dd>{shipping === 0 ? "Free" : formatINR(shipping)}</dd>
+                  </div>
+                  <div className="flex justify-between border-t border-border pt-3 text-base font-bold">
+                    <dt>Total</dt>
+                    <dd className="text-primary">{formatINR(total)}</dd>
+                  </div>
+                </>
+              ) : (
+                <div className="rounded-xl bg-amber-50/50 border border-amber-200 p-3.5 text-xs text-amber-800 font-semibold leading-relaxed mt-4">
+                  International shipping rates apply. Please contact us directly for order pricing and courier details.
+                </div>
+              )}
             </dl>
-            <button
-              disabled={cart.length === 0 || isPlacing}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-medium text-primary-foreground disabled:opacity-50 cursor-pointer"
-            >
-              {isPlacing ? <Loader2 size={15} className="animate-spin" /> : <Lock size={15} />}
-              {isPlacing ? "Processing..." : "Place Order"}
-            </button>
+
+            {country.trim().toLowerCase() === "india" ? (
+              <button
+                disabled={cart.length === 0 || isPlacing}
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-medium text-primary-foreground disabled:opacity-50 cursor-pointer"
+              >
+                {isPlacing ? <Loader2 size={15} className="animate-spin" /> : <Lock size={15} />}
+                {isPlacing ? "Processing..." : "Place Order"}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleWhatsAppContact}
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-green-600 hover:bg-green-700 py-3 text-sm font-semibold text-white cursor-pointer transition-colors"
+              >
+                Contact Directly for Order
+              </button>
+            )}
           </div>
         </form>
       </div>
-
-      {/* Simulated Razorpay Payment Modal Overlay */}
-      {showSimulatedRzp && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-[#2c2623]/60 backdrop-blur-sm" />
-          <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-[#e8dfd8] bg-white p-6 shadow-card text-center animate-in zoom-in-95 duration-200">
-            <Sparkles className="mx-auto text-[#d4af37] animate-bounce mb-3" size={32} />
-            <h3 className="font-display text-xl font-bold text-[#2c2623]">Razorpay Secure Checkout</h3>
-            <p className="text-xs text-[#6e5d53] mt-1.5 uppercase tracking-widest font-semibold">Boutique Sandbox Gateway</p>
-            <div className="my-5 border-y border-[#f3ede8] py-4 text-sm space-y-2">
-              <div className="flex justify-between text-xs text-[#6e5d53]"><span>Order Reference</span><span className="font-mono font-semibold">{simulatedRzpOrderId}</span></div>
-              <div className="flex justify-between font-bold text-primary"><span>Total Amount</span><span>{formatINR(total)}</span></div>
-            </div>
-
-            <div className="rounded-xl bg-[#fbfaf7] border border-[#f3ede8] p-3 text-[11px] text-[#6e5d53] leading-relaxed mb-6 flex items-start gap-2 text-left">
-              <ShieldCheck className="text-emerald-600 shrink-0 mt-0.5" size={14} />
-              <span>This is a secure simulated billing environment. Clicking success will invoke backend verification and persistently record payment structures.</span>
-            </div>
-
-            <div className="flex flex-col gap-2.5">
-              <button
-                onClick={handleSimulatedPaymentSuccess}
-                disabled={isPlacing}
-                className="w-full rounded-xl bg-[#3a1d13] text-white py-3 text-xs font-bold hover:bg-[#4d2d22] disabled:opacity-50 flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                {isPlacing ? <Loader2 size={13} className="animate-spin" /> : null}
-                Authorize Successful Payment
-              </button>
-              <button
-                onClick={() => {
-                  setShowSimulatedRzp(false);
-                  toast.error("Payment cancelled by customer.");
-                }}
-                disabled={isPlacing}
-                className="w-full rounded-xl border border-[#e8dfd8] text-[#6e5d53] py-3 text-xs font-bold hover:bg-[#fbfaf7] disabled:opacity-50 cursor-pointer"
-              >
-                Cancel & Decline
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </StoreLayout>
   );
 }

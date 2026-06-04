@@ -75,6 +75,7 @@ model Order {
   user            User         @relation(fields: [userId], references: [id])
 
   totalAmount     Float
+  shippingFee     Float        @default(0)
 
   paymentMethod   String
   paymentStatus   String       @default("Pending")
@@ -88,6 +89,10 @@ model Order {
   city            String
   state           String
   pincode         String
+  country         String       @default("India")
+
+  razorpayOrderId   String?
+  razorpayPaymentId String?
 
   orderItems      OrderItem[]
 
@@ -143,6 +148,7 @@ model PaymentSettings {
 
   razorpayKeyId       String?
   razorpaySecret      String?
+  razorpayMode        String       @default("test")
 
   razorpayEnabled     Boolean     @default(false)
 
