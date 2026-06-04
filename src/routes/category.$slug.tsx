@@ -86,7 +86,7 @@ function CategoryPage() {
         id: c.id,
         name: c.name,
         slug: c.slug,
-        description: localMatch?.description || "Handcrafted saree division.",
+        description: c.description || localMatch?.description || "Handcrafted saree division.",
         image: c.image || localMatch?.image || mockSubcategories[0].image,
       };
     });

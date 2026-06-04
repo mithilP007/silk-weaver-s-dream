@@ -1,13 +1,108 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Search, Plus, Edit2, Trash2, Folder, X, Loader2, TableProperties } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, Folder, X, Loader2, TableProperties, UploadCloud } from "lucide-react";
 import { subcategories as initialSubs } from "@/data/categories";
 import { API_BASE } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/categories")({
   component: AdminCategories,
 });
+
+function CategoryImageUpload({
+  images,
+  onChange,
+}: {
+  images: string[];
+  onChange: (imgs: string[]) => void;
+}) {
+  const handleFile = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast.error("Only image files are allowed");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File is too large. Max size is 5MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 1000;
+        if (width > MAX_WIDTH) {
+          height = Math.round((height * MAX_WIDTH) / width);
+          width = MAX_WIDTH;
+        }
+        if (height > MAX_HEIGHT) {
+          width = Math.round((width * MAX_HEIGHT) / height);
+          height = MAX_HEIGHT;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+          onChange([...images, dataUrl]);
+          toast.success("Image uploaded & optimized successfully!");
+        }
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeImage = (idx: number) => {
+    const list = images.filter((_, i) => i !== idx);
+    onChange(list);
+  };
+
+  return (
+    <div className="space-y-2">
+      <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Category Images</label>
+      <div className="grid grid-cols-3 gap-2">
+        {images.map((img, idx) => (
+          <div key={idx} className="relative group aspect-square rounded-xl border border-[#e8dfd8] overflow-hidden bg-[#fbfaf7]">
+            <img src={img} alt={`Category ${idx}`} className="h-full w-full object-cover" />
+            {idx === 0 && (
+              <span className="absolute bottom-1 left-1 bg-[#3a1d13] text-[#f7f2ed] text-[8px] px-1.5 py-0.5 rounded font-bold uppercase">
+                Primary
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={() => removeImage(idx)}
+              className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-xs font-semibold"
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+        <label className="border-2 border-dashed border-[#e8dfd8] rounded-xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-[#fbfaf7] transition-all aspect-square">
+          <UploadCloud size={20} className="text-[#6e5d53]" />
+          <span className="text-[10px] text-muted-foreground mt-1 font-semibold">Upload</span>
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.[0]) handleFile(e.target.files[0]);
+            }}
+          />
+        </label>
+      </div>
+      <p className="text-[9px] text-muted-foreground font-semibold">First image is primary thumbnail. Upload multiple for the gallery.</p>
+    </div>
+  );
+}
 
 function AdminCategories() {
   const [subs, setSubs] = useState<any[]>([]);
@@ -19,6 +114,7 @@ function AdminCategories() {
   // Form Field State
   const [formName, setFormName] = useState("");
   const [formDesc, setFormDesc] = useState("");
+  const [images, setImages] = useState<string[]>([]);
 
   const fetchCategories = async () => {
     setIsLoading(true);
@@ -32,8 +128,9 @@ function AdminCategories() {
             id: c.id,
             name: c.name,
             slug: c.slug,
-            description: localMatch?.description || "Handcrafted luxury saree division under Sri Kamatchi Silk.",
+            description: c.description || localMatch?.description || "Handcrafted luxury saree division under Sri Kamatchi Silk.",
             image: c.image || localMatch?.image || initialSubs[0].image,
+            gallery: c.gallery,
           };
         });
         setSubs(mapped);
@@ -62,6 +159,7 @@ function AdminCategories() {
     setEditingSub(null);
     setFormName("");
     setFormDesc("");
+    setImages([]);
     setModalOpen(true);
   };
 
@@ -69,6 +167,18 @@ function AdminCategories() {
     setEditingSub(s);
     setFormName(s.name);
     setFormDesc(s.description || "");
+    let initialImages: string[] = [];
+    if (s.gallery) {
+      try {
+        initialImages = typeof s.gallery === "string" ? JSON.parse(s.gallery) : s.gallery;
+      } catch (e) {
+        initialImages = [];
+      }
+    }
+    if (initialImages.length === 0 && s.image) {
+      initialImages = [s.image];
+    }
+    setImages(initialImages);
     setModalOpen(true);
   };
 
@@ -116,12 +226,16 @@ function AdminCategories() {
       
       const method = editingSub ? "PUT" : "POST";
 
+      const primaryImage = images.length > 0 ? images[0] : "";
       const response = await fetch(url, {
         method,
         headers,
         body: JSON.stringify({
           name: formName,
           slug: newSlug,
+          description: formDesc,
+          image: primaryImage,
+          gallery: images,
         }),
       });
 
@@ -298,6 +412,8 @@ function AdminCategories() {
                   className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37] resize-none"
                 />
               </div>
+
+              <CategoryImageUpload images={images} onChange={setImages} />
 
               <div className="flex justify-end gap-3 pt-3 border-t border-[#f3ede8]">
                 <button

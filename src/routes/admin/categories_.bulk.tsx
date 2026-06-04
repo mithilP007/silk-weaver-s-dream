@@ -12,7 +12,7 @@ interface CategoryRow {
   name: string;
   slug: string;
   description: string;
-  image: string;
+  images: string[];
   displayOrder: string;
   activeStatus: boolean;
   parentCategory: string;
@@ -22,6 +22,98 @@ interface CategoryRow {
   };
 }
 
+function BulkRowImageUpload({
+  images,
+  onChange,
+}: {
+  images: string[];
+  onChange: (imgs: string[]) => void;
+}) {
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const files = Array.from(e.target.files);
+    
+    // Process files sequentially to correctly build the array
+    let currentImages = [...images];
+    let loadedCount = 0;
+    
+    files.forEach(file => {
+      if (!file.type.startsWith("image/")) return;
+      if (file.size > 5 * 1024 * 1024) return;
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+
+          const MAX_WIDTH = 600;
+          const MAX_HEIGHT = 800;
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+            currentImages.push(dataUrl);
+            loadedCount++;
+            
+            if (loadedCount === files.filter(f => f.type.startsWith("image/")).length) {
+              onChange(currentImages);
+              toast.success("Images uploaded & compressed successfully!");
+            }
+          }
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (idx: number) => {
+    const list = images.filter((_, i) => i !== idx);
+    onChange(list);
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      {images.map((img, idx) => (
+        <div key={idx} className="relative group h-10 w-10 rounded border border-[#e8dfd8] overflow-hidden bg-card">
+          <img src={img} alt="Preview" className="h-full w-full object-cover" />
+          <button
+            type="button"
+            onClick={() => removeImage(idx)}
+            className="absolute inset-0 bg-red-600/80 text-white text-[8px] font-bold opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all"
+          >
+            Del
+          </button>
+        </div>
+      ))}
+      <label className="h-10 px-2 rounded border-2 border-dashed border-[#e8dfd8] flex items-center justify-center text-center cursor-pointer hover:bg-[#fbfaf7] text-[#6e5d53] text-[10px] font-semibold">
+        + Add
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          className="hidden"
+          onChange={handleFile}
+        />
+      </label>
+    </div>
+  );
+}
+
 function AdminCategoriesBulk() {
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
@@ -29,9 +121,9 @@ function AdminCategoriesBulk() {
 
   // Initialize with 3 rows as required by the testing checklist
   const [rows, setRows] = useState<CategoryRow[]>([
-    { name: "", slug: "", description: "", image: "", displayOrder: "", activeStatus: true, parentCategory: "", errors: {} },
-    { name: "", slug: "", description: "", image: "", displayOrder: "", activeStatus: true, parentCategory: "", errors: {} },
-    { name: "", slug: "", description: "", image: "", displayOrder: "", activeStatus: true, parentCategory: "", errors: {} },
+    { name: "", slug: "", description: "", images: [], displayOrder: "", activeStatus: true, parentCategory: "", errors: {} },
+    { name: "", slug: "", description: "", images: [], displayOrder: "", activeStatus: true, parentCategory: "", errors: {} },
+    { name: "", slug: "", description: "", images: [], displayOrder: "", activeStatus: true, parentCategory: "", errors: {} },
   ]);
 
   useEffect(() => {
@@ -52,7 +144,7 @@ function AdminCategoriesBulk() {
   const addRow = () => {
     setRows([
       ...rows,
-      { name: "", slug: "", description: "", image: "", displayOrder: "", activeStatus: true, parentCategory: "", errors: {} },
+      { name: "", slug: "", description: "", images: [], displayOrder: "", activeStatus: true, parentCategory: "", errors: {} },
     ]);
   };
 
@@ -166,15 +258,19 @@ function AdminCategoriesBulk() {
       }
 
       // Map spreadsheet rows to backend category attributes
-      const payload = rows.map((r) => ({
-        name: r.name.trim(),
-        slug: r.slug.trim() || r.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
-        image: r.image.trim() || null,
-        description: r.description.trim() || null,
-        displayOrder: r.displayOrder.trim() ? parseInt(r.displayOrder) : null,
-        activeStatus: r.activeStatus,
-        parentCategory: r.parentCategory || null,
-      }));
+      const payload = rows.map((r) => {
+        const primaryImage = r.images.length > 0 ? r.images[0] : "";
+        return {
+          name: r.name.trim(),
+          slug: r.slug.trim() || r.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
+          image: primaryImage || null,
+          description: r.description.trim() || null,
+          displayOrder: r.displayOrder.trim() ? parseInt(r.displayOrder) : null,
+          activeStatus: r.activeStatus,
+          parentCategory: r.parentCategory || null,
+          gallery: r.images,
+        };
+      });
 
       const response = await fetch(`${API_BASE}/api/categories/bulk`, {
         method: "POST",
@@ -255,7 +351,7 @@ function AdminCategoriesBulk() {
                 <th className="py-4 px-4 min-w-[200px]">Category Name *</th>
                 <th className="py-4 px-4 min-w-[180px]">Slug (Optional)</th>
                 <th className="py-4 px-4 min-w-[250px]">Description Story</th>
-                <th className="py-4 px-4 min-w-[200px]">Category Image URL</th>
+                <th className="py-4 px-4 min-w-[200px]">Category Images</th>
                 <th className="py-4 px-4 w-28">Order</th>
                 <th className="py-4 px-4 w-28">Active</th>
                 <th className="py-4 px-4 min-w-[180px]">Parent Division</th>
@@ -314,14 +410,11 @@ function AdminCategoriesBulk() {
                     />
                   </td>
 
-                  {/* Image URL field */}
+                  {/* Category Images field */}
                   <td className="py-3.5 px-4">
-                    <input
-                      type="text"
-                      value={row.image}
-                      onChange={(e) => handleChange(index, "image", e.target.value)}
-                      placeholder="https://example.com/image.jpg"
-                      className="w-full rounded-lg border border-[#e8dfd8] px-3 py-2 text-sm text-[#2c2623] outline-none focus:border-[#d4af37] bg-white transition-colors"
+                    <BulkRowImageUpload
+                      images={row.images}
+                      onChange={(imgs) => handleChange(index, "images", imgs)}
                     />
                   </td>
 

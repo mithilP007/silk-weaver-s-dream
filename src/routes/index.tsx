@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import * as Icons from "lucide-react";
 import {
@@ -47,6 +47,7 @@ const getIconByName = (name: string) => {
 
 function HomePage() {
   const [settings, setSettings] = useState<any>(null);
+  const [dbCategories, setDbCategories] = useState<any[]>([]);
 
   useEffect(() => {
     fetch(`${API_BASE}/api/settings/home`)
@@ -57,6 +58,15 @@ function HomePage() {
         }
       })
       .catch((err) => console.error("Error fetching homepage settings:", err));
+
+    fetch(`${API_BASE}/api/categories`)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && res.data) {
+          setDbCategories(res.data);
+        }
+      })
+      .catch((err) => console.error("Error fetching categories:", err));
   }, []);
 
   // Extraction of settings with fallback values
@@ -172,20 +182,37 @@ function HomePage() {
   const newArrivals = products.filter((p) => p.newArrival).slice(0, limit);
   const celebrity = products.filter((p) => p.subcategory === "Celebrity Silks").slice(0, limit);
 
-  // Category sorting & selection if specified in settings
-  const displayedCategories = categoriesSection.items && Array.isArray(categoriesSection.items)
-    ? categoriesSection.items
-        .map((item: any) => {
-          const sub = subcategories.find((s) => s.slug === item.slug || s.name === item.name);
-          if (!sub) return null;
+  // Category sorting & selection if specified in settings, falling back to database categories, then local file categories
+  const displayedCategories = useMemo(() => {
+    const baseList = dbCategories.length > 0
+      ? dbCategories.map((c) => {
+          const localMatch = subcategories.find((s) => s.slug === c.slug);
           return {
-            ...sub,
-            image: item.imageUrl || sub.image,
-            name: item.name || sub.name
+            id: c.id,
+            name: c.name,
+            slug: c.slug,
+            image: c.image || localMatch?.image || subcategories[0].image,
+            description: c.description || localMatch?.description || "Handcrafted saree division.",
           };
         })
-        .filter(Boolean) as typeof subcategories
-    : subcategories;
+      : subcategories;
+
+    if (categoriesSection.items && Array.isArray(categoriesSection.items)) {
+      return categoriesSection.items
+        .map((item: any) => {
+          const match = baseList.find((b: any) => b.slug === item.slug || b.name === item.name);
+          if (!match) return null;
+          return {
+            ...match,
+            image: item.imageUrl || match.image,
+            name: item.name || match.name
+          };
+        })
+        .filter(Boolean);
+    }
+
+    return baseList;
+  }, [dbCategories, categoriesSection.items]);
 
   // Instagram gallery items
   const galleryImgs = products.slice(0, 6).map((p) => p.image);
@@ -300,7 +327,7 @@ function HomePage() {
             subtitle={categoriesSection.subtitle}
           />
           <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-5">
-            {displayedCategories.map((s, i) => (
+            {displayedCategories.map((s: any, i: number) => (
               <motion.div
                 key={s.id}
                 initial={{ opacity: 0, y: 24 }}

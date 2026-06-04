@@ -2,10 +2,10 @@ const prisma = require("../config/prisma");
 
 const createCategory = async (req, res) => {
   try {
-    const { name, slug } = req.body;
+    const { name, slug, description, image, gallery } = req.body;
 
     const category = await prisma.category.create({
-      data: { name, slug },
+      data: { name, slug, description, image, gallery },
     });
 
     res.status(201).json({
@@ -44,11 +44,11 @@ const getCategories = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, slug, image } = req.body;
+    const { name, slug, image, description, gallery } = req.body;
 
     const category = await prisma.category.update({
       where: { id },
-      data: { name, slug, image },
+      data: { name, slug, image, description, gallery },
     });
 
     res.status(200).json({
@@ -144,6 +144,8 @@ const createCategoryBulk = async (req, res) => {
         name: cat.name.trim(),
         slug,
         image: cat.image ? cat.image.trim() : null,
+        description: cat.description ? cat.description.trim() : null,
+        gallery: cat.gallery || null,
       });
     }
 
