@@ -1,17 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Heart, ShoppingBag, User, Menu, X, ChevronDown } from "lucide-react";
+import { Search, Heart, ShoppingBag, User, Menu, X, ChevronDown, Phone } from "lucide-react";
 import { useStore } from "@/store/StoreContext";
 import { subcategories, collections } from "@/data/categories";
 import { cn } from "@/lib/utils";
+import { API_BASE } from "@/lib/api";
 
-const navLinks = [
-  { label: "Home", to: "/" },
-  { label: "Shop", to: "/shop" },
-  { label: "About", to: "/about" },
-  { label: "Contact", to: "/contact" },
-];
 
 export function Navbar() {
   const { cartCount, wishlist } = useStore();
@@ -19,6 +14,44 @@ export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+  
+  const [settings, setSettings] = useState<any>(null);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/settings/home`)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && res.data) {
+          setSettings(res.data);
+        }
+      })
+      .catch((err) => console.error("Error fetching header settings:", err));
+  }, []);
+
+  const header = settings?.header;
+  const brandName = header?.brandName || "Sri Kamatchi Silk";
+  const tagline = header?.tagline || "Silk";
+  const logoUrl = header?.logoUrl || "";
+  const contactNumber = header?.contactNumber || "+91 98400 12345";
+  const navLabels = header?.navLabels || {
+    home: "Home",
+    silkSarees: "Silk Sarees",
+    shop: "Shop",
+    about: "About",
+    contact: "Contact"
+  };
+
+  // Helper to split brand name gracefully
+  const displayBrand = brandName.endsWith(tagline) && tagline
+    ? brandName.substring(0, brandName.length - tagline.length).trim()
+    : brandName;
+
+  const dynamicNavLinks = [
+    { label: navLabels.home, to: "/" },
+    { label: navLabels.shop, to: "/shop" },
+    { label: navLabels.about, to: "/about" },
+    { label: navLabels.contact, to: "/contact" },
+  ];
 
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,11 +71,24 @@ export function Navbar() {
           <Menu size={22} />
         </button>
 
-        <Link to="/" className="flex flex-col items-center lg:items-start">
-          <span className="font-display text-xl font-bold leading-none tracking-tight text-primary sm:text-2xl">
-            Sri Kamatchi
-          </span>
-          <span className="text-[10px] uppercase tracking-[0.4em] text-gold">Silk</span>
+        <Link to="/" className="flex items-center gap-3">
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={brandName}
+              className="h-10 sm:h-12 w-auto object-contain"
+              onError={(e) => {
+                // If image fails to load, fallback to text by clearing logoUrl locally
+                (e.target as HTMLImageElement).style.display = "none";
+              }}
+            />
+          ) : null}
+          <div className="flex flex-col items-center lg:items-start">
+            <span className="font-display text-xl font-bold leading-none tracking-tight text-primary sm:text-2xl">
+              {displayBrand}
+            </span>
+            <span className="text-[10px] uppercase tracking-[0.4em] text-gold">{tagline}</span>
+          </div>
         </Link>
 
         {/* Desktop nav */}
@@ -53,14 +99,14 @@ export function Navbar() {
             activeProps={{ className: "text-primary" }}
             activeOptions={{ exact: true }}
           >
-            Home
+            {navLabels.home}
           </Link>
           <div className="group relative">
             <Link
               to="/silk-sarees"
               className="flex items-center gap-1 text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
             >
-              Silk Sarees <ChevronDown size={14} />
+              {navLabels.silkSarees} <ChevronDown size={14} />
             </Link>
             <div className="invisible absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
               <div className="rounded-xl border border-border bg-card p-2 shadow-card">
@@ -82,22 +128,31 @@ export function Navbar() {
             className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
             activeProps={{ className: "text-primary" }}
           >
-            Shop
+            {navLabels.shop}
           </Link>
           <Link
             to="/about"
             className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
             activeProps={{ className: "text-primary" }}
           >
-            About
+            {navLabels.about}
           </Link>
           <Link
             to="/contact"
             className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
             activeProps={{ className: "text-primary" }}
           >
-            Contact
+            {navLabels.contact}
           </Link>
+          {contactNumber && (
+            <a
+              href={`tel:${contactNumber}`}
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary"
+            >
+              <Phone size={13} className="text-gold" />
+              <span>{contactNumber}</span>
+            </a>
+          )}
         </nav>
 
         {/* Icons */}
@@ -193,14 +248,14 @@ export function Navbar() {
               className="fixed inset-y-0 left-0 z-50 flex w-80 max-w-[85%] flex-col bg-background shadow-card lg:hidden"
             >
               <div className="flex items-center justify-between border-b border-border px-5 py-4">
-                <span className="font-display text-lg font-bold text-primary">Sri Kamatchi Silk</span>
+                <span className="font-display text-lg font-bold text-primary">{brandName}</span>
                 <button aria-label="Close" onClick={() => setMobileOpen(false)}>
                   <X size={22} />
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto px-5 py-4">
                 <nav className="flex flex-col gap-1">
-                  {navLinks.map((l) => (
+                  {dynamicNavLinks.map((l) => (
                     <Link
                       key={l.to}
                       to={l.to}
@@ -210,6 +265,13 @@ export function Navbar() {
                       {l.label}
                     </Link>
                   ))}
+                  <Link
+                    to="/silk-sarees"
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
+                  >
+                    {navLabels.silkSarees}
+                  </Link>
                 </nav>
                 <div className="mt-6">
                   <p className="px-3 text-xs font-semibold uppercase tracking-wider text-gold">
