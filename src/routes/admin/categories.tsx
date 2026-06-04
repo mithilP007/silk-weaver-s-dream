@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Search, Plus, Edit2, Trash2, Folder, X, Loader2 } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, Folder, X, Loader2, TableProperties } from "lucide-react";
 import { subcategories as initialSubs } from "@/data/categories";
 import { API_BASE } from "@/lib/api";
 
@@ -152,12 +152,20 @@ function AdminCategories() {
             Configure boutique saree divisions (e.g., Luxury Silks, Semi Silks, Bridal collections).
           </p>
         </div>
-        <button
-          onClick={openCreateModal}
-          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#3a1d13] text-[#f7f2ed] px-5 py-3 text-sm font-semibold shadow-soft hover:bg-[#4d2d22] transition-colors"
-        >
-          <Plus size={16} /> Add New Category
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            to="/admin/categories/bulk"
+            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#3a1d13] text-[#f7f2ed] px-5 py-3 text-sm font-semibold shadow-soft hover:bg-[#4d2d22] transition-colors"
+          >
+            <TableProperties size={16} /> Bulk Category Catalog
+          </Link>
+          <button
+            onClick={openCreateModal}
+            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#3a1d13] text-[#f7f2ed] px-5 py-3 text-sm font-semibold shadow-soft hover:bg-[#4d2d22] transition-colors"
+          >
+            <Plus size={16} /> Add New Category
+          </button>
+        </div>
       </div>
 
       {/* Filter bar */}

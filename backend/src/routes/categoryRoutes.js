@@ -5,6 +5,7 @@ const {
   getCategories,
   updateCategory,
   deleteCategory,
+  createCategoryBulk,
 } = require("../controllers/categoryController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -14,6 +15,7 @@ const router = express.Router();
 
 router.get("/", getCategories);
 router.post("/", protect, adminOnly, createCategory);
+router.post("/bulk", protect, adminOnly, createCategoryBulk);
 router.put("/:id", protect, adminOnly, updateCategory);
 router.delete("/:id", protect, adminOnly, deleteCategory);
 

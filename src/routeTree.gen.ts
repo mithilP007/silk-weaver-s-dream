@@ -34,6 +34,7 @@ import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as AdminPagesRouteImport } from './routes/admin/pages'
 import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
+import { Route as AdminCategoriesBulkRouteImport } from './routes/admin/categories.bulk'
 
 const WishlistRoute = WishlistRouteImport.update({
   id: '/wishlist',
@@ -160,6 +161,11 @@ const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   path: '/categories',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCategoriesBulkRoute = AdminCategoriesBulkRouteImport.update({
+  id: '/bulk',
+  path: '/bulk',
+  getParentRoute: () => AdminCategoriesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -178,7 +184,7 @@ export interface FileRoutesByFullPath {
   '/silk-sarees': typeof SilkSareesRoute
   '/terms': typeof TermsRoute
   '/wishlist': typeof WishlistRoute
-  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/categories': typeof AdminCategoriesRouteWithChildren
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/pages': typeof AdminPagesRoute
   '/admin/products': typeof AdminProductsRoute
@@ -187,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/category/$slug': typeof CategorySlugRoute
   '/product/$slug': typeof ProductSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/categories/bulk': typeof AdminCategoriesBulkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -204,7 +211,7 @@ export interface FileRoutesByTo {
   '/silk-sarees': typeof SilkSareesRoute
   '/terms': typeof TermsRoute
   '/wishlist': typeof WishlistRoute
-  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/categories': typeof AdminCategoriesRouteWithChildren
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/pages': typeof AdminPagesRoute
   '/admin/products': typeof AdminProductsRoute
@@ -213,6 +220,7 @@ export interface FileRoutesByTo {
   '/category/$slug': typeof CategorySlugRoute
   '/product/$slug': typeof ProductSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/categories/bulk': typeof AdminCategoriesBulkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -232,7 +240,7 @@ export interface FileRoutesById {
   '/silk-sarees': typeof SilkSareesRoute
   '/terms': typeof TermsRoute
   '/wishlist': typeof WishlistRoute
-  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/categories': typeof AdminCategoriesRouteWithChildren
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/pages': typeof AdminPagesRoute
   '/admin/products': typeof AdminProductsRoute
@@ -241,6 +249,7 @@ export interface FileRoutesById {
   '/category/$slug': typeof CategorySlugRoute
   '/product/$slug': typeof ProductSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/categories/bulk': typeof AdminCategoriesBulkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -270,6 +279,7 @@ export interface FileRouteTypes {
     | '/category/$slug'
     | '/product/$slug'
     | '/admin/'
+    | '/admin/categories/bulk'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -296,6 +306,7 @@ export interface FileRouteTypes {
     | '/category/$slug'
     | '/product/$slug'
     | '/admin'
+    | '/admin/categories/bulk'
   id:
     | '__root__'
     | '/'
@@ -323,6 +334,7 @@ export interface FileRouteTypes {
     | '/category/$slug'
     | '/product/$slug'
     | '/admin/'
+    | '/admin/categories/bulk'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -523,11 +535,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCategoriesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/categories/bulk': {
+      id: '/admin/categories/bulk'
+      path: '/bulk'
+      fullPath: '/admin/categories/bulk'
+      preLoaderRoute: typeof AdminCategoriesBulkRouteImport
+      parentRoute: typeof AdminCategoriesRoute
+    }
   }
 }
 
+interface AdminCategoriesRouteChildren {
+  AdminCategoriesBulkRoute: typeof AdminCategoriesBulkRoute
+}
+
+const AdminCategoriesRouteChildren: AdminCategoriesRouteChildren = {
+  AdminCategoriesBulkRoute: AdminCategoriesBulkRoute,
+}
+
+const AdminCategoriesRouteWithChildren = AdminCategoriesRoute._addFileChildren(
+  AdminCategoriesRouteChildren,
+)
+
 interface AdminRouteChildren {
-  AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminCategoriesRoute: typeof AdminCategoriesRouteWithChildren
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminPagesRoute: typeof AdminPagesRoute
   AdminProductsRoute: typeof AdminProductsRoute
@@ -537,7 +568,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminCategoriesRoute: AdminCategoriesRouteWithChildren,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminPagesRoute: AdminPagesRoute,
   AdminProductsRoute: AdminProductsRoute,
