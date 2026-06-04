@@ -34,7 +34,7 @@ import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as AdminPagesRouteImport } from './routes/admin/pages'
 import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
-import { Route as AdminCategoriesBulkRouteImport } from './routes/admin/categories.bulk'
+import { Route as AdminCategoriesBulkRouteImport } from './routes/admin/categories_.bulk'
 
 const WishlistRoute = WishlistRouteImport.update({
   id: '/wishlist',
@@ -162,9 +162,9 @@ const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCategoriesBulkRoute = AdminCategoriesBulkRouteImport.update({
-  id: '/bulk',
-  path: '/bulk',
-  getParentRoute: () => AdminCategoriesRoute,
+  id: '/categories_/bulk',
+  path: '/categories/bulk',
+  getParentRoute: () => AdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -184,7 +184,7 @@ export interface FileRoutesByFullPath {
   '/silk-sarees': typeof SilkSareesRoute
   '/terms': typeof TermsRoute
   '/wishlist': typeof WishlistRoute
-  '/admin/categories': typeof AdminCategoriesRouteWithChildren
+  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/pages': typeof AdminPagesRoute
   '/admin/products': typeof AdminProductsRoute
@@ -211,7 +211,7 @@ export interface FileRoutesByTo {
   '/silk-sarees': typeof SilkSareesRoute
   '/terms': typeof TermsRoute
   '/wishlist': typeof WishlistRoute
-  '/admin/categories': typeof AdminCategoriesRouteWithChildren
+  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/pages': typeof AdminPagesRoute
   '/admin/products': typeof AdminProductsRoute
@@ -240,7 +240,7 @@ export interface FileRoutesById {
   '/silk-sarees': typeof SilkSareesRoute
   '/terms': typeof TermsRoute
   '/wishlist': typeof WishlistRoute
-  '/admin/categories': typeof AdminCategoriesRouteWithChildren
+  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/pages': typeof AdminPagesRoute
   '/admin/products': typeof AdminProductsRoute
@@ -249,7 +249,7 @@ export interface FileRoutesById {
   '/category/$slug': typeof CategorySlugRoute
   '/product/$slug': typeof ProductSlugRoute
   '/admin/': typeof AdminIndexRoute
-  '/admin/categories/bulk': typeof AdminCategoriesBulkRoute
+  '/admin/categories_/bulk': typeof AdminCategoriesBulkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -334,7 +334,7 @@ export interface FileRouteTypes {
     | '/category/$slug'
     | '/product/$slug'
     | '/admin/'
-    | '/admin/categories/bulk'
+    | '/admin/categories_/bulk'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -535,46 +535,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCategoriesRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/categories/bulk': {
-      id: '/admin/categories/bulk'
-      path: '/bulk'
+    '/admin/categories_/bulk': {
+      id: '/admin/categories_/bulk'
+      path: '/categories/bulk'
       fullPath: '/admin/categories/bulk'
       preLoaderRoute: typeof AdminCategoriesBulkRouteImport
-      parentRoute: typeof AdminCategoriesRoute
+      parentRoute: typeof AdminRoute
     }
   }
 }
 
-interface AdminCategoriesRouteChildren {
-  AdminCategoriesBulkRoute: typeof AdminCategoriesBulkRoute
-}
-
-const AdminCategoriesRouteChildren: AdminCategoriesRouteChildren = {
-  AdminCategoriesBulkRoute: AdminCategoriesBulkRoute,
-}
-
-const AdminCategoriesRouteWithChildren = AdminCategoriesRoute._addFileChildren(
-  AdminCategoriesRouteChildren,
-)
-
 interface AdminRouteChildren {
-  AdminCategoriesRoute: typeof AdminCategoriesRouteWithChildren
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminPagesRoute: typeof AdminPagesRoute
   AdminProductsRoute: typeof AdminProductsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminCategoriesBulkRoute: typeof AdminCategoriesBulkRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminCategoriesRoute: AdminCategoriesRouteWithChildren,
+  AdminCategoriesRoute: AdminCategoriesRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminPagesRoute: AdminPagesRoute,
   AdminProductsRoute: AdminProductsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminCategoriesBulkRoute: AdminCategoriesBulkRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

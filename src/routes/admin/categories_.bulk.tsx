@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Plus, Trash2, ArrowLeft, Save, Loader2, TableProperties } from "lucide-react";
 import { API_BASE } from "@/lib/api";
 
-export const Route = createFileRoute("/admin/categories/bulk")({
+export const Route = createFileRoute("/admin/categories_/bulk")({
   component: AdminCategoriesBulk,
 });
 
