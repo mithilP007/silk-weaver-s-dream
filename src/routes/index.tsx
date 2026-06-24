@@ -187,11 +187,12 @@ function HomePage() {
     const baseList = dbCategories.length > 0
       ? dbCategories.map((c) => {
           const localMatch = subcategories.find((s) => s.slug === c.slug);
+          const rawImage = c.image || localMatch?.image || subcategories[0].image;
           return {
             id: c.id,
             name: c.name,
             slug: c.slug,
-            image: c.image || localMatch?.image || subcategories[0].image,
+            image: typeof rawImage === "string" && rawImage.startsWith("/uploads") ? `${API_BASE}${rawImage}` : rawImage,
             description: c.description || localMatch?.description || "Handcrafted saree division.",
           };
         })
@@ -202,9 +203,10 @@ function HomePage() {
         .map((item: any) => {
           const match = baseList.find((b: any) => b.slug === item.slug || b.name === item.name);
           if (!match) return null;
+          const rawImage = item.imageUrl || match.image;
           return {
             ...match,
-            image: item.imageUrl || match.image,
+            image: typeof rawImage === "string" && rawImage.startsWith("/uploads") ? `${API_BASE}${rawImage}` : rawImage,
             name: item.name || match.name
           };
         })
@@ -217,7 +219,10 @@ function HomePage() {
   // Instagram gallery items
   const galleryImgs = products.slice(0, 6).map((p) => p.image);
   const galleryItemsToShow = gallery.items && Array.isArray(gallery.items) && gallery.items.length > 0
-    ? gallery.items
+    ? gallery.items.map((item: any) => ({
+        ...item,
+        imageUrl: typeof item.imageUrl === "string" && item.imageUrl.startsWith("/uploads") ? `${API_BASE}${item.imageUrl}` : item.imageUrl
+      }))
     : galleryImgs.map((img) => ({ imageUrl: img, link: "#" }));
 
   // Helper to split hero title for gradient coloring
@@ -298,7 +303,7 @@ function HomePage() {
           >
             <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-[2rem] shadow-card">
               <img
-                src={hero.imageUrl || heroSaree}
+                src={hero.imageUrl ? (hero.imageUrl.startsWith("http") ? hero.imageUrl : `${API_BASE}${hero.imageUrl}`) : heroSaree}
                 alt={hero.altText || "Model wearing a deep maroon Kanchipuram silk saree"}
                 width={1080}
                 height={1440}
@@ -407,8 +412,8 @@ function HomePage() {
                 >
                   {weddingBannerData.ctaText} <ArrowRight size={15} />
                 </Link>
-                <img
-                  src={weddingBannerData.imageUrl || saree2}
+                 <img
+                  src={weddingBannerData.imageUrl ? (weddingBannerData.imageUrl.startsWith("http") ? weddingBannerData.imageUrl : `${API_BASE}${weddingBannerData.imageUrl}`) : saree2}
                   alt={weddingBannerData.title}
                   loading="lazy"
                   className="pointer-events-none absolute -bottom-6 -right-6 h-44 w-44 rotate-6 rounded-2xl object-cover opacity-90 sm:h-56 sm:w-56"
@@ -432,8 +437,8 @@ function HomePage() {
                 >
                   {festivalBannerData.ctaText} <ArrowRight size={15} />
                 </Link>
-                <img
-                  src={festivalBannerData.imageUrl || saree5}
+                 <img
+                  src={festivalBannerData.imageUrl ? (festivalBannerData.imageUrl.startsWith("http") ? festivalBannerData.imageUrl : `${API_BASE}${festivalBannerData.imageUrl}`) : saree5}
                   alt={festivalBannerData.title}
                   loading="lazy"
                   className="pointer-events-none absolute -bottom-6 -right-6 h-44 w-44 -rotate-6 rounded-2xl object-cover opacity-90 sm:h-56 sm:w-56"

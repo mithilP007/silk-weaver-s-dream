@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Heart, ShoppingBag, User, Menu, X, ChevronDown, Phone } from "lucide-react";
+import { Search, Heart, ShoppingBag, User, Menu, X } from "lucide-react";
 import { useStore } from "@/store/StoreContext";
-import { subcategories, collections } from "@/data/categories";
-import { cn } from "@/lib/utils";
 import { API_BASE } from "@/lib/api";
 
 
@@ -32,26 +30,13 @@ export function Navbar() {
   const brandName = header?.brandName || "Sri Kamatchi Silk";
   const tagline = header?.tagline || "Silk";
   const logoUrl = header?.logoUrl || "";
-  const contactNumber = header?.contactNumber || "+91 98400 12345";
-  const navLabels = header?.navLabels || {
-    home: "Home",
-    silkSarees: "Silk Sarees",
-    shop: "Shop",
-    about: "About",
-    contact: "Contact"
-  };
 
   // Helper to split brand name gracefully
   const displayBrand = brandName.endsWith(tagline) && tagline
     ? brandName.substring(0, brandName.length - tagline.length).trim()
     : brandName;
 
-  const dynamicNavLinks = [
-    { label: navLabels.home, to: "/" },
-    { label: navLabels.shop, to: "/shop" },
-    { label: navLabels.about, to: "/about" },
-    { label: navLabels.contact, to: "/contact" },
-  ];
+  const whatsappUrl = "https://wa.me/919443210987"; // Placeholder to be customized later
 
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,60 +84,47 @@ export function Navbar() {
             activeProps={{ className: "text-primary" }}
             activeOptions={{ exact: true }}
           >
-            {navLabels.home}
+            Home
           </Link>
-          <div className="group relative">
-            <Link
-              to="/silk-sarees"
-              className="flex items-center gap-1 text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-            >
-              {navLabels.silkSarees} <ChevronDown size={14} />
-            </Link>
-            <div className="invisible absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
-              <div className="rounded-xl border border-border bg-card p-2 shadow-card">
-                {subcategories.map((s) => (
-                  <Link
-                    key={s.id}
-                    to="/category/$slug"
-                    params={{ slug: s.slug }}
-                    className="block rounded-lg px-3 py-2 text-sm text-foreground/80 transition-colors hover:bg-secondary hover:text-primary"
-                  >
-                    {s.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
+          <Link
+            to="/category/$slug"
+            params={{ slug: "semi-silks" }}
+            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
+            activeProps={{ className: "text-primary" }}
+          >
+            Semi Silks
+          </Link>
+          <Link
+            to="/category/$slug"
+            params={{ slug: "celebrity-silks" }}
+            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
+            activeProps={{ className: "text-primary" }}
+          >
+            Celebrity Silks
+          </Link>
+          <Link
+            to="/category/$slug"
+            params={{ slug: "cotton-silks" }}
+            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
+            activeProps={{ className: "text-primary" }}
+          >
+            Silk Cotton
+          </Link>
           <Link
             to="/shop"
             className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
             activeProps={{ className: "text-primary" }}
           >
-            {navLabels.shop}
+            Shop
           </Link>
-          <Link
-            to="/about"
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noreferrer"
             className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-            activeProps={{ className: "text-primary" }}
           >
-            {navLabels.about}
-          </Link>
-          <Link
-            to="/contact"
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-            activeProps={{ className: "text-primary" }}
-          >
-            {navLabels.contact}
-          </Link>
-          {contactNumber && (
-            <a
-              href={`tel:${contactNumber}`}
-              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary"
-            >
-              <Phone size={13} className="text-gold" />
-              <span>{contactNumber}</span>
-            </a>
-          )}
+            Contact WhatsApp
+          </a>
         </nav>
 
         {/* Icons */}
@@ -255,67 +227,66 @@ export function Navbar() {
               </div>
               <div className="flex-1 overflow-y-auto px-5 py-4">
                 <nav className="flex flex-col gap-1">
-                  {dynamicNavLinks.map((l) => (
-                    <Link
-                      key={l.to}
-                      to={l.to}
-                      onClick={() => setMobileOpen(false)}
-                      className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
-                    >
-                      {l.label}
-                    </Link>
-                  ))}
                   <Link
-                    to="/silk-sarees"
+                    to="/"
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
+                    activeProps={{ className: "bg-secondary text-primary font-semibold" }}
+                    activeOptions={{ exact: true }}
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    to="/category/$slug"
+                    params={{ slug: "semi-silks" }}
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
+                    activeProps={{ className: "bg-secondary text-primary font-semibold" }}
+                  >
+                    Semi Silks
+                  </Link>
+                  <Link
+                    to="/category/$slug"
+                    params={{ slug: "celebrity-silks" }}
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
+                    activeProps={{ className: "bg-secondary text-primary font-semibold" }}
+                  >
+                    Celebrity Silks
+                  </Link>
+                  <Link
+                    to="/category/$slug"
+                    params={{ slug: "cotton-silks" }}
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
+                    activeProps={{ className: "bg-secondary text-primary font-semibold" }}
+                  >
+                    Silk Cotton
+                  </Link>
+                  <Link
+                    to="/shop"
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
+                    activeProps={{ className: "bg-secondary text-primary font-semibold" }}
+                  >
+                    Shop
+                  </Link>
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noreferrer"
                     onClick={() => setMobileOpen(false)}
                     className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
                   >
-                    {navLabels.silkSarees}
-                  </Link>
+                    Contact WhatsApp
+                  </a>
                 </nav>
-                <div className="mt-6">
-                  <p className="px-3 text-xs font-semibold uppercase tracking-wider text-gold">
-                    Silk Sarees
-                  </p>
-                  <div className="mt-2 flex flex-col gap-1">
-                    {subcategories.map((s) => (
-                      <Link
-                        key={s.id}
-                        to="/category/$slug"
-                        params={{ slug: s.slug }}
-                        onClick={() => setMobileOpen(false)}
-                        className="rounded-lg px-3 py-2 text-sm text-foreground/80 hover:bg-secondary"
-                      >
-                        {s.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <p className="px-3 text-xs font-semibold uppercase tracking-wider text-gold">
-                    Collections
-                  </p>
-                  <div className="mt-2 flex flex-col gap-1">
-                    {collections.map((c) => (
-                      <Link
-                        key={c.slug}
-                        to="/shop"
-                        onClick={() => setMobileOpen(false)}
-                        className="rounded-lg px-3 py-2 text-sm text-foreground/80 hover:bg-secondary"
-                      >
-                        {c.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
               </div>
               <div className="border-t border-border p-5">
                 <Link
                   to="/login"
                   onClick={() => setMobileOpen(false)}
-                  className={cn(
-                    "flex items-center justify-center gap-2 rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground",
-                  )}
+                  className="flex items-center justify-center gap-2 rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground"
                 >
                   <User size={16} /> Login / Register
                 </Link>

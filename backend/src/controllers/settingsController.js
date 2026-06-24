@@ -177,7 +177,7 @@ const getHomeSettings = async (req, res) => {
     const fallbackAnnouncements = [
       { text: "Free shipping on orders above ₹4,999", link: "", enabled: true },
       { text: "Up to 30% off on the Wedding Collection", link: "", enabled: true },
-      { text: "Personal styling assistance — +91 98400 12345", link: "", enabled: true }
+      { text: "Contact us on WhatsApp for styling & custom orders", link: "https://wa.me/919443210987", enabled: true }
     ];
 
     const fallbackHeader = {
@@ -186,11 +186,13 @@ const getHomeSettings = async (req, res) => {
       logoUrl: "",
       navLinks: [
         { label: "Home", to: "/" },
+        { label: "Semi Silks", to: "/category/semi-silks" },
+        { label: "Celebrity Silks", to: "/category/celebrity-silks" },
+        { label: "Silk Cotton", to: "/category/cotton-silks" },
         { label: "Shop", to: "/shop" },
-        { label: "About", to: "/about" },
-        { label: "Contact", to: "/contact" }
+        { label: "Contact WhatsApp", to: "https://wa.me/919443210987" }
       ],
-      contactNumber: "+91 98400 12345"
+      contactNumber: ""
     };
 
     const fallbackHero = {
@@ -309,7 +311,7 @@ const getHomeSettings = async (req, res) => {
     const fallbackFooter = {
       description: "Weaving heritage into every drape. Sri Kamatchi Silk brings you handcrafted Kanchipuram and luxury silk sarees, made by master artisans for life's most treasured moments.",
       address: "No. 24, Silk Bazaar Road, Kanchipuram, Tamil Nadu 631502",
-      phone: "+91 98400 12345",
+      phone: "",
       email: "care@srikamatchisilk.com",
       copyright: "Sri Kamatchi Silk. All rights reserved.",
       bottomNote: "Handwoven with love in Kanchipuram, India."

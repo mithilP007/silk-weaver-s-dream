@@ -174,10 +174,9 @@ function ContactPage() {
                     <Phone size={18} />
                   </div>
                   <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Call/WhatsApp</h4>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">WhatsApp Support</h4>
                     <p className="text-sm font-semibold text-foreground mt-1">
-                      +91 94432 10987<br />
-                      +91 44 272 45678
+                      <a href="https://wa.me/919443210987" target="_blank" rel="noreferrer" className="hover:underline">Contact on WhatsApp</a>
                     </p>
                   </div>
                 </li>

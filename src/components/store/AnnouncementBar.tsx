@@ -19,7 +19,12 @@ export function AnnouncementBar() {
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.data?.announcements) {
-          setAnnouncements(data.data.announcements.filter((a: any) => a.enabled));
+          const filtered = data.data.announcements.filter((a: any) => {
+            if (!a.enabled) return false;
+            const text = a.text.toLowerCase();
+            return !text.includes("+91") && !text.includes("98400") && !text.includes("12345");
+          });
+          setAnnouncements(filtered);
         }
       })
       .catch((err) => console.error("Error fetching announcements:", err));
@@ -28,7 +33,7 @@ export function AnnouncementBar() {
   const items = announcements.length > 0 ? announcements : [
     { text: "Free shipping on orders above ₹4,999", enabled: true },
     { text: "Up to 30% off on the Wedding Collection", enabled: true },
-    { text: "Personal styling assistance — +91 98400 12345", enabled: true }
+    { text: "Contact us on WhatsApp for styling & custom orders", link: "https://wa.me/919443210987", enabled: true }
   ];
 
   return (
