@@ -308,6 +308,9 @@ function HomePage() {
                 width={1080}
                 height={1440}
                 className="h-full w-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = heroSaree;
+                }}
               />
             </div>
             {hero.ratingValue && (
@@ -351,6 +354,10 @@ function HomePage() {
                       alt={s.name}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      onError={(e) => {
+                        const localMatch = subcategories.find((sub) => sub.slug === s.slug);
+                        (e.target as HTMLImageElement).src = localMatch?.image || subcategories[0].image;
+                      }}
                     />
                   </div>
                   <div className="p-3 text-center">
@@ -417,6 +424,9 @@ function HomePage() {
                   alt={weddingBannerData.title}
                   loading="lazy"
                   className="pointer-events-none absolute -bottom-6 -right-6 h-44 w-44 rotate-6 rounded-2xl object-cover opacity-90 sm:h-56 sm:w-56"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = saree2;
+                  }}
                 />
               </div>
             )}
@@ -442,6 +452,9 @@ function HomePage() {
                   alt={festivalBannerData.title}
                   loading="lazy"
                   className="pointer-events-none absolute -bottom-6 -right-6 h-44 w-44 -rotate-6 rounded-2xl object-cover opacity-90 sm:h-56 sm:w-56"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = saree5;
+                  }}
                 />
               </div>
             )}
