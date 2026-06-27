@@ -1,7 +1,5 @@
 const uploadImage = (req, res) => {
   try {
-    const { type } = req.params;
-
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -9,11 +7,8 @@ const uploadImage = (req, res) => {
       });
     }
 
-    let folder = `${type}s`;
-    if (type === "category") {
-      folder = "categories";
-    }
-    const imageUrl = `/uploads/${folder}/${req.file.filename}`;
+    // req.file.path contains the secure Cloudinary URL
+    const imageUrl = req.file.path;
 
     res.status(200).json({
       success: true,

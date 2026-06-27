@@ -154,6 +154,21 @@ function AdminCategories() {
       if (res.success) {
         const mapped = res.data.map((c: any) => {
           const localMatch = initialSubs.find((local) => local.slug === c.slug);
+          const rawImage = c.image || localMatch?.image || initialSubs[0].image;
+          let rawGallery = [];
+          if (c.gallery) {
+            try {
+              rawGallery = typeof c.gallery === "string" ? JSON.parse(c.gallery) : c.gallery;
+            } catch (e) {
+              rawGallery = [];
+            }
+          }
+          if (!Array.isArray(rawGallery)) {
+            rawGallery = [];
+          }
+          const gallery = rawGallery.map((img) =>
+            typeof img === "string" && img.startsWith("/uploads") ? `${API_BASE}${img}` : img
+          );
           return {
             id: c.id,
             name: c.name,
@@ -162,8 +177,10 @@ function AdminCategories() {
               c.description ||
               localMatch?.description ||
               "Handcrafted luxury saree division under Sri Kamatchi Silk.",
-            image: c.image || localMatch?.image || initialSubs[0].image,
-            gallery: c.gallery,
+            image: typeof rawImage === "string" && rawImage.startsWith("/uploads")
+              ? `${API_BASE}${rawImage}`
+              : rawImage,
+            gallery: gallery,
           };
         });
         setSubs(mapped);

@@ -1,39 +1,41 @@
 const multer = require("multer");
 const path = require("path");
-const fs = require("fs");
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
-const createFolderIfNotExists = (folderPath) => {
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath, { recursive: true });
-  }
-};
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    let folder = "src/uploads/products";
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => {
+    let folder = "sri-kamatchi/products";
 
     if (req.params.type === "category") {
-      folder = "src/uploads/categories";
+      folder = "sri-kamatchi/categories";
     }
 
     if (req.params.type === "banner") {
-      folder = "src/uploads/banners";
+      folder = "sri-kamatchi/banners";
     }
 
-    createFolderIfNotExists(folder);
-    cb(null, folder);
-  },
+    const baseName = file.originalname.split(".")[0].replace(/\s+/g, "-").toLowerCase();
+    const uniqueName = Date.now() + "-" + baseName;
 
-  filename: function (req, file, cb) {
-    const uniqueName = Date.now() + "-" + file.originalname.replace(/\s+/g, "-").toLowerCase();
-
-    cb(null, uniqueName);
+    return {
+      folder: folder,
+      public_id: uniqueName,
+      allowed_formats: ["jpeg", "jpg", "png", "webp"],
+    };
   },
 });
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|webp/;
-  const extName = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  const extName = allowedTypes.test(path.extname(file.originalname).toLowerCase()) || file.originalname === "blob";
   const mimeType = allowedTypes.test(file.mimetype);
 
   if (extName && mimeType) {
