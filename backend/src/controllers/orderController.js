@@ -26,7 +26,8 @@ const createOrder = async (req, res) => {
     if (!isCod) {
       return res.status(400).json({
         success: false,
-        message: "Invalid payment method for this endpoint. Use the Razorpay payment API for online checkout.",
+        message:
+          "Invalid payment method for this endpoint. Use the Razorpay payment API for online checkout.",
       });
     }
 
@@ -74,7 +75,9 @@ const createOrder = async (req, res) => {
         }
 
         if (product.stock < item.quantity) {
-          throw new Error(`Insufficient stock for product ${product.name}. Available: ${product.stock}, Ordered: ${item.quantity}`);
+          throw new Error(
+            `Insufficient stock for product ${product.name}. Available: ${product.stock}, Ordered: ${item.quantity}`,
+          );
         }
 
         // Calculate price (use discountPrice if available, else standard price)

@@ -89,7 +89,8 @@ const getMyCart = async (req, res) => {
     // Calculate total cost
     let total = 0;
     for (const item of cartItems) {
-      const price = item.product.discountPrice !== null ? item.product.discountPrice : item.product.price;
+      const price =
+        item.product.discountPrice !== null ? item.product.discountPrice : item.product.price;
       total += price * item.quantity;
     }
 

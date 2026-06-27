@@ -1,7 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Search, Plus, Edit2, Trash2, Folder, X, Loader2, TableProperties, UploadCloud } from "lucide-react";
+import {
+  Search,
+  Plus,
+  Edit2,
+  Trash2,
+  Folder,
+  X,
+  Loader2,
+  TableProperties,
+  UploadCloud,
+} from "lucide-react";
 import { subcategories as initialSubs } from "@/data/categories";
 import { API_BASE } from "@/lib/api";
 
@@ -22,7 +32,7 @@ function CategoryImageUpload({
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("File is too large. Max size is 5MB");
+      toast.error("Image must be below 5MB");
       return;
     }
 
@@ -67,10 +77,15 @@ function CategoryImageUpload({
 
   return (
     <div className="space-y-2">
-      <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Category Images</label>
+      <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+        Category Images
+      </label>
       <div className="grid grid-cols-3 gap-2">
         {images.map((img, idx) => (
-          <div key={idx} className="relative group aspect-square rounded-xl border border-[#e8dfd8] overflow-hidden bg-[#fbfaf7]">
+          <div
+            key={idx}
+            className="relative group aspect-square rounded-xl border border-[#e8dfd8] overflow-hidden bg-[#fbfaf7]"
+          >
             <img src={img} alt={`Category ${idx}`} className="h-full w-full object-cover" />
             {idx === 0 && (
               <span className="absolute bottom-1 left-1 bg-[#3a1d13] text-[#f7f2ed] text-[8px] px-1.5 py-0.5 rounded font-bold uppercase">
@@ -99,14 +114,29 @@ function CategoryImageUpload({
           />
         </label>
       </div>
-      <p className="text-[9px] text-muted-foreground font-semibold">First image is primary thumbnail. Upload multiple for the gallery.</p>
+      <p className="text-[9px] text-muted-foreground font-semibold">
+        First image is primary thumbnail. Upload multiple for the gallery.
+      </p>
     </div>
   );
+}
+
+function dataURLtoBlob(dataUrl: string): Blob {
+  const arr = dataUrl.split(",");
+  const mime = arr[0].match(/:(.*?);/)![1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
 }
 
 function AdminCategories() {
   const [subs, setSubs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingSub, setEditingSub] = useState<any | null>(null);
@@ -128,7 +158,10 @@ function AdminCategories() {
             id: c.id,
             name: c.name,
             slug: c.slug,
-            description: c.description || localMatch?.description || "Handcrafted luxury saree division under Sri Kamatchi Silk.",
+            description:
+              c.description ||
+              localMatch?.description ||
+              "Handcrafted luxury saree division under Sri Kamatchi Silk.",
             image: c.image || localMatch?.image || initialSubs[0].image,
             gallery: c.gallery,
           };
@@ -183,7 +216,11 @@ function AdminCategories() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this saree category? This action requires associated products to be re-assigned first.")) {
+    if (
+      confirm(
+        "Are you sure you want to delete this saree category? This action requires associated products to be re-assigned first.",
+      )
+    ) {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(`${API_BASE}/api/categories/${id}`, {
@@ -209,10 +246,64 @@ function AdminCategories() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
     const newSlug = formName.toLowerCase().replace(/\s+/g, "-");
 
     try {
       const token = localStorage.getItem("token");
+
+      // 1. Upload base64 images first to /api/uploads/category
+      const uploadedImages: string[] = [];
+      for (const img of images) {
+        if (img.startsWith("data:")) {
+          const blob = dataURLtoBlob(img);
+          const formData = new FormData();
+          formData.append("image", blob, "category-image.jpg");
+
+          const uploadHeaders: Record<string, string> = {};
+          if (token) {
+            uploadHeaders["Authorization"] = `Bearer ${token}`;
+          }
+
+          const uploadRes = await fetch(`${API_BASE}/api/uploads/category`, {
+            method: "POST",
+            headers: uploadHeaders,
+            body: formData,
+          });
+
+          const contentType = uploadRes.headers.get("content-type");
+          if (!uploadRes.ok) {
+            let errMsg = `Upload failed with status ${uploadRes.status}`;
+            if (contentType && contentType.includes("application/json")) {
+              const errData = await uploadRes.json();
+              errMsg = errData.message || errMsg;
+            } else {
+              errMsg = await uploadRes.text();
+            }
+            throw new Error(errMsg);
+          }
+
+          let uploadData;
+          if (contentType && contentType.includes("application/json")) {
+            uploadData = await uploadRes.json();
+          } else {
+            const rawText = await uploadRes.text();
+            throw new Error(
+              `Unexpected non-JSON response from upload: ${rawText.substring(0, 100)}`,
+            );
+          }
+
+          if (uploadData.success && uploadData.imageUrl) {
+            uploadedImages.push(uploadData.imageUrl);
+          } else {
+            throw new Error(uploadData.message || "Failed to get image URL from upload response");
+          }
+        } else {
+          uploadedImages.push(img);
+        }
+      }
+
+      // 2. Save category with final image URLs only
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
       };
@@ -220,13 +311,13 @@ function AdminCategories() {
         headers["Authorization"] = `Bearer ${token}`;
       }
 
-      const url = editingSub 
+      const url = editingSub
         ? `${API_BASE}/api/categories/${editingSub.id}`
         : `${API_BASE}/api/categories`;
-      
+
       const method = editingSub ? "PUT" : "POST";
 
-      const primaryImage = images.length > 0 ? images[0] : "";
+      const primaryImage = uploadedImages.length > 0 ? uploadedImages[0] : "";
       const response = await fetch(url, {
         method,
         headers,
@@ -235,24 +326,46 @@ function AdminCategories() {
           slug: newSlug,
           description: formDesc,
           image: primaryImage,
-          gallery: images,
+          gallery: uploadedImages,
         }),
       });
 
-      const data = await response.json();
-      if (!response.ok || !data.success) {
+      const contentType = response.headers.get("content-type");
+      if (!response.ok) {
+        let errMsg = `Save failed with status ${response.status}`;
+        if (contentType && contentType.includes("application/json")) {
+          const errData = await response.json();
+          errMsg = errData.message || errMsg;
+        } else {
+          errMsg = await response.text();
+        }
+        throw new Error(errMsg);
+      }
+
+      let data;
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const rawText = await response.text();
+        throw new Error(`Unexpected non-JSON response from server: ${rawText.substring(0, 100)}`);
+      }
+
+      if (!data.success) {
         throw new Error(data.message || "Failed to save category");
       }
 
-      toast.success(editingSub ? "Subcategory updated successfully!" : "New Subcategory published!");
+      toast.success(
+        editingSub ? "Subcategory updated successfully!" : "New Subcategory published!",
+      );
       fetchCategories();
       setModalOpen(false);
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || "Failed to publish category to database");
+    } finally {
+      setIsSaving(false);
     }
   };
-
 
   return (
     <div className="space-y-8">
@@ -390,7 +503,9 @@ function AdminCategories() {
 
             <form onSubmit={handleSave} className="mt-5 space-y-4 text-sm text-[#2c2623]">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Category Title</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                  Category Title
+                </label>
                 <input
                   type="text"
                   required
@@ -402,7 +517,9 @@ function AdminCategories() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Description Story</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                  Description Story
+                </label>
                 <textarea
                   rows={4}
                   required
@@ -425,8 +542,10 @@ function AdminCategories() {
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-[#3a1d13] px-6 py-3 text-xs font-bold text-white hover:bg-[#4d2d22]"
+                  disabled={isSaving}
+                  className="rounded-xl bg-[#3a1d13] px-6 py-3 text-xs font-bold text-white hover:bg-[#4d2d22] disabled:opacity-50 flex items-center gap-1.5 justify-center"
                 >
+                  {isSaving && <Loader2 size={12} className="animate-spin" />}
                   Save Category
                 </button>
               </div>

@@ -34,11 +34,11 @@ function AdminDashboard() {
         const [prodRes, orderRes, userRes] = await Promise.all([
           fetch(`${API_BASE}/api/products`),
           fetch(`${API_BASE}/api/orders`, {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           }),
           fetch(`${API_BASE}/api/users`, {
-            headers: { Authorization: `Bearer ${token}` }
-          })
+            headers: { Authorization: `Bearer ${token}` },
+          }),
         ]);
 
         const prods = await prodRes.json();
@@ -59,12 +59,10 @@ function AdminDashboard() {
 
   const liveProducts = useMemo(() => {
     return dbProducts.map((p) => {
-      const img = p.image?.startsWith("http")
-        ? p.image
-        : (p.image ? `${API_BASE}${p.image}` : "");
+      const img = p.image?.startsWith("http") ? p.image : p.image ? `${API_BASE}${p.image}` : "";
       return {
         ...p,
-        image: img
+        image: img,
       };
     });
   }, [dbProducts]);
@@ -91,11 +89,12 @@ function AdminDashboard() {
         state: o.state,
         pincode: o.pincode,
       },
-      items: o.orderItems?.map((item: any) => ({
-        productName: item.product?.name || "Silk Saree",
-        quantity: item.quantity,
-        price: item.price,
-      })) || [],
+      items:
+        o.orderItems?.map((item: any) => ({
+          productName: item.product?.name || "Silk Saree",
+          quantity: item.quantity,
+          price: item.price,
+        })) || [],
     }));
   }, [dbOrders]);
 
@@ -111,7 +110,7 @@ function AdminDashboard() {
   const stats = useMemo(() => {
     const totalSalesVal = dbOrders.reduce((sum, o) => sum + o.totalAmount, 0);
     const totalOrdersCount = dbOrders.length;
-    const realCustomersCount = dbUsers.filter(u => u.role !== "admin").length;
+    const realCustomersCount = dbUsers.filter((u) => u.role !== "admin").length;
     const lowStockCount = lowStockProducts.length;
 
     return [
@@ -160,14 +159,14 @@ function AdminDashboard() {
         label: d.toLocaleString("en-IN", { month: "short" }),
         year: d.getFullYear(),
         month: d.getMonth(),
-        sales: 0
+        sales: 0,
       });
     }
 
     dbOrders.forEach((o: any) => {
       const orderDate = new Date(o.createdAt);
       const match = months.find(
-        (m: any) => m.year === orderDate.getFullYear() && m.month === orderDate.getMonth()
+        (m: any) => m.year === orderDate.getFullYear() && m.month === orderDate.getMonth(),
       );
       if (match) {
         match.sales += o.totalAmount;
@@ -195,7 +194,13 @@ function AdminDashboard() {
 
   const pathD = useMemo(() => {
     if (svgPoints.length === 0) return "";
-    return `M ${svgPoints[0].x} ${svgPoints[0].y} ` + svgPoints.slice(1).map(p => `L ${p.x} ${p.y}`).join(" ");
+    return (
+      `M ${svgPoints[0].x} ${svgPoints[0].y} ` +
+      svgPoints
+        .slice(1)
+        .map((p) => `L ${p.x} ${p.y}`)
+        .join(" ")
+    );
   }, [svgPoints]);
 
   const areaD = useMemo(() => {
@@ -263,7 +268,9 @@ function AdminDashboard() {
         {/* Sales Chart Card */}
         <div className="rounded-2xl border border-[#e8dfd8] bg-white p-6 shadow-soft lg:col-span-2">
           <div className="flex items-center justify-between border-b border-[#f3ede8] pb-4">
-            <h3 className="font-display text-lg font-bold text-[#2c2623]">Sales Analytical Curve</h3>
+            <h3 className="font-display text-lg font-bold text-[#2c2623]">
+              Sales Analytical Curve
+            </h3>
             <span className="rounded-full bg-[#fbfaf7] border border-[#e8dfd8] px-3 py-1 text-[11px] font-semibold text-[#6e5d53]">
               Monthly View
             </span>
@@ -272,7 +279,9 @@ function AdminDashboard() {
           <div className="mt-6 flex h-60 w-full flex-col justify-between relative">
             {!hasSalesData ? (
               <div className="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-[1px] z-10">
-                <p className="text-sm font-semibold text-muted-foreground italic">No sales data available</p>
+                <p className="text-sm font-semibold text-muted-foreground italic">
+                  No sales data available
+                </p>
               </div>
             ) : null}
             <div className="relative flex-1">
@@ -287,7 +296,7 @@ function AdminDashboard() {
                 <line x1="0" y1="40" x2="600" y2="40" stroke="#f5eeea" strokeDasharray="3,3" />
                 <line x1="0" y1="100" x2="600" y2="100" stroke="#f5eeea" strokeDasharray="3,3" />
                 <line x1="0" y1="160" x2="600" y2="160" stroke="#f5eeea" strokeDasharray="3,3" />
-                
+
                 {hasSalesData && (
                   <>
                     <path d={areaD} fill="url(#chartGrad)" />
@@ -299,7 +308,15 @@ function AdminDashboard() {
                       strokeLinecap="round"
                     />
                     {svgPoints.map((p, idx) => (
-                      <circle key={idx} cx={p.x} cy={p.y} r="5" fill="#3a1d13" stroke="#d4af37" strokeWidth="2" />
+                      <circle
+                        key={idx}
+                        cx={p.x}
+                        cy={p.y}
+                        r="5"
+                        fill="#3a1d13"
+                        stroke="#d4af37"
+                        strokeWidth="2"
+                      />
                     ))}
                   </>
                 )}
@@ -323,18 +340,27 @@ function AdminDashboard() {
           </div>
           <div className="mt-5 space-y-4">
             {lowStockProducts.length === 0 ? (
-              <p className="text-center text-xs text-muted-foreground py-8">No low stock products</p>
+              <p className="text-center text-xs text-muted-foreground py-8">
+                No low stock products
+              </p>
             ) : (
               lowStockProducts.map((p) => (
-                <div key={p.id} className="flex items-center gap-3 rounded-xl border border-[#f3ede8] bg-[#fbfaf7] p-3">
+                <div
+                  key={p.id}
+                  className="flex items-center gap-3 rounded-xl border border-[#f3ede8] bg-[#fbfaf7] p-3"
+                >
                   {p.image ? (
                     <img src={p.image} alt={p.name} className="h-10 w-8 rounded object-cover" />
                   ) : (
-                    <div className="h-10 w-8 bg-sidebar-accent rounded flex items-center justify-center text-[8px] text-muted-foreground font-semibold">No Image</div>
+                    <div className="h-10 w-8 bg-sidebar-accent rounded flex items-center justify-center text-[8px] text-muted-foreground font-semibold">
+                      No Image
+                    </div>
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="truncate text-xs font-semibold text-[#2c2623]">{p.name}</p>
-                    <p className="text-[10px] text-amber-700 font-medium">Only {p.stock} pieces left in loom</p>
+                    <p className="text-[10px] text-amber-700 font-medium">
+                      Only {p.stock} pieces left in loom
+                    </p>
                   </div>
                   <Link to="/admin/products" className="text-[#6e5d53] hover:text-primary shrink-0">
                     <ArrowRight size={14} />
@@ -350,14 +376,21 @@ function AdminDashboard() {
       <div className="rounded-2xl border border-[#e8dfd8] bg-white p-6 shadow-soft">
         <div className="flex items-center justify-between border-b border-[#f3ede8] pb-4">
           <div>
-            <h3 className="font-display text-lg font-bold text-[#2c2623]">Recent Bridal & Store Orders</h3>
-            <p className="text-xs text-[#6e5d53]">Operational processing view of the 5 latest customer orders.</p>
+            <h3 className="font-display text-lg font-bold text-[#2c2623]">
+              Recent Bridal & Store Orders
+            </h3>
+            <p className="text-xs text-[#6e5d53]">
+              Operational processing view of the 5 latest customer orders.
+            </p>
           </div>
-          <Link to="/admin/orders" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#d4af37] hover:underline">
+          <Link
+            to="/admin/orders"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#d4af37] hover:underline"
+          >
             Manage all logs <ArrowRight size={14} />
           </Link>
         </div>
-        
+
         <div className="mt-6 overflow-x-auto">
           {recentOrders.length === 0 ? (
             <p className="text-center text-xs text-muted-foreground py-12">No orders yet</p>
@@ -376,29 +409,48 @@ function AdminDashboard() {
               <tbody className="divide-y divide-[#f3ede8] font-medium">
                 {recentOrders.map((o: any) => (
                   <tr key={o.id} className="hover:bg-[#fbfaf7]/65 transition-colors">
-                    <td className="py-3.5 px-4 font-mono font-bold text-primary">{o.orderNumber}</td>
+                    <td className="py-3.5 px-4 font-mono font-bold text-primary">
+                      {o.orderNumber}
+                    </td>
                     <td className="py-3.5 px-4">
                       <p className="font-bold text-[#2c2623]">{o.customerName}</p>
-                      <p className="text-[10px] text-muted-foreground">{o.shippingAddress?.phone}</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {o.shippingAddress?.phone}
+                      </p>
                     </td>
                     <td className="py-3.5 px-4">
                       {o.items?.map((it: any) => `${it.productName} (x${it.quantity})`).join(", ")}
                     </td>
                     <td className="py-3.5 px-4 font-bold text-primary">{formatINR(o.total)}</td>
                     <td className="py-3.5 px-4">
-                      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                        o.status === "Delivered" ? "bg-emerald-50 text-emerald-700" :
-                        o.status === "Shipped" ? "bg-blue-50 text-blue-700" :
-                        o.status === "Pending" ? "bg-amber-50 text-amber-700" : "bg-muted text-muted-foreground"
-                      }`}>
-                        {o.status === "Delivered" ? <CheckCircle2 size={10} /> :
-                         o.status === "Shipped" ? <Clock size={10} /> :
-                         o.status === "Pending" ? <Clock size={10} /> : <RotateCcw size={10} />}
+                      <span
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                          o.status === "Delivered"
+                            ? "bg-emerald-50 text-emerald-700"
+                            : o.status === "Shipped"
+                              ? "bg-blue-50 text-blue-700"
+                              : o.status === "Pending"
+                                ? "bg-amber-50 text-amber-700"
+                                : "bg-muted text-muted-foreground"
+                        }`}
+                      >
+                        {o.status === "Delivered" ? (
+                          <CheckCircle2 size={10} />
+                        ) : o.status === "Shipped" ? (
+                          <Clock size={10} />
+                        ) : o.status === "Pending" ? (
+                          <Clock size={10} />
+                        ) : (
+                          <RotateCcw size={10} />
+                        )}
                         {o.status}
                       </span>
                     </td>
                     <td className="py-3.5 px-4">
-                      <Link to="/admin/orders" className="inline-flex items-center gap-1 text-[#6e5d53] hover:text-primary">
+                      <Link
+                        to="/admin/orders"
+                        className="inline-flex items-center gap-1 text-[#6e5d53] hover:text-primary"
+                      >
                         <Eye size={13} /> View
                       </Link>
                     </td>

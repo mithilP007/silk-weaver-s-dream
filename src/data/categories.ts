@@ -68,16 +68,7 @@ export const occasions = [
 ];
 
 export const FABRICS = ["Pure Silk", "Semi Silk", "Cotton Silk", "Pure Cotton", "Soft Silk"];
-export const COLORS = [
-  "Maroon",
-  "Gold",
-  "Lavender",
-  "Pink",
-  "Green",
-  "Teal",
-  "Cream",
-  "Red",
-];
+export const COLORS = ["Maroon", "Gold", "Lavender", "Pink", "Green", "Teal", "Cream", "Red"];
 export const OCCASION_LIST = [
   "Wedding",
   "Reception",

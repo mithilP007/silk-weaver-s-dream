@@ -93,9 +93,7 @@ function AdminProducts() {
   // Map backend product data to frontend schema
   const mappedProducts = useMemo(() => {
     return productList.map((p) => {
-      const img = p.image?.startsWith("http")
-        ? p.image
-        : (p.image ? `${API_BASE}${p.image}` : "");
+      const img = p.image?.startsWith("http") ? p.image : p.image ? `${API_BASE}${p.image}` : "";
       return {
         id: p.id,
         slug: p.slug,
@@ -153,7 +151,9 @@ function AdminProducts() {
     setFormFeatured(false);
     setFormTrending(false);
     setFormOffer(false);
-    setFormDesc("Handcrafted luxury silk saree woven meticulously by master craftsmen in Kanchipuram.");
+    setFormDesc(
+      "Handcrafted luxury silk saree woven meticulously by master craftsmen in Kanchipuram.",
+    );
     setImageFile(null);
     setPreviewUrl("");
     setEditorOpen(true);
@@ -325,7 +325,8 @@ function AdminProducts() {
             Saree Catalog Management
           </h1>
           <p className="text-sm text-[#6e5d53] mt-1">
-            Publish new sarees, adjust inventory stock levels, and customize trending & featured items.
+            Publish new sarees, adjust inventory stock levels, and customize trending & featured
+            items.
           </p>
         </div>
         <button
@@ -415,7 +416,9 @@ function AdminProducts() {
                           )}
                           <div>
                             <p className="font-bold text-sm leading-snug">{p.name}</p>
-                            <p className="text-[10px] text-muted-foreground mt-0.5 font-mono">{p.slug}</p>
+                            <p className="text-[10px] text-muted-foreground mt-0.5 font-mono">
+                              {p.slug}
+                            </p>
                           </div>
                         </div>
                       </td>
@@ -435,8 +438,8 @@ function AdminProducts() {
                             p.stock > 5
                               ? "bg-emerald-50 text-emerald-700"
                               : p.stock > 0
-                              ? "bg-amber-50 text-amber-700"
-                              : "bg-red-50 text-red-700",
+                                ? "bg-amber-50 text-amber-700"
+                                : "bg-red-50 text-red-700",
                           )}
                         >
                           {p.stock} Pcs
@@ -495,7 +498,9 @@ function AdminProducts() {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
             className="absolute inset-0 bg-[#2c2623]/60 backdrop-blur-sm"
-            onClick={() => { if (!isSubmitting) setEditorOpen(false); }}
+            onClick={() => {
+              if (!isSubmitting) setEditorOpen(false);
+            }}
           />
           <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-[#e8dfd8] bg-white p-6 shadow-card sm:p-8 animate-in zoom-in-95 duration-200">
             <button
@@ -505,7 +510,7 @@ function AdminProducts() {
             >
               <X size={16} />
             </button>
-            
+
             <h3 className="font-display text-2xl font-bold text-[#2c2623]">
               {editingProduct ? "Modify Saree Specifications" : "Weave & Publish Saree"}
             </h3>
@@ -516,10 +521,11 @@ function AdminProducts() {
             </p>
 
             <form onSubmit={handleSave} className="mt-6 space-y-5 text-sm text-[#2c2623]">
-              
               {/* Image Upload Input */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Saree Image</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                  Saree Image
+                </label>
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] p-3.5">
                   <div className="shrink-0">
                     {previewUrl ? (
@@ -557,7 +563,9 @@ function AdminProducts() {
 
               <div className="grid gap-5 sm:grid-cols-2">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Saree Title</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Saree Title
+                  </label>
                   <input
                     type="text"
                     required
@@ -569,7 +577,9 @@ function AdminProducts() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Category</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Category
+                  </label>
                   <select
                     value={formSub}
                     disabled={isSubmitting}
@@ -587,7 +597,9 @@ function AdminProducts() {
 
               <div className="grid gap-5 sm:grid-cols-3">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Cost Price (₹)</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Cost Price (₹)
+                  </label>
                   <input
                     type="number"
                     required
@@ -598,7 +610,9 @@ function AdminProducts() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Discounted Price (₹)</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Discounted Price (₹)
+                  </label>
                   <input
                     type="number"
                     disabled={isSubmitting}
@@ -608,7 +622,9 @@ function AdminProducts() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Looms Stock (Pcs)</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Looms Stock (Pcs)
+                  </label>
                   <input
                     type="number"
                     required
@@ -622,7 +638,9 @@ function AdminProducts() {
 
               <div className="grid gap-5 sm:grid-cols-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Fabric</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Fabric
+                  </label>
                   <select
                     value={formFabric}
                     disabled={isSubmitting}
@@ -637,7 +655,9 @@ function AdminProducts() {
                   </select>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Color</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Color
+                  </label>
                   <select
                     value={formColor}
                     disabled={isSubmitting}
@@ -652,7 +672,9 @@ function AdminProducts() {
                   </select>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Saree Length</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Saree Length
+                  </label>
                   <input
                     type="text"
                     disabled={isSubmitting}
@@ -662,7 +684,9 @@ function AdminProducts() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Blouse Length</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Blouse Length
+                  </label>
                   <input
                     type="text"
                     disabled={isSubmitting}
@@ -717,7 +741,9 @@ function AdminProducts() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Product Story (Description)</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                  Product Story (Description)
+                </label>
                 <textarea
                   rows={3}
                   required

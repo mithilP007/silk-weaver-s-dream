@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import type { Product } from "@/data/types";
 import { API_BASE } from "@/lib/api";
@@ -86,7 +79,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           const mappedCart: CartItem[] = cartData.data.map((item: any) => {
             const img = item.product.image?.startsWith("http")
               ? item.product.image
-              : (item.product.image ? `${API_BASE}${item.product.image}` : "");
+              : item.product.image
+                ? `${API_BASE}${item.product.image}`
+                : "";
             return {
               product: {
                 id: item.product.id,
@@ -131,7 +126,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           const mappedWish = wishData.data.map((item: any) => {
             const img = item.product.image?.startsWith("http")
               ? item.product.image
-              : (item.product.image ? `${API_BASE}${item.product.image}` : "");
+              : item.product.image
+                ? `${API_BASE}${item.product.image}`
+                : "";
             return {
               id: item.product.id,
               slug: item.product.slug,
@@ -179,7 +176,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const existing = prev.find((i) => i.product.id === product.id);
       if (existing) {
         return prev.map((i) =>
-          i.product.id === product.id ? { ...i, quantity: i.quantity + quantity } : i
+          i.product.id === product.id ? { ...i, quantity: i.quantity + quantity } : i,
         );
       }
       return [...prev, { product, quantity }];
@@ -225,7 +222,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setCart((prev) =>
       prev
         .map((i) => (i.product.id === id ? { ...i, quantity: qty } : i))
-        .filter((i) => i.quantity > 0)
+        .filter((i) => i.quantity > 0),
     );
 
     const token = localStorage.getItem("token");
@@ -294,7 +291,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const isWishlisted = (id: string) => wishlist.some((p) => p.id === id);
 
   const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
-  const cartSubtotal = cart.reduce((s, i) => s + (i.product.discountPrice ?? i.product.price) * i.quantity, 0);
+  const cartSubtotal = cart.reduce(
+    (s, i) => s + (i.product.discountPrice ?? i.product.price) * i.quantity,
+    0,
+  );
 
   const value = useMemo<StoreContextValue>(
     () => ({
@@ -310,7 +310,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       cartSubtotal,
       hydrated,
     }),
-    [cart, wishlist, cartCount, cartSubtotal, hydrated]
+    [cart, wishlist, cartCount, cartSubtotal, hydrated],
   );
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

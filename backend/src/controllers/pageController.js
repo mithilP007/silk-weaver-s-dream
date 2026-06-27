@@ -5,10 +5,7 @@ const jwt = require("jsonwebtoken");
 const getPages = async (req, res) => {
   try {
     let user;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
       try {
         const token = req.headers.authorization.split(" ")[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -28,12 +25,48 @@ const getPages = async (req, res) => {
     // Dynamically initialize default pages if none exist
     if (pages.length === 0) {
       const defaults = [
-        { title: "About Us", slug: "about", content: "Weaving stories of grace, purity, and heritage for over twenty-five years. Handcrafted silk sarees direct from the sacred handlooms of Kanchipuram...", isPublished: true },
-        { title: "Contact Us", slug: "contact", content: "Flagship Kanchipuram Showroom hours: 09:00 AM - 09:00 PM. Contact our support on WhatsApp at https://wa.me/919443210987...", isPublished: true },
-        { title: "Privacy Policy", slug: "privacy-policy", content: "We collect your name, contact details, shipping address and payment information solely to process your orders and improve your shopping experience...", isPublished: true },
-        { title: "Terms and Conditions", slug: "terms", content: "By accessing Sri Kamatchi Silk, you agree to our terms of service, payment collection, and product delivery regulations...", isPublished: true },
-        { title: "Shipping Policy", slug: "shipping-policy", content: "Standard delivery takes 3-7 business days across India. Luxury sarees are packed in specialized moisture-proof covers...", isPublished: true },
-        { title: "Return Policy", slug: "return-policy", content: "We offer a 7-day return policy for unused and unwashed sarees with original tags intact. Return transit charges apply...", isPublished: true },
+        {
+          title: "About Us",
+          slug: "about",
+          content:
+            "Weaving stories of grace, purity, and heritage for over twenty-five years. Handcrafted silk sarees direct from the sacred handlooms of Kanchipuram...",
+          isPublished: true,
+        },
+        {
+          title: "Contact Us",
+          slug: "contact",
+          content:
+            "Flagship Kanchipuram Showroom hours: 09:00 AM - 09:00 PM. Contact our support on WhatsApp at https://wa.me/919443210987...",
+          isPublished: true,
+        },
+        {
+          title: "Privacy Policy",
+          slug: "privacy-policy",
+          content:
+            "We collect your name, contact details, shipping address and payment information solely to process your orders and improve your shopping experience...",
+          isPublished: true,
+        },
+        {
+          title: "Terms and Conditions",
+          slug: "terms",
+          content:
+            "By accessing Sri Kamatchi Silk, you agree to our terms of service, payment collection, and product delivery regulations...",
+          isPublished: true,
+        },
+        {
+          title: "Shipping Policy",
+          slug: "shipping-policy",
+          content:
+            "Standard delivery takes 3-7 business days across India. Luxury sarees are packed in specialized moisture-proof covers...",
+          isPublished: true,
+        },
+        {
+          title: "Return Policy",
+          slug: "return-policy",
+          content:
+            "We offer a 7-day return policy for unused and unwashed sarees with original tags intact. Return transit charges apply...",
+          isPublished: true,
+        },
       ];
 
       for (const d of defaults) {

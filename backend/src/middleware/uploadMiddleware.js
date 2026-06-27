@@ -25,8 +25,7 @@ const storage = multer.diskStorage({
   },
 
   filename: function (req, file, cb) {
-    const uniqueName =
-      Date.now() + "-" + file.originalname.replace(/\s+/g, "-").toLowerCase();
+    const uniqueName = Date.now() + "-" + file.originalname.replace(/\s+/g, "-").toLowerCase();
 
     cb(null, uniqueName);
   },
@@ -34,9 +33,7 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|webp/;
-  const extName = allowedTypes.test(
-    path.extname(file.originalname).toLowerCase()
-  );
+  const extName = allowedTypes.test(path.extname(file.originalname).toLowerCase());
   const mimeType = allowedTypes.test(file.mimetype);
 
   if (extName && mimeType) {

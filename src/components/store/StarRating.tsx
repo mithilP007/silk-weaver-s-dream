@@ -22,9 +22,7 @@ export function StarRating({
             key={i}
             size={size}
             className={
-              i < Math.round(rating)
-                ? "fill-gold text-gold"
-                : "fill-muted text-muted-foreground/40"
+              i < Math.round(rating) ? "fill-gold text-gold" : "fill-muted text-muted-foreground/40"
             }
           />
         ))}

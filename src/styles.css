@@ -173,22 +173,31 @@
     letter-spacing: -0.015em;
   }
 
-  h1, h2, h3, h4, .font-display {
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-display {
     font-family: var(--font-display);
     letter-spacing: -0.025em;
     line-height: 1.15;
   }
 
   /* Luxury global transition and interaction states */
-  button, a {
+  button,
+  a {
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* Exquisite input, select, and textarea focus alignments */
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  input:focus, textarea:focus, select:focus {
+  input:focus,
+  textarea:focus,
+  select:focus {
     border-color: var(--gold) !important;
     box-shadow: 0 0 0 2px color-mix(in oklab, var(--gold) 20%, transparent) !important;
     background-color: white !important;
@@ -265,7 +274,10 @@
     box-shadow: var(--shadow-gold);
   }
   .hover-lift {
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease;
+    transition:
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.6s ease;
   }
   .hover-lift:hover {
     transform: translateY(-8px);
@@ -286,8 +298,12 @@
 }
 
 @keyframes shimmer {
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
 }
 
 .skeleton-shimmer {

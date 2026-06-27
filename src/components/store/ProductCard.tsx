@@ -73,7 +73,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           >
             <ShoppingBag size={14} /> Add to Cart
           </button>
-          
+
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <button
@@ -103,7 +103,11 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
                 </div>
                 <div className="flex flex-col justify-between">
                   <div>
-                    <StarRating rating={product.rating || 5} reviews={product.reviews || 0} showValue />
+                    <StarRating
+                      rating={product.rating || 5}
+                      reviews={product.reviews || 0}
+                      showValue
+                    />
                     <div className="mt-4 flex items-center gap-3">
                       <span className="text-2xl font-bold text-primary">
                         {formatINR(product.discountPrice ?? product.price)}
@@ -130,7 +134,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
                       </div>
                       <div>
                         <dt className="text-muted-foreground">Saree Length</dt>
-                        <dd className="font-semibold text-foreground mt-0.5">{product.sareeLength}</dd>
+                        <dd className="font-semibold text-foreground mt-0.5">
+                          {product.sareeLength}
+                        </dd>
                       </div>
                       <div>
                         <dt className="text-muted-foreground">Blouse Included</dt>
@@ -175,7 +181,12 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             {product.name}
           </h3>
         </Link>
-        <StarRating rating={product.rating || 5} reviews={product.reviews || 0} showValue className="mt-2" />
+        <StarRating
+          rating={product.rating || 5}
+          reviews={product.reviews || 0}
+          showValue
+          className="mt-2"
+        />
         <div className="mt-3 flex items-center gap-2">
           <span className="text-lg font-semibold text-primary">
             {formatINR(product.discountPrice ?? product.price)}
@@ -190,4 +201,3 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     </motion.div>
   );
 }
-

@@ -78,18 +78,19 @@ function CheckoutPage() {
   }, []);
 
   // 3. Shipping fee calculations based on dynamic rules
-  const shipping = country.trim().toLowerCase() === "india"
-    ? (cartSubtotal >= freeShippingAbove || cartSubtotal === 0 ? 0 : shippingCharge)
-    : 0;
+  const shipping =
+    country.trim().toLowerCase() === "india"
+      ? cartSubtotal >= freeShippingAbove || cartSubtotal === 0
+        ? 0
+        : shippingCharge
+      : 0;
   const total = cartSubtotal + shipping;
 
   const navigate = useNavigate();
 
   const handleWhatsAppContact = () => {
-    const cartSummary = cart
-      .map((i) => `${i.product.name} (Qty: ${i.quantity})`)
-      .join(", ");
-    
+    const cartSummary = cart.map((i) => `${i.product.name} (Qty: ${i.quantity})`).join(", ");
+
     const text = `Hello Sri Kamatchi Silk, I would like to place an international order.
 Order Details:
 - Items: ${cartSummary}
@@ -274,7 +275,8 @@ Order Details:
     }
   };
 
-  const field = "w-full rounded-xl border border-border bg-card px-4 py-2.5 text-sm outline-none focus:border-gold disabled:opacity-70";
+  const field =
+    "w-full rounded-xl border border-border bg-card px-4 py-2.5 text-sm outline-none focus:border-gold disabled:opacity-70";
 
   return (
     <StoreLayout>
@@ -287,7 +289,9 @@ Order Details:
             <AlertTriangle className="shrink-0 text-amber-600" size={16} />
             <div className="flex-1">
               <span>You are checking out as a Guest. </span>
-              <Link to="/login" className="font-bold underline hover:text-amber-950">Log in now</Link>
+              <Link to="/login" className="font-bold underline hover:text-amber-950">
+                Log in now
+              </Link>
               <span> to persistently track this order and save sarees.</span>
             </div>
           </div>
@@ -324,7 +328,9 @@ Order Details:
                   disabled={isPlacing}
                 />
                 <div className="sm:col-span-2 space-y-1">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Country</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Country
+                  </label>
                   <select
                     value={country}
                     onChange={(e) => {
@@ -393,14 +399,30 @@ Order Details:
               <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
                 <h2 className="text-lg font-semibold text-foreground">Payment Method</h2>
                 <div className="mt-4 space-y-3">
-                  <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 ${pay === "razorpay" ? "border-gold bg-secondary/50" : "border-border"}`}>
-                    <input type="radio" checked={pay === "razorpay"} onChange={() => setPay("razorpay")} disabled={isPlacing} className="accent-[var(--primary)]" />
+                  <label
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 ${pay === "razorpay" ? "border-gold bg-secondary/50" : "border-border"}`}
+                  >
+                    <input
+                      type="radio"
+                      checked={pay === "razorpay"}
+                      onChange={() => setPay("razorpay")}
+                      disabled={isPlacing}
+                      className="accent-[var(--primary)]"
+                    />
                     <CreditCard size={20} className="text-primary" />
                     <span className="text-sm font-medium">Razorpay (Cards, UPI, Netbanking)</span>
                   </label>
                   {codEnabled && (
-                    <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 ${pay === "cod" ? "border-gold bg-secondary/50" : "border-border"}`}>
-                      <input type="radio" checked={pay === "cod"} onChange={() => setPay("cod")} disabled={isPlacing} className="accent-[var(--primary)]" />
+                    <label
+                      className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 ${pay === "cod" ? "border-gold bg-secondary/50" : "border-border"}`}
+                    >
+                      <input
+                        type="radio"
+                        checked={pay === "cod"}
+                        onChange={() => setPay("cod")}
+                        disabled={isPlacing}
+                        className="accent-[var(--primary)]"
+                      />
                       <Banknote size={20} className="text-primary" />
                       <span className="text-sm font-medium">Cash on Delivery (COD)</span>
                     </label>
@@ -414,7 +436,8 @@ Order Details:
                   <div>
                     <h4 className="font-bold text-sm">International Checkout Restriction</h4>
                     <p className="text-xs text-amber-700 mt-1 leading-relaxed font-semibold">
-                      Direct online checkout is currently available only within India. For international orders, please contact Sri Kamatchi Silk directly.
+                      Direct online checkout is currently available only within India. For
+                      international orders, please contact Sri Kamatchi Silk directly.
                     </p>
                   </div>
                 </div>
@@ -427,7 +450,11 @@ Order Details:
             <div className="mt-4 max-h-60 space-y-3 overflow-y-auto">
               {cart.map((i) => (
                 <div key={i.product.id} className="flex items-center gap-3">
-                  <img src={i.product.image} alt={i.product.name} className="h-14 w-12 rounded-lg object-cover" />
+                  <img
+                    src={i.product.image}
+                    alt={i.product.name}
+                    className="h-14 w-12 rounded-lg object-cover"
+                  />
                   <div className="flex-1 text-sm">
                     <p className="line-clamp-1 font-medium">{i.product.name}</p>
                     <p className="text-muted-foreground">Qty {i.quantity}</p>
@@ -439,7 +466,10 @@ Order Details:
               ))}
               {cart.length === 0 && (
                 <p className="text-sm text-muted-foreground">
-                  Your cart is empty. <Link to="/shop" className="text-primary">Shop now</Link>
+                  Your cart is empty.{" "}
+                  <Link to="/shop" className="text-primary">
+                    Shop now
+                  </Link>
                 </p>
               )}
             </div>
@@ -461,7 +491,8 @@ Order Details:
                 </>
               ) : (
                 <div className="rounded-xl bg-amber-50/50 border border-amber-200 p-3.5 text-xs text-amber-800 font-semibold leading-relaxed mt-4">
-                  International shipping rates apply. Please contact us directly for order pricing and courier details.
+                  International shipping rates apply. Please contact us directly for order pricing
+                  and courier details.
                 </div>
               )}
             </dl>

@@ -32,15 +32,15 @@ function BulkRowImageUpload({
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
-    
+
     // Process files sequentially to correctly build the array
     let currentImages = [...images];
     let loadedCount = 0;
-    
-    files.forEach(file => {
+
+    files.forEach((file) => {
       if (!file.type.startsWith("image/")) return;
       if (file.size > 5 * 1024 * 1024) return;
-      
+
       const reader = new FileReader();
       reader.onload = (event) => {
         const img = new Image();
@@ -68,8 +68,8 @@ function BulkRowImageUpload({
             const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
             currentImages.push(dataUrl);
             loadedCount++;
-            
-            if (loadedCount === files.filter(f => f.type.startsWith("image/")).length) {
+
+            if (loadedCount === files.filter((f) => f.type.startsWith("image/")).length) {
               onChange(currentImages);
               toast.success("Images uploaded & compressed successfully!");
             }
@@ -89,7 +89,10 @@ function BulkRowImageUpload({
   return (
     <div className="flex flex-wrap items-center gap-2">
       {images.map((img, idx) => (
-        <div key={idx} className="relative group h-10 w-10 rounded border border-[#e8dfd8] overflow-hidden bg-card">
+        <div
+          key={idx}
+          className="relative group h-10 w-10 rounded border border-[#e8dfd8] overflow-hidden bg-card"
+        >
           <img src={img} alt="Preview" className="h-full w-full object-cover" />
           <button
             type="button"
@@ -102,13 +105,7 @@ function BulkRowImageUpload({
       ))}
       <label className="h-10 px-2 rounded border-2 border-dashed border-[#e8dfd8] flex items-center justify-center text-center cursor-pointer hover:bg-[#fbfaf7] text-[#6e5d53] text-[10px] font-semibold">
         + Add
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          className="hidden"
-          onChange={handleFile}
-        />
+        <input type="file" multiple accept="image/*" className="hidden" onChange={handleFile} />
       </label>
     </div>
   );
@@ -121,9 +118,36 @@ function AdminCategoriesBulk() {
 
   // Initialize with 3 rows as required by the testing checklist
   const [rows, setRows] = useState<CategoryRow[]>([
-    { name: "", slug: "", description: "", images: [], displayOrder: "", activeStatus: true, parentCategory: "", errors: {} },
-    { name: "", slug: "", description: "", images: [], displayOrder: "", activeStatus: true, parentCategory: "", errors: {} },
-    { name: "", slug: "", description: "", images: [], displayOrder: "", activeStatus: true, parentCategory: "", errors: {} },
+    {
+      name: "",
+      slug: "",
+      description: "",
+      images: [],
+      displayOrder: "",
+      activeStatus: true,
+      parentCategory: "",
+      errors: {},
+    },
+    {
+      name: "",
+      slug: "",
+      description: "",
+      images: [],
+      displayOrder: "",
+      activeStatus: true,
+      parentCategory: "",
+      errors: {},
+    },
+    {
+      name: "",
+      slug: "",
+      description: "",
+      images: [],
+      displayOrder: "",
+      activeStatus: true,
+      parentCategory: "",
+      errors: {},
+    },
   ]);
 
   useEffect(() => {
@@ -144,7 +168,16 @@ function AdminCategoriesBulk() {
   const addRow = () => {
     setRows([
       ...rows,
-      { name: "", slug: "", description: "", images: [], displayOrder: "", activeStatus: true, parentCategory: "", errors: {} },
+      {
+        name: "",
+        slug: "",
+        description: "",
+        images: [],
+        displayOrder: "",
+        activeStatus: true,
+        parentCategory: "",
+        errors: {},
+      },
     ]);
   };
 
@@ -262,7 +295,12 @@ function AdminCategoriesBulk() {
         const primaryImage = r.images.length > 0 ? r.images[0] : "";
         return {
           name: r.name.trim(),
-          slug: r.slug.trim() || r.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
+          slug:
+            r.slug.trim() ||
+            r.name
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/(^-|-$)/g, ""),
           image: primaryImage || null,
           description: r.description.trim() || null,
           displayOrder: r.displayOrder.trim() ? parseInt(r.displayOrder) : null,
@@ -310,7 +348,8 @@ function AdminCategoriesBulk() {
             Bulk Category Catalog
           </h1>
           <p className="text-sm text-[#6e5d53] mt-1">
-            Fast, spreadsheet-style cataloging for boutique saree collections, divisions, and subcategories.
+            Fast, spreadsheet-style cataloging for boutique saree collections, divisions, and
+            subcategories.
           </p>
         </div>
 
@@ -378,7 +417,9 @@ function AdminCategoriesBulk() {
                       }`}
                     />
                     {row.errors.name && (
-                      <p className="text-[10px] text-red-500 mt-1 font-semibold">{row.errors.name}</p>
+                      <p className="text-[10px] text-red-500 mt-1 font-semibold">
+                        {row.errors.name}
+                      </p>
                     )}
                   </td>
 
@@ -395,7 +436,9 @@ function AdminCategoriesBulk() {
                       }`}
                     />
                     {row.errors.slug && (
-                      <p className="text-[10px] text-red-500 mt-1 font-semibold">{row.errors.slug}</p>
+                      <p className="text-[10px] text-red-500 mt-1 font-semibold">
+                        {row.errors.slug}
+                      </p>
                     )}
                   </td>
 
@@ -433,7 +476,9 @@ function AdminCategoriesBulk() {
                   <td className="py-3.5 px-4">
                     <select
                       value={row.activeStatus ? "true" : "false"}
-                      onChange={(e) => handleChange(index, "activeStatus", e.target.value === "true")}
+                      onChange={(e) =>
+                        handleChange(index, "activeStatus", e.target.value === "true")
+                      }
                       className="w-full rounded-lg border border-[#e8dfd8] px-3 py-2 text-sm text-[#2c2623] outline-none focus:border-[#d4af37] bg-white transition-colors cursor-pointer"
                     >
                       <option value="true">Active</option>

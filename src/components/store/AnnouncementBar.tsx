@@ -5,9 +5,28 @@ import { API_BASE } from "@/lib/api";
 const getIcon = (text: string) => {
   const lowercase = text.toLowerCase();
   if (lowercase.includes("shipping") || lowercase.includes("delivery")) return Truck;
-  if (lowercase.includes("styling") || lowercase.includes("phone") || lowercase.includes("call") || lowercase.includes("assistance") || lowercase.includes("+91")) return Phone;
-  if (lowercase.includes("off") || lowercase.includes("discount") || lowercase.includes("%") || lowercase.includes("sale") || lowercase.includes("wedding")) return Sparkles;
-  if (lowercase.includes("secure") || lowercase.includes("guarantee") || lowercase.includes("check")) return ShieldCheck;
+  if (
+    lowercase.includes("styling") ||
+    lowercase.includes("phone") ||
+    lowercase.includes("call") ||
+    lowercase.includes("assistance") ||
+    lowercase.includes("+91")
+  )
+    return Phone;
+  if (
+    lowercase.includes("off") ||
+    lowercase.includes("discount") ||
+    lowercase.includes("%") ||
+    lowercase.includes("sale") ||
+    lowercase.includes("wedding")
+  )
+    return Sparkles;
+  if (
+    lowercase.includes("secure") ||
+    lowercase.includes("guarantee") ||
+    lowercase.includes("check")
+  )
+    return ShieldCheck;
   return HelpCircle;
 };
 
@@ -30,11 +49,18 @@ export function AnnouncementBar() {
       .catch((err) => console.error("Error fetching announcements:", err));
   }, []);
 
-  const items = announcements.length > 0 ? announcements : [
-    { text: "Free shipping on orders above ₹4,999", enabled: true },
-    { text: "Up to 30% off on the Wedding Collection", enabled: true },
-    { text: "Contact us on WhatsApp for styling & custom orders", link: "https://wa.me/919443210987", enabled: true }
-  ];
+  const items =
+    announcements.length > 0
+      ? announcements
+      : [
+          { text: "Free shipping on orders above ₹4,999", enabled: true },
+          { text: "Up to 30% off on the Wedding Collection", enabled: true },
+          {
+            text: "Contact us on WhatsApp for styling & custom orders",
+            link: "https://wa.me/919443210987",
+            enabled: true,
+          },
+        ];
 
   return (
     <div className="bg-gradient-maroon text-primary-foreground">
@@ -48,7 +74,9 @@ export function AnnouncementBar() {
             >
               <Icon size={13} className="text-gold" />
               {m.link ? (
-                <a href={m.link} className="tracking-wide hover:underline">{m.text}</a>
+                <a href={m.link} className="tracking-wide hover:underline">
+                  {m.text}
+                </a>
               ) : (
                 <span className="tracking-wide">{m.text}</span>
               )}

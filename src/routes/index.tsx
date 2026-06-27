@@ -2,13 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import * as Icons from "lucide-react";
-import {
-  ArrowRight,
-  Quote,
-  Instagram,
-  HelpCircle,
-  Sparkles,
-} from "lucide-react";
+import { ArrowRight, Quote, Instagram, HelpCircle, Sparkles } from "lucide-react";
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { SectionHeading } from "@/components/store/SectionHeading";
 import { ProductCard } from "@/components/store/ProductCard";
@@ -73,7 +67,8 @@ function HomePage() {
   const hero = settings?.hero || {
     eyebrow: "Heritage Weaves",
     title: "Draped in Timeless Elegance",
-    subtitle: "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees, made for the moments you'll cherish forever.",
+    subtitle:
+      "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees, made for the moments you'll cherish forever.",
     primaryCtaText: "Explore Collection",
     primaryCtaLink: "/silk-sarees",
     secondaryCtaText: "Shop All Sarees",
@@ -84,8 +79,8 @@ function HomePage() {
     stats: [
       { value: "25+", label: "Years of Heritage" },
       { value: "50k+", label: "Happy Customers" },
-      { value: "100%", label: "Pure Silk" }
-    ]
+      { value: "100%", label: "Pure Silk" },
+    ],
   };
 
   const toggles = settings?.toggles || {
@@ -99,13 +94,14 @@ function HomePage() {
     newArrivals: true,
     celebritySection: true,
     instagramGallery: true,
-    newsletter: true
+    newsletter: true,
   };
 
   const categoriesSection = settings?.categoriesSection || {
     eyebrow: "The House of Silk",
     title: "Silk Sarees",
-    subtitle: "Handwoven heritage drapes crafted by master weavers — explore our signature collections."
+    subtitle:
+      "Handwoven heritage drapes crafted by master weavers — explore our signature collections.",
   };
 
   const trendingSections = settings?.trendingSections || {
@@ -115,7 +111,7 @@ function HomePage() {
     newArrivalsEyebrow: "Fresh Off the Loom",
     celebrityTitle: "Celebrity Inspired",
     celebrityEyebrow: "As Seen on Stars",
-    maxProducts: 4
+    maxProducts: 4,
   };
 
   const occasionFinder = settings?.occasionFinder || {
@@ -128,19 +124,35 @@ function HomePage() {
       { name: "Festival", icon: "PartyPopper" },
       { name: "Temple Visit", icon: "Landmark" },
       { name: "Daily Wear", icon: "Sun" },
-      { name: "Gift", icon: "Gift" }
-    ]
+      { name: "Gift", icon: "Gift" },
+    ],
   };
 
   const promiseSection = settings?.promiseSection || {
     eyebrow: "The Promise",
     title: "Why Choose Sri Kamatchi Silk",
     cards: [
-      { title: "Authentic Handloom", text: "Certified pure silk woven by master artisans.", icon: "Award" },
-      { title: "Trusted Quality", text: "Each saree quality-checked & zari-tested.", icon: "ShieldCheck" },
-      { title: "Pan-India Delivery", text: "Safe, insured shipping to your doorstep.", icon: "Truck" },
-      { title: "Personal Styling", text: "Dedicated stylists to help you choose.", icon: "Headphones" }
-    ]
+      {
+        title: "Authentic Handloom",
+        text: "Certified pure silk woven by master artisans.",
+        icon: "Award",
+      },
+      {
+        title: "Trusted Quality",
+        text: "Each saree quality-checked & zari-tested.",
+        icon: "ShieldCheck",
+      },
+      {
+        title: "Pan-India Delivery",
+        text: "Safe, insured shipping to your doorstep.",
+        icon: "Truck",
+      },
+      {
+        title: "Personal Styling",
+        text: "Dedicated stylists to help you choose.",
+        icon: "Headphones",
+      },
+    ],
   };
 
   const dbTestimonials = settings?.testimonials || staticTestimonials;
@@ -149,13 +161,13 @@ function HomePage() {
     eyebrow: "@srikamatchisilk",
     title: "Follow Our Journey",
     subtitle: "Tag us with #DrapedInKamatchi to be featured.",
-    items: []
+    items: [],
   };
 
   const newsletter = settings?.newsletter || {
     title: "Join the Kamatchi Circle",
     subtitle: "Be the first to know about new weaves, private sales and styling tips.",
-    buttonText: "Subscribe"
+    buttonText: "Subscribe",
   };
 
   const banners = settings?.banners || [];
@@ -165,7 +177,7 @@ function HomePage() {
     description: "Up to 30% off on bridal Kanchipuram silks. Make your big day unforgettable.",
     ctaText: "Shop the Sale",
     ctaLink: "/shop",
-    imageUrl: ""
+    imageUrl: "",
   };
   const festivalBannerData = banners.find((b: any) => b.id === "festival") || {
     label: "New Season",
@@ -173,7 +185,7 @@ function HomePage() {
     description: "Radiant cotton silks & semi silks to light up every celebration.",
     ctaText: "Discover Now",
     ctaLink: "/shop",
-    imageUrl: ""
+    imageUrl: "",
   };
 
   // Products filtering based on catalog
@@ -184,19 +196,24 @@ function HomePage() {
 
   // Category sorting & selection if specified in settings, falling back to database categories, then local file categories
   const displayedCategories = useMemo(() => {
-    const baseList = dbCategories.length > 0
-      ? dbCategories.map((c) => {
-          const localMatch = subcategories.find((s) => s.slug === c.slug);
-          const rawImage = c.image || localMatch?.image || subcategories[0].image;
-          return {
-            id: c.id,
-            name: c.name,
-            slug: c.slug,
-            image: typeof rawImage === "string" && rawImage.startsWith("/uploads") ? `${API_BASE}${rawImage}` : rawImage,
-            description: c.description || localMatch?.description || "Handcrafted saree division.",
-          };
-        })
-      : subcategories;
+    const baseList =
+      dbCategories.length > 0
+        ? dbCategories.map((c) => {
+            const localMatch = subcategories.find((s) => s.slug === c.slug);
+            const rawImage = c.image || localMatch?.image || subcategories[0].image;
+            return {
+              id: c.id,
+              name: c.name,
+              slug: c.slug,
+              image:
+                typeof rawImage === "string" && rawImage.startsWith("/uploads")
+                  ? `${API_BASE}${rawImage}`
+                  : rawImage,
+              description:
+                c.description || localMatch?.description || "Handcrafted saree division.",
+            };
+          })
+        : subcategories;
 
     if (categoriesSection.items && Array.isArray(categoriesSection.items)) {
       return categoriesSection.items
@@ -206,8 +223,11 @@ function HomePage() {
           const rawImage = item.imageUrl || match.image;
           return {
             ...match,
-            image: typeof rawImage === "string" && rawImage.startsWith("/uploads") ? `${API_BASE}${rawImage}` : rawImage,
-            name: item.name || match.name
+            image:
+              typeof rawImage === "string" && rawImage.startsWith("/uploads")
+                ? `${API_BASE}${rawImage}`
+                : rawImage,
+            name: item.name || match.name,
           };
         })
         .filter(Boolean);
@@ -218,12 +238,16 @@ function HomePage() {
 
   // Instagram gallery items
   const galleryImgs = products.slice(0, 6).map((p) => p.image);
-  const galleryItemsToShow = gallery.items && Array.isArray(gallery.items) && gallery.items.length > 0
-    ? gallery.items.map((item: any) => ({
-        ...item,
-        imageUrl: typeof item.imageUrl === "string" && item.imageUrl.startsWith("/uploads") ? `${API_BASE}${item.imageUrl}` : item.imageUrl
-      }))
-    : galleryImgs.map((img) => ({ imageUrl: img, link: "#" }));
+  const galleryItemsToShow =
+    gallery.items && Array.isArray(gallery.items) && gallery.items.length > 0
+      ? gallery.items.map((item: any) => ({
+          ...item,
+          imageUrl:
+            typeof item.imageUrl === "string" && item.imageUrl.startsWith("/uploads")
+              ? `${API_BASE}${item.imageUrl}`
+              : item.imageUrl,
+        }))
+      : galleryImgs.map((img) => ({ imageUrl: img, link: "#" }));
 
   // Helper to split hero title for gradient coloring
   const parseHeroTitle = (titleText: string) => {
@@ -265,7 +289,7 @@ function HomePage() {
             <div className="mt-8 flex flex-wrap gap-3">
               {hero.primaryCtaText && (
                 <Link
-                  to={hero.primaryCtaLink as any || "/silk-sarees"}
+                  to={(hero.primaryCtaLink as any) || "/silk-sarees"}
                   className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-medium text-primary-foreground shadow-soft transition-transform hover:-translate-y-0.5"
                 >
                   {hero.primaryCtaText} <ArrowRight size={16} />
@@ -273,7 +297,7 @@ function HomePage() {
               )}
               {hero.secondaryCtaText && (
                 <Link
-                  to={hero.secondaryCtaLink as any || "/shop"}
+                  to={(hero.secondaryCtaLink as any) || "/shop"}
                   className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-card px-7 py-3.5 text-sm font-medium text-foreground transition-colors hover:border-gold"
                 >
                   {hero.secondaryCtaText}
@@ -303,7 +327,13 @@ function HomePage() {
           >
             <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-[2rem] shadow-card">
               <img
-                src={hero.imageUrl ? (hero.imageUrl.startsWith("http") ? hero.imageUrl : `${API_BASE}${hero.imageUrl}`) : heroSaree}
+                src={
+                  hero.imageUrl
+                    ? hero.imageUrl.startsWith("http")
+                      ? hero.imageUrl
+                      : `${API_BASE}${hero.imageUrl}`
+                    : heroSaree
+                }
                 alt={hero.altText || "Model wearing a deep maroon Kanchipuram silk saree"}
                 width={1080}
                 height={1440}
@@ -356,7 +386,8 @@ function HomePage() {
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                       onError={(e) => {
                         const localMatch = subcategories.find((sub) => sub.slug === s.slug);
-                        (e.target as HTMLImageElement).src = localMatch?.image || subcategories[0].image;
+                        (e.target as HTMLImageElement).src =
+                          localMatch?.image || subcategories[0].image;
                       }}
                     />
                   </div>
@@ -401,7 +432,9 @@ function HomePage() {
       {/* Offer banners */}
       {(toggles.weddingBanner !== false || toggles.festivalBanner !== false) && (
         <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
-          <div className={`grid gap-5 ${toggles.weddingBanner !== false && toggles.festivalBanner !== false ? "lg:grid-cols-2" : "grid-cols-1"}`}>
+          <div
+            className={`grid gap-5 ${toggles.weddingBanner !== false && toggles.festivalBanner !== false ? "lg:grid-cols-2" : "grid-cols-1"}`}
+          >
             {toggles.weddingBanner !== false && (
               <div className="relative overflow-hidden rounded-3xl bg-gradient-maroon p-8 text-primary-foreground sm:p-12">
                 <span className="text-xs font-medium uppercase tracking-[0.3em] text-gold">
@@ -414,13 +447,19 @@ function HomePage() {
                   {weddingBannerData.description}
                 </p>
                 <Link
-                  to={weddingBannerData.ctaLink as any || "/shop"}
+                  to={(weddingBannerData.ctaLink as any) || "/shop"}
                   className="mt-7 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-medium text-gold-foreground"
                 >
                   {weddingBannerData.ctaText} <ArrowRight size={15} />
                 </Link>
-                 <img
-                  src={weddingBannerData.imageUrl ? (weddingBannerData.imageUrl.startsWith("http") ? weddingBannerData.imageUrl : `${API_BASE}${weddingBannerData.imageUrl}`) : saree2}
+                <img
+                  src={
+                    weddingBannerData.imageUrl
+                      ? weddingBannerData.imageUrl.startsWith("http")
+                        ? weddingBannerData.imageUrl
+                        : `${API_BASE}${weddingBannerData.imageUrl}`
+                      : saree2
+                  }
                   alt={weddingBannerData.title}
                   loading="lazy"
                   className="pointer-events-none absolute -bottom-6 -right-6 h-44 w-44 rotate-6 rounded-2xl object-cover opacity-90 sm:h-56 sm:w-56"
@@ -442,13 +481,19 @@ function HomePage() {
                   {festivalBannerData.description}
                 </p>
                 <Link
-                  to={festivalBannerData.ctaLink as any || "/shop"}
+                  to={(festivalBannerData.ctaLink as any) || "/shop"}
                   className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground"
                 >
                   {festivalBannerData.ctaText} <ArrowRight size={15} />
                 </Link>
-                 <img
-                  src={festivalBannerData.imageUrl ? (festivalBannerData.imageUrl.startsWith("http") ? festivalBannerData.imageUrl : `${API_BASE}${festivalBannerData.imageUrl}`) : saree5}
+                <img
+                  src={
+                    festivalBannerData.imageUrl
+                      ? festivalBannerData.imageUrl.startsWith("http")
+                        ? festivalBannerData.imageUrl
+                        : `${API_BASE}${festivalBannerData.imageUrl}`
+                      : saree5
+                  }
                   alt={festivalBannerData.title}
                   loading="lazy"
                   className="pointer-events-none absolute -bottom-6 -right-6 h-44 w-44 -rotate-6 rounded-2xl object-cover opacity-90 sm:h-56 sm:w-56"
@@ -488,28 +533,29 @@ function HomePage() {
               subtitle={occasionFinder.subtitle}
             />
             <div className="mt-12 grid grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-6">
-              {occasionFinder.items && occasionFinder.items.map((o: any, i: number) => {
-                const IconComponent = getIconByName(o.icon);
-                return (
-                  <motion.div
-                    key={o.name}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.05 }}
-                  >
-                    <Link
-                      to="/shop"
-                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center shadow-soft transition-all hover:border-gold hover:shadow-card"
+              {occasionFinder.items &&
+                occasionFinder.items.map((o: any, i: number) => {
+                  const IconComponent = getIconByName(o.icon);
+                  return (
+                    <motion.div
+                      key={o.name}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: i * 0.05 }}
                     >
-                      <div className="grid h-14 w-14 place-items-center rounded-full bg-secondary text-primary transition-colors group-hover:bg-gold group-hover:text-gold-foreground">
-                        <IconComponent size={24} />
-                      </div>
-                      <span className="text-sm font-medium text-foreground">{o.name}</span>
-                    </Link>
-                  </motion.div>
-                );
-              })}
+                      <Link
+                        to="/shop"
+                        className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center shadow-soft transition-all hover:border-gold hover:shadow-card"
+                      >
+                        <div className="grid h-14 w-14 place-items-center rounded-full bg-secondary text-primary transition-colors group-hover:bg-gold group-hover:text-gold-foreground">
+                          <IconComponent size={24} />
+                        </div>
+                        <span className="text-sm font-medium text-foreground">{o.name}</span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
             </div>
           </div>
         </section>
@@ -544,30 +590,28 @@ function HomePage() {
       {toggles.heroCarousel !== false && (
         <section className="bg-gradient-champagne border-y border-border/45 py-24 sm:py-32">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <SectionHeading
-              eyebrow={promiseSection.eyebrow}
-              title={promiseSection.title}
-            />
+            <SectionHeading eyebrow={promiseSection.eyebrow} title={promiseSection.title} />
             <div className="mt-12 grid grid-cols-2 gap-5 lg:grid-cols-4">
-              {promiseSection.cards && promiseSection.cards.map((w: any, i: number) => {
-                const IconComponent = getIconByName(w.icon);
-                return (
-                  <motion.div
-                    key={w.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.45, delay: i * 0.07 }}
-                    className="rounded-2xl border border-border bg-card p-6 text-center shadow-soft"
-                  >
-                    <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary text-primary-foreground">
-                      <IconComponent size={24} />
-                    </div>
-                    <h3 className="mt-5 text-base font-semibold text-foreground">{w.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">{w.text}</p>
-                  </motion.div>
-                );
-              })}
+              {promiseSection.cards &&
+                promiseSection.cards.map((w: any, i: number) => {
+                  const IconComponent = getIconByName(w.icon);
+                  return (
+                    <motion.div
+                      key={w.title}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.45, delay: i * 0.07 }}
+                      className="rounded-2xl border border-border bg-card p-6 text-center shadow-soft"
+                    >
+                      <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary text-primary-foreground">
+                        <IconComponent size={24} />
+                      </div>
+                      <h3 className="mt-5 text-base font-semibold text-foreground">{w.title}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground">{w.text}</p>
+                    </motion.div>
+                  );
+                })}
             </div>
           </div>
         </section>
@@ -603,7 +647,8 @@ function HomePage() {
                       alt={t.name}
                       className="h-10 w-10 rounded-full object-cover border border-border"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name || "User")}&background=800020&color=fff`;
+                        (e.target as HTMLImageElement).src =
+                          `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name || "User")}&background=800020&color=fff`;
                       }}
                     />
                   )}
@@ -655,9 +700,7 @@ function HomePage() {
         <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6">
           <div className="overflow-hidden rounded-3xl bg-gradient-maroon px-6 py-14 text-center text-primary-foreground sm:px-12">
             <Sparkles className="mx-auto text-gold" size={28} />
-            <h2 className="mt-4 font-display text-3xl font-bold sm:text-4xl">
-              {newsletter.title}
-            </h2>
+            <h2 className="mt-4 font-display text-3xl font-bold sm:text-4xl">{newsletter.title}</h2>
             <p className="mx-auto mt-3 max-w-md text-sm text-primary-foreground/80">
               {newsletter.subtitle}
             </p>

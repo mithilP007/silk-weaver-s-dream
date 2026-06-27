@@ -8,12 +8,14 @@ async function main() {
       where: { id: settings.id },
       data: {
         heroTitle: "Draped in Timeless Elegance",
-        heroSubtitle: "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees, made for the moments you'll cherish forever.",
+        heroSubtitle:
+          "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees, made for the moments you'll cherish forever.",
         heroImage: "/uploads/products/hero-saree.jpg",
         hero: {
           eyebrow: "Heritage Weaves",
           title: "Draped in Timeless Elegance",
-          subtitle: "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees, made for the moments you'll cherish forever.",
+          subtitle:
+            "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees, made for the moments you'll cherish forever.",
           primaryCtaText: "Explore Collection",
           primaryCtaLink: "/shop",
           secondaryCtaText: "Shop All Sarees",
@@ -24,10 +26,10 @@ async function main() {
           stats: [
             { value: "25+", label: "Years of Heritage" },
             { value: "50k+", label: "Happy Customers" },
-            { value: "100%", label: "Pure Silk" }
-          ]
-        }
-      }
+            { value: "100%", label: "Pure Silk" },
+          ],
+        },
+      },
     });
     console.log("Database settings reset successfully!");
   } else {
@@ -35,12 +37,14 @@ async function main() {
     await prisma.homeSettings.create({
       data: {
         heroTitle: "Draped in Timeless Elegance",
-        heroSubtitle: "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees, made for the moments you'll cherish forever.",
+        heroSubtitle:
+          "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees, made for the moments you'll cherish forever.",
         heroImage: "/uploads/products/hero-saree.jpg",
         hero: {
           eyebrow: "Heritage Weaves",
           title: "Draped in Timeless Elegance",
-          subtitle: "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees, made for the moments you'll cherish forever.",
+          subtitle:
+            "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees, made for the moments you'll cherish forever.",
           primaryCtaText: "Explore Collection",
           primaryCtaLink: "/shop",
           secondaryCtaText: "Shop All Sarees",
@@ -51,17 +55,17 @@ async function main() {
           stats: [
             { value: "25+", label: "Years of Heritage" },
             { value: "50k+", label: "Happy Customers" },
-            { value: "100%", label: "Pure Silk" }
-          ]
-        }
-      }
+            { value: "100%", label: "Pure Silk" },
+          ],
+        },
+      },
     });
     console.log("Database settings created successfully!");
   }
 }
 
 main()
-  .catch(e => {
+  .catch((e) => {
     console.error(e);
   })
   .finally(async () => {

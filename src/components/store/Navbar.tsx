@@ -5,14 +5,13 @@ import { Search, Heart, ShoppingBag, User, Menu, X } from "lucide-react";
 import { useStore } from "@/store/StoreContext";
 import { API_BASE } from "@/lib/api";
 
-
 export function Navbar() {
   const { cartCount, wishlist } = useStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
-  
+
   const [settings, setSettings] = useState<any>(null);
 
   useEffect(() => {
@@ -32,9 +31,10 @@ export function Navbar() {
   const logoUrl = header?.logoUrl || "";
 
   // Helper to split brand name gracefully
-  const displayBrand = brandName.endsWith(tagline) && tagline
-    ? brandName.substring(0, brandName.length - tagline.length).trim()
-    : brandName;
+  const displayBrand =
+    brandName.endsWith(tagline) && tagline
+      ? brandName.substring(0, brandName.length - tagline.length).trim()
+      : brandName;
 
   const whatsappUrl = "https://wa.me/919443210987"; // Placeholder to be customized later
 
@@ -48,11 +48,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
-        <button
-          className="lg:hidden"
-          aria-label="Open menu"
-          onClick={() => setMobileOpen(true)}
-        >
+        <button className="lg:hidden" aria-label="Open menu" onClick={() => setMobileOpen(true)}>
           <Menu size={22} />
         </button>
 

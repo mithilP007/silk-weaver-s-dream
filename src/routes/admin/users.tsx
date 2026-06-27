@@ -90,26 +90,33 @@ function AdminUsers() {
           Customer & Staff Directory
         </h1>
         <p className="text-sm text-[#6e5d53] mt-1">
-          Review customer registrations, activate administrative privileges, and check account statuses.
+          Review customer registrations, activate administrative privileges, and check account
+          statuses.
         </p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid gap-5 sm:grid-cols-3">
         <div className="rounded-2xl border border-[#e8dfd8] bg-white p-5 shadow-soft">
-          <p className="text-xs font-semibold uppercase tracking-wider text-[#6e5d53]">Registered Customers</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#6e5d53]">
+            Registered Customers
+          </p>
           <p className="font-display text-2xl font-bold text-[#2c2623] mt-2">
             {users.filter((u) => u.role !== "admin").length} Accounts
           </p>
         </div>
         <div className="rounded-2xl border border-[#e8dfd8] bg-white p-5 shadow-soft">
-          <p className="text-xs font-semibold uppercase tracking-wider text-[#6e5d53]">Boutique Staff</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#6e5d53]">
+            Boutique Staff
+          </p>
           <p className="font-display text-2xl font-bold text-primary mt-2">
             {users.filter((u) => u.role === "admin").length} Admins
           </p>
         </div>
         <div className="rounded-2xl border border-[#e8dfd8] bg-white p-5 shadow-soft">
-          <p className="text-xs font-semibold uppercase tracking-wider text-[#6e5d53]">Active Sessions</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#6e5d53]">
+            Active Sessions
+          </p>
           <p className="font-display text-2xl font-bold text-emerald-600 mt-2">Live Now</p>
         </div>
       </div>
@@ -166,7 +173,9 @@ function AdminUsers() {
                         </div>
                         <div>
                           <p className="font-bold text-sm leading-snug">{u.name}</p>
-                          <p className="text-[10px] text-muted-foreground mt-0.5 font-mono">{u.id}</p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5 font-mono">
+                            {u.id}
+                          </p>
                         </div>
                       </div>
                     </td>

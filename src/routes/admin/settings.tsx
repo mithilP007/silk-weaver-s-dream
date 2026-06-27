@@ -24,7 +24,7 @@ import {
   Mail,
   Home,
   Check,
-  ListFilter
+  ListFilter,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { API_BASE } from "@/lib/api";
@@ -34,7 +34,20 @@ export const Route = createFileRoute("/admin/settings")({
 });
 
 const AVAILABLE_ICONS = [
-  "Award", "ShieldCheck", "Truck", "Headphones", "Crown", "Sparkles", "PartyPopper", "Landmark", "Sun", "Gift", "Heart", "Star", "Phone", "Mail"
+  "Award",
+  "ShieldCheck",
+  "Truck",
+  "Headphones",
+  "Crown",
+  "Sparkles",
+  "PartyPopper",
+  "Landmark",
+  "Sun",
+  "Gift",
+  "Heart",
+  "Star",
+  "Phone",
+  "Mail",
 ];
 
 // Reusable Image Upload component with Canvas-based Compression and paste URL support
@@ -43,7 +56,7 @@ function ImageUploadField({
   value,
   onChange,
   onRemove,
-  recommendedSize = "Recommended size: 1080x1440 px"
+  recommendedSize = "Recommended size: 1080x1440 px",
 }: {
   label: string;
   value: string;
@@ -148,12 +161,18 @@ function ImageUploadField({
           }}
           className={cn(
             "relative border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center text-center transition-all min-h-[140px]",
-            dragActive ? "border-[#d4af37] bg-[#fbfaf7]" : "border-[#e8dfd8] bg-[#fbfaf7]/40 hover:bg-[#fbfaf7]/60"
+            dragActive
+              ? "border-[#d4af37] bg-[#fbfaf7]"
+              : "border-[#e8dfd8] bg-[#fbfaf7]/40 hover:bg-[#fbfaf7]/60",
           )}
         >
           {value ? (
             <div className="relative group w-full flex flex-col items-center">
-              <img src={value} alt="Preview" className="max-h-[120px] rounded-lg object-contain border border-[#e8dfd8]" />
+              <img
+                src={value}
+                alt="Preview"
+                className="max-h-[120px] rounded-lg object-contain border border-[#e8dfd8]"
+              />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-lg gap-2">
                 <label className="cursor-pointer bg-white text-primary px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-secondary">
                   Replace
@@ -369,7 +388,7 @@ function AdminSettings() {
       const res = await response.json();
       if (!response.ok || !res.success) throw new Error(res.message);
       toast.success(`${sectionName} CMS configurations saved live!`);
-      
+
       // Reload from DB to keep component values synchronized
       const homeRes = await fetch(`${API_BASE}/api/settings/home`);
       const homeData = await homeRes.json();
@@ -443,7 +462,7 @@ function AdminSettings() {
       location: "City",
       text: "The saree and fabric quality is absolutely premium.",
       rating: 5,
-      avatar: "NC"
+      avatar: "NC",
     });
     setHomeSettings({ ...homeSettings, testimonials: list });
   };
@@ -569,7 +588,8 @@ function AdminSettings() {
           Boutique CMS & Operations Center
         </h1>
         <p className="text-sm text-[#6e5d53] mt-1">
-          Configure backend gateway credentials, logistics settings, and update home storefront content dynamically.
+          Configure backend gateway credentials, logistics settings, and update home storefront
+          content dynamically.
         </p>
       </div>
 
@@ -605,7 +625,7 @@ function AdminSettings() {
                     "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-xs font-bold transition-all cursor-pointer",
                     activeTab === t.id
                       ? "bg-[#3a1d13] text-white shadow-soft"
-                      : "text-[#6e5d53] hover:bg-[#fbfaf7] hover:text-[#2c2623]"
+                      : "text-[#6e5d53] hover:bg-[#fbfaf7] hover:text-[#2c2623]",
                   )}
                 >
                   <TabIcon size={16} />
@@ -629,7 +649,9 @@ function AdminSettings() {
                   </div>
                   <div>
                     <h3 className="font-display text-lg font-bold">Razorpay Integration</h3>
-                    <p className="text-[10px] text-muted-foreground">Manage your online credit card and UPI gateway.</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      Manage your online credit card and UPI gateway.
+                    </p>
                   </div>
                 </div>
 
@@ -637,7 +659,9 @@ function AdminSettings() {
                   <div className="flex items-center justify-between rounded-xl bg-[#fbfaf7] border border-[#f3ede8] p-3.5">
                     <div>
                       <p className="font-bold text-xs">Enable Razorpay Payments</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">Let clients pay securely online at checkout.</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        Let clients pay securely online at checkout.
+                      </p>
                     </div>
                     <button
                       type="button"
@@ -653,7 +677,9 @@ function AdminSettings() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Gateway Mode</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Gateway Mode
+                    </label>
                     <div className="flex gap-2">
                       <button
                         type="button"
@@ -662,7 +688,7 @@ function AdminSettings() {
                           "flex-1 rounded-xl border py-2 text-xs font-bold transition-all cursor-pointer",
                           rzpMode === "test"
                             ? "border-[#d4af37] bg-[#fbfaf7] text-primary"
-                            : "border-[#e8dfd8] bg-white text-[#6e5d53]"
+                            : "border-[#e8dfd8] bg-white text-[#6e5d53]",
                         )}
                       >
                         Test/Sandbox
@@ -674,7 +700,7 @@ function AdminSettings() {
                           "flex-1 rounded-xl border py-2 text-xs font-bold transition-all cursor-pointer",
                           rzpMode === "live"
                             ? "border-red-200 bg-red-50 text-red-700"
-                            : "border-[#e8dfd8] bg-white text-[#6e5d53]"
+                            : "border-[#e8dfd8] bg-white text-[#6e5d53]",
                         )}
                       >
                         Live Production
@@ -683,7 +709,9 @@ function AdminSettings() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Razorpay Key ID</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Razorpay Key ID
+                    </label>
                     <input
                       type="text"
                       required
@@ -695,7 +723,9 @@ function AdminSettings() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Razorpay Key Secret</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Razorpay Key Secret
+                    </label>
                     <input
                       type="password"
                       required
@@ -725,14 +755,18 @@ function AdminSettings() {
                   </div>
                   <div>
                     <h3 className="font-display text-lg font-bold">Logistics & Shipping Rules</h3>
-                    <p className="text-[10px] text-muted-foreground">Adjust standard rates and cash on delivery eligibility.</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      Adjust standard rates and cash on delivery eligibility.
+                    </p>
                   </div>
                 </div>
 
                 <form onSubmit={handleSaveShipping} className="space-y-4 text-sm text-[#2c2623]">
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Shipping charge (₹)</label>
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                        Shipping charge (₹)
+                      </label>
                       <input
                         type="number"
                         required
@@ -742,7 +776,9 @@ function AdminSettings() {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Free Shipping Cap (₹)</label>
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                        Free Shipping Cap (₹)
+                      </label>
                       <input
                         type="number"
                         required
@@ -754,7 +790,9 @@ function AdminSettings() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Transit Period (Days)</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Transit Period (Days)
+                    </label>
                     <input
                       type="number"
                       required
@@ -767,7 +805,9 @@ function AdminSettings() {
                   <div className="flex items-center justify-between rounded-xl bg-[#fbfaf7] border border-[#f3ede8] p-3.5">
                     <div>
                       <p className="font-bold text-xs">Allow Cash on Delivery (COD)</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">Let clients pay cash upon saree delivery.</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        Let clients pay cash upon saree delivery.
+                      </p>
                     </div>
                     <button
                       type="button"
@@ -801,7 +841,9 @@ function AdminSettings() {
               <div className="flex items-center justify-between border-b border-[#f3ede8] pb-4">
                 <div>
                   <h3 className="font-display text-lg font-bold">Top Announcement Bar Messages</h3>
-                  <p className="text-[10px] text-muted-foreground">Manage small announcements scrolling on top of storefront pages.</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    Manage small announcements scrolling on top of storefront pages.
+                  </p>
                 </div>
                 <button
                   type="button"
@@ -814,12 +856,19 @@ function AdminSettings() {
 
               <div className="space-y-4">
                 {(!homeSettings.announcements || homeSettings.announcements.length === 0) && (
-                  <p className="text-xs text-muted-foreground italic text-center py-6">No announcements configured yet. Click above to add one.</p>
+                  <p className="text-xs text-muted-foreground italic text-center py-6">
+                    No announcements configured yet. Click above to add one.
+                  </p>
                 )}
                 {homeSettings.announcements?.map((item: any, idx: number) => (
-                  <div key={idx} className="border border-[#e8dfd8] bg-[#fbfaf7]/60 rounded-2xl p-4 space-y-3 relative">
+                  <div
+                    key={idx}
+                    className="border border-[#e8dfd8] bg-[#fbfaf7]/60 rounded-2xl p-4 space-y-3 relative"
+                  >
                     <div className="flex justify-between items-center">
-                      <span className="text-xs font-bold text-[#3a1d13]">Announcement #{idx + 1}</span>
+                      <span className="text-xs font-bold text-[#3a1d13]">
+                        Announcement #{idx + 1}
+                      </span>
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
@@ -849,7 +898,9 @@ function AdminSettings() {
 
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-muted-foreground uppercase">Announcement text</label>
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase">
+                          Announcement text
+                        </label>
                         <input
                           type="text"
                           required
@@ -860,7 +911,9 @@ function AdminSettings() {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-muted-foreground uppercase">Action Redirect Link (Optional)</label>
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase">
+                          Action Redirect Link (Optional)
+                        </label>
                         <input
                           type="text"
                           value={item.link || ""}
@@ -879,7 +932,10 @@ function AdminSettings() {
                         onChange={(e) => handleAnnouncementChange(idx, "enabled", e.target.checked)}
                         className="rounded border-[#e8dfd8] text-primary focus:ring-0"
                       />
-                      <label htmlFor={`ann-chk-${idx}`} className="text-xs text-muted-foreground select-none">
+                      <label
+                        htmlFor={`ann-chk-${idx}`}
+                        className="text-xs text-muted-foreground select-none"
+                      >
                         Show this announcement live on storefront
                       </label>
                     </div>
@@ -890,7 +946,12 @@ function AdminSettings() {
               <div className="flex justify-end pt-4 border-t border-[#f3ede8]">
                 <button
                   type="button"
-                  onClick={() => handleSaveSettingsPart({ announcements: homeSettings.announcements }, "Announcement Bar")}
+                  onClick={() =>
+                    handleSaveSettingsPart(
+                      { announcements: homeSettings.announcements },
+                      "Announcement Bar",
+                    )
+                  }
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save size={14} /> Save Announcement Bar
@@ -903,50 +964,66 @@ function AdminSettings() {
           {activeTab === "header" && (
             <div className="rounded-2xl border border-[#e8dfd8] bg-white p-6 shadow-soft space-y-6">
               <div className="border-b border-[#f3ede8] pb-4">
-                <h3 className="font-display text-lg font-bold">Header branding & Navigation Labels</h3>
-                <p className="text-[10px] text-muted-foreground">Adjust storefront name, upload boutique logo, and customize menu links.</p>
+                <h3 className="font-display text-lg font-bold">
+                  Header branding & Navigation Labels
+                </h3>
+                <p className="text-[10px] text-muted-foreground">
+                  Adjust storefront name, upload boutique logo, and customize menu links.
+                </p>
               </div>
 
               <div className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Boutique brand name</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Boutique brand name
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.header?.brandName || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        header: { ...homeSettings.header, brandName: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          header: { ...homeSettings.header, brandName: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Tagline / Subtext logo</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Tagline / Subtext logo
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.header?.tagline || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        header: { ...homeSettings.header, tagline: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          header: { ...homeSettings.header, tagline: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Customer Hotline phone</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Customer Hotline phone
+                  </label>
                   <input
                     type="text"
                     required
                     value={homeSettings.header?.contactNumber || ""}
-                    onChange={(e) => setHomeSettings({
-                      ...homeSettings,
-                      header: { ...homeSettings.header, contactNumber: e.target.value }
-                    })}
+                    onChange={(e) =>
+                      setHomeSettings({
+                        ...homeSettings,
+                        header: { ...homeSettings.header, contactNumber: e.target.value },
+                      })
+                    }
                     className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                   />
                 </div>
@@ -954,97 +1031,138 @@ function AdminSettings() {
                 <ImageUploadField
                   label="Boutique Logo image (replaces text logo if uploaded)"
                   value={homeSettings.header?.logoUrl || ""}
-                  onChange={(val) => setHomeSettings({
-                    ...homeSettings,
-                    header: { ...homeSettings.header, logoUrl: val }
-                  })}
-                  onRemove={() => setHomeSettings({
-                    ...homeSettings,
-                    header: { ...homeSettings.header, logoUrl: "" }
-                  })}
+                  onChange={(val) =>
+                    setHomeSettings({
+                      ...homeSettings,
+                      header: { ...homeSettings.header, logoUrl: val },
+                    })
+                  }
+                  onRemove={() =>
+                    setHomeSettings({
+                      ...homeSettings,
+                      header: { ...homeSettings.header, logoUrl: "" },
+                    })
+                  }
                   recommendedSize="Recommended logo dimensions: 200x50 px, transparent background PNG preferred"
                 />
 
                 <div className="border border-[#e8dfd8] rounded-xl p-4 bg-[#fbfaf7]/60 space-y-3">
-                  <span className="text-xs font-bold text-[#3a1d13]">Menu Navigation Labels (Text-Editable)</span>
+                  <span className="text-xs font-bold text-[#3a1d13]">
+                    Menu Navigation Labels (Text-Editable)
+                  </span>
                   <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                     <div className="space-y-1">
-                      <label className="text-[10px] text-muted-foreground uppercase font-bold">Home</label>
+                      <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                        Home
+                      </label>
                       <input
                         type="text"
                         required
                         value={homeSettings.header?.navLabels?.home || "Home"}
-                        onChange={(e) => setHomeSettings({
-                          ...homeSettings,
-                          header: {
-                            ...homeSettings.header,
-                            navLabels: { ...(homeSettings.header?.navLabels || {}), home: e.target.value }
-                          }
-                        })}
+                        onChange={(e) =>
+                          setHomeSettings({
+                            ...homeSettings,
+                            header: {
+                              ...homeSettings.header,
+                              navLabels: {
+                                ...(homeSettings.header?.navLabels || {}),
+                                home: e.target.value,
+                              },
+                            },
+                          })
+                        }
                         className="w-full rounded-xl border border-[#e8dfd8] bg-white px-3 py-2 text-xs outline-none focus:border-[#d4af37]"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] text-muted-foreground uppercase font-bold">Silk Sarees</label>
+                      <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                        Silk Sarees
+                      </label>
                       <input
                         type="text"
                         required
                         value={homeSettings.header?.navLabels?.silkSarees || "Silk Sarees"}
-                        onChange={(e) => setHomeSettings({
-                          ...homeSettings,
-                          header: {
-                            ...homeSettings.header,
-                            navLabels: { ...(homeSettings.header?.navLabels || {}), silkSarees: e.target.value }
-                          }
-                        })}
+                        onChange={(e) =>
+                          setHomeSettings({
+                            ...homeSettings,
+                            header: {
+                              ...homeSettings.header,
+                              navLabels: {
+                                ...(homeSettings.header?.navLabels || {}),
+                                silkSarees: e.target.value,
+                              },
+                            },
+                          })
+                        }
                         className="w-full rounded-xl border border-[#e8dfd8] bg-white px-3 py-2 text-xs outline-none focus:border-[#d4af37]"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] text-muted-foreground uppercase font-bold">Shop</label>
+                      <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                        Shop
+                      </label>
                       <input
                         type="text"
                         required
                         value={homeSettings.header?.navLabels?.shop || "Shop"}
-                        onChange={(e) => setHomeSettings({
-                          ...homeSettings,
-                          header: {
-                            ...homeSettings.header,
-                            navLabels: { ...(homeSettings.header?.navLabels || {}), shop: e.target.value }
-                          }
-                        })}
+                        onChange={(e) =>
+                          setHomeSettings({
+                            ...homeSettings,
+                            header: {
+                              ...homeSettings.header,
+                              navLabels: {
+                                ...(homeSettings.header?.navLabels || {}),
+                                shop: e.target.value,
+                              },
+                            },
+                          })
+                        }
                         className="w-full rounded-xl border border-[#e8dfd8] bg-white px-3 py-2 text-xs outline-none focus:border-[#d4af37]"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] text-muted-foreground uppercase font-bold">About</label>
+                      <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                        About
+                      </label>
                       <input
                         type="text"
                         required
                         value={homeSettings.header?.navLabels?.about || "About"}
-                        onChange={(e) => setHomeSettings({
-                          ...homeSettings,
-                          header: {
-                            ...homeSettings.header,
-                            navLabels: { ...(homeSettings.header?.navLabels || {}), about: e.target.value }
-                          }
-                        })}
+                        onChange={(e) =>
+                          setHomeSettings({
+                            ...homeSettings,
+                            header: {
+                              ...homeSettings.header,
+                              navLabels: {
+                                ...(homeSettings.header?.navLabels || {}),
+                                about: e.target.value,
+                              },
+                            },
+                          })
+                        }
                         className="w-full rounded-xl border border-[#e8dfd8] bg-white px-3 py-2 text-xs outline-none focus:border-[#d4af37]"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] text-muted-foreground uppercase font-bold">Contact</label>
+                      <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                        Contact
+                      </label>
                       <input
                         type="text"
                         required
                         value={homeSettings.header?.navLabels?.contact || "Contact"}
-                        onChange={(e) => setHomeSettings({
-                          ...homeSettings,
-                          header: {
-                            ...homeSettings.header,
-                            navLabels: { ...(homeSettings.header?.navLabels || {}), contact: e.target.value }
-                          }
-                        })}
+                        onChange={(e) =>
+                          setHomeSettings({
+                            ...homeSettings,
+                            header: {
+                              ...homeSettings.header,
+                              navLabels: {
+                                ...(homeSettings.header?.navLabels || {}),
+                                contact: e.target.value,
+                              },
+                            },
+                          })
+                        }
                         className="w-full rounded-xl border border-[#e8dfd8] bg-white px-3 py-2 text-xs outline-none focus:border-[#d4af37]"
                       />
                     </div>
@@ -1055,7 +1173,9 @@ function AdminSettings() {
               <div className="flex justify-end pt-4 border-t border-[#f3ede8]">
                 <button
                   type="button"
-                  onClick={() => handleSaveSettingsPart({ header: homeSettings.header }, "Header & Branding")}
+                  onClick={() =>
+                    handleSaveSettingsPart({ header: homeSettings.header }, "Header & Branding")
+                  }
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save size={14} /> Save Header Configs
@@ -1069,77 +1189,99 @@ function AdminSettings() {
             <div className="rounded-2xl border border-[#e8dfd8] bg-white p-6 shadow-soft space-y-6">
               <div className="border-b border-[#f3ede8] pb-4">
                 <h3 className="font-display text-lg font-bold">Homepage Main Hero Panel</h3>
-                <p className="text-[10px] text-muted-foreground">Modify showcase headline content, CTA redirects, stats details, and rating cards.</p>
+                <p className="text-[10px] text-muted-foreground">
+                  Modify showcase headline content, CTA redirects, stats details, and rating cards.
+                </p>
               </div>
 
               <div className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Eyebrow Title</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Eyebrow Title
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.hero?.eyebrow || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        hero: { ...homeSettings.hero, eyebrow: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          hero: { ...homeSettings.hero, eyebrow: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Main Title Headline</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Main Title Headline
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.hero?.title || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        hero: { ...homeSettings.hero, title: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          hero: { ...homeSettings.hero, title: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Subtitle Paragraph description</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Subtitle Paragraph description
+                  </label>
                   <textarea
                     rows={3}
                     required
                     value={homeSettings.hero?.subtitle || ""}
-                    onChange={(e) => setHomeSettings({
-                      ...homeSettings,
-                      hero: { ...homeSettings.hero, subtitle: e.target.value }
-                    })}
+                    onChange={(e) =>
+                      setHomeSettings({
+                        ...homeSettings,
+                        hero: { ...homeSettings.hero, subtitle: e.target.value },
+                      })
+                    }
                     className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                   />
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2 border-t border-[#f3ede8] pt-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Primary CTA Text</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Primary CTA Text
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.hero?.primaryCtaText || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        hero: { ...homeSettings.hero, primaryCtaText: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          hero: { ...homeSettings.hero, primaryCtaText: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Primary CTA Link</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Primary CTA Link
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.hero?.primaryCtaLink || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        hero: { ...homeSettings.hero, primaryCtaLink: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          hero: { ...homeSettings.hero, primaryCtaLink: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
@@ -1147,26 +1289,34 @@ function AdminSettings() {
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Secondary CTA Text</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Secondary CTA Text
+                    </label>
                     <input
                       type="text"
                       value={homeSettings.hero?.secondaryCtaText || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        hero: { ...homeSettings.hero, secondaryCtaText: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          hero: { ...homeSettings.hero, secondaryCtaText: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Secondary CTA Link</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Secondary CTA Link
+                    </label>
                     <input
                       type="text"
                       value={homeSettings.hero?.secondaryCtaLink || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        hero: { ...homeSettings.hero, secondaryCtaLink: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          hero: { ...homeSettings.hero, secondaryCtaLink: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
@@ -1174,38 +1324,53 @@ function AdminSettings() {
 
                 <div className="grid gap-4 sm:grid-cols-2 border-t border-[#f3ede8] pt-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Rating Score value</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Rating Score value
+                    </label>
                     <input
                       type="text"
                       value={homeSettings.hero?.ratingValue || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        hero: { ...homeSettings.hero, ratingValue: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          hero: { ...homeSettings.hero, ratingValue: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Rating card text</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Rating card text
+                    </label>
                     <input
                       type="text"
                       value={homeSettings.hero?.ratingText || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        hero: { ...homeSettings.hero, ratingText: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          hero: { ...homeSettings.hero, ratingText: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-3 border-t border-[#f3ede8] pt-4">
-                  <span className="text-xs font-bold text-[#3a1d13] block">Heritage stats list</span>
+                  <span className="text-xs font-bold text-[#3a1d13] block">
+                    Heritage stats list
+                  </span>
                   <div className="grid gap-4 sm:grid-cols-3">
                     {homeSettings.hero?.stats?.map((stat: any, index: number) => (
-                      <div key={index} className="border border-[#e8dfd8] rounded-xl p-3 bg-[#fbfaf7] space-y-2">
+                      <div
+                        key={index}
+                        className="border border-[#e8dfd8] rounded-xl p-3 bg-[#fbfaf7] space-y-2"
+                      >
                         <div className="space-y-0.5">
-                          <label className="text-[9px] uppercase font-bold text-muted-foreground">Stat Value</label>
+                          <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                            Stat Value
+                          </label>
                           <input
                             type="text"
                             required
@@ -1215,14 +1380,16 @@ function AdminSettings() {
                               statsList[index] = { ...statsList[index], value: e.target.value };
                               setHomeSettings({
                                 ...homeSettings,
-                                hero: { ...homeSettings.hero, stats: statsList }
+                                hero: { ...homeSettings.hero, stats: statsList },
                               });
                             }}
                             className="w-full rounded-lg border border-[#e8dfd8] bg-white px-2 py-1 text-xs outline-none focus:border-[#d4af37]"
                           />
                         </div>
                         <div className="space-y-0.5">
-                          <label className="text-[9px] uppercase font-bold text-muted-foreground">Stat Label</label>
+                          <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                            Stat Label
+                          </label>
                           <input
                             type="text"
                             required
@@ -1232,7 +1399,7 @@ function AdminSettings() {
                               statsList[index] = { ...statsList[index], label: e.target.value };
                               setHomeSettings({
                                 ...homeSettings,
-                                hero: { ...homeSettings.hero, stats: statsList }
+                                hero: { ...homeSettings.hero, stats: statsList },
                               });
                             }}
                             className="w-full rounded-lg border border-[#e8dfd8] bg-white px-2 py-1 text-xs outline-none focus:border-[#d4af37]"
@@ -1246,27 +1413,36 @@ function AdminSettings() {
                 <ImageUploadField
                   label="Main Hero image (showcase saree)"
                   value={homeSettings.hero?.imageUrl || ""}
-                  onChange={(val) => setHomeSettings({
-                    ...homeSettings,
-                    hero: { ...homeSettings.hero, imageUrl: val }
-                  })}
-                  onRemove={() => setHomeSettings({
-                    ...homeSettings,
-                    hero: { ...homeSettings.hero, imageUrl: "" }
-                  })}
+                  onChange={(val) =>
+                    setHomeSettings({
+                      ...homeSettings,
+                      hero: { ...homeSettings.hero, imageUrl: val },
+                    })
+                  }
+                  onRemove={() =>
+                    setHomeSettings({
+                      ...homeSettings,
+                      hero: { ...homeSettings.hero, imageUrl: "" },
+                    })
+                  }
                 />
               </div>
 
               <div className="flex justify-end pt-4 border-t border-[#f3ede8]">
                 <button
                   type="button"
-                  onClick={() => handleSaveSettingsPart({
-                    hero: homeSettings.hero,
-                    // Keep legacy columns aligned
-                    heroTitle: homeSettings.hero?.title,
-                    heroSubtitle: homeSettings.hero?.subtitle,
-                    heroImage: homeSettings.hero?.imageUrl
-                  }, "Hero Section")}
+                  onClick={() =>
+                    handleSaveSettingsPart(
+                      {
+                        hero: homeSettings.hero,
+                        // Keep legacy columns aligned
+                        heroTitle: homeSettings.hero?.title,
+                        heroSubtitle: homeSettings.hero?.subtitle,
+                        heroImage: homeSettings.hero?.imageUrl,
+                      },
+                      "Hero Section",
+                    )
+                  }
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save size={14} /> Save Hero Section
@@ -1280,16 +1456,27 @@ function AdminSettings() {
             <div className="rounded-2xl border border-[#e8dfd8] bg-white p-6 shadow-soft space-y-6">
               <div className="border-b border-[#f3ede8] pb-4">
                 <h3 className="font-display text-lg font-bold">Storefront Showcase Banners</h3>
-                <p className="text-[10px] text-muted-foreground">Adjust titles, subtitles, call-to-actions, and background images for promo blocks.</p>
+                <p className="text-[10px] text-muted-foreground">
+                  Adjust titles, subtitles, call-to-actions, and background images for promo blocks.
+                </p>
               </div>
 
               <div className="space-y-8">
                 {/* 1. Wedding Banner */}
                 {(() => {
                   const idx = homeSettings.banners?.findIndex((b: any) => b.id === "wedding") ?? -1;
-                  const item = idx !== -1 ? homeSettings.banners[idx] : {
-                    id: "wedding", label: "Limited Time", title: "Wedding Collection", description: "Up to 30% off on bridal Kanchipuram silks.", ctaText: "Shop the Sale", ctaLink: "/shop", imageUrl: ""
-                  };
+                  const item =
+                    idx !== -1
+                      ? homeSettings.banners[idx]
+                      : {
+                          id: "wedding",
+                          label: "Limited Time",
+                          title: "Wedding Collection",
+                          description: "Up to 30% off on bridal Kanchipuram silks.",
+                          ctaText: "Shop the Sale",
+                          ctaLink: "/shop",
+                          imageUrl: "",
+                        };
                   const updateBannerField = (key: string, val: string) => {
                     const list = [...(homeSettings.banners || [])];
                     if (idx === -1) {
@@ -1301,10 +1488,14 @@ function AdminSettings() {
                   };
                   return (
                     <div className="border border-[#e8dfd8] rounded-2xl p-4 bg-[#fbfaf7]/40 space-y-3">
-                      <span className="text-xs font-bold text-[#3a1d13] block">Wedding Collection Banner promo</span>
+                      <span className="text-xs font-bold text-[#3a1d13] block">
+                        Wedding Collection Banner promo
+                      </span>
                       <div className="grid gap-3 sm:grid-cols-2">
                         <div className="space-y-1">
-                          <label className="text-[10px] text-muted-foreground uppercase font-bold">Banner Label (Eyebrow)</label>
+                          <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                            Banner Label (Eyebrow)
+                          </label>
                           <input
                             type="text"
                             required
@@ -1314,7 +1505,9 @@ function AdminSettings() {
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] text-muted-foreground uppercase font-bold">Banner Title Headline</label>
+                          <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                            Banner Title Headline
+                          </label>
                           <input
                             type="text"
                             required
@@ -1325,7 +1518,9 @@ function AdminSettings() {
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] text-muted-foreground uppercase font-bold">Banner Description text</label>
+                        <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                          Banner Description text
+                        </label>
                         <input
                           type="text"
                           required
@@ -1336,7 +1531,9 @@ function AdminSettings() {
                       </div>
                       <div className="grid gap-3 sm:grid-cols-2">
                         <div className="space-y-1">
-                          <label className="text-[10px] text-muted-foreground uppercase font-bold">CTA Button Text</label>
+                          <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                            CTA Button Text
+                          </label>
                           <input
                             type="text"
                             required
@@ -1346,7 +1543,9 @@ function AdminSettings() {
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] text-muted-foreground uppercase font-bold">CTA Button Link</label>
+                          <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                            CTA Button Link
+                          </label>
                           <input
                             type="text"
                             required
@@ -1368,10 +1567,20 @@ function AdminSettings() {
 
                 {/* 2. Festival Banner */}
                 {(() => {
-                  const idx = homeSettings.banners?.findIndex((b: any) => b.id === "festival") ?? -1;
-                  const item = idx !== -1 ? homeSettings.banners[idx] : {
-                    id: "festival", label: "New Season", title: "Festival Edit", description: "Radiant cotton silks & semi silks.", ctaText: "Discover Now", ctaLink: "/shop", imageUrl: ""
-                  };
+                  const idx =
+                    homeSettings.banners?.findIndex((b: any) => b.id === "festival") ?? -1;
+                  const item =
+                    idx !== -1
+                      ? homeSettings.banners[idx]
+                      : {
+                          id: "festival",
+                          label: "New Season",
+                          title: "Festival Edit",
+                          description: "Radiant cotton silks & semi silks.",
+                          ctaText: "Discover Now",
+                          ctaLink: "/shop",
+                          imageUrl: "",
+                        };
                   const updateBannerField = (key: string, val: string) => {
                     const list = [...(homeSettings.banners || [])];
                     if (idx === -1) {
@@ -1383,10 +1592,14 @@ function AdminSettings() {
                   };
                   return (
                     <div className="border border-[#e8dfd8] rounded-2xl p-4 bg-[#fbfaf7]/40 space-y-3">
-                      <span className="text-xs font-bold text-[#3a1d13] block">Festival Edit Banner promo</span>
+                      <span className="text-xs font-bold text-[#3a1d13] block">
+                        Festival Edit Banner promo
+                      </span>
                       <div className="grid gap-3 sm:grid-cols-2">
                         <div className="space-y-1">
-                          <label className="text-[10px] text-muted-foreground uppercase font-bold">Banner Label (Eyebrow)</label>
+                          <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                            Banner Label (Eyebrow)
+                          </label>
                           <input
                             type="text"
                             required
@@ -1396,7 +1609,9 @@ function AdminSettings() {
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] text-muted-foreground uppercase font-bold">Banner Title Headline</label>
+                          <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                            Banner Title Headline
+                          </label>
                           <input
                             type="text"
                             required
@@ -1407,7 +1622,9 @@ function AdminSettings() {
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] text-muted-foreground uppercase font-bold">Banner Description text</label>
+                        <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                          Banner Description text
+                        </label>
                         <input
                           type="text"
                           required
@@ -1418,7 +1635,9 @@ function AdminSettings() {
                       </div>
                       <div className="grid gap-3 sm:grid-cols-2">
                         <div className="space-y-1">
-                          <label className="text-[10px] text-muted-foreground uppercase font-bold">CTA Button Text</label>
+                          <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                            CTA Button Text
+                          </label>
                           <input
                             type="text"
                             required
@@ -1428,7 +1647,9 @@ function AdminSettings() {
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] text-muted-foreground uppercase font-bold">CTA Button Link</label>
+                          <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                            CTA Button Link
+                          </label>
                           <input
                             type="text"
                             required
@@ -1453,11 +1674,15 @@ function AdminSettings() {
                 <button
                   type="button"
                   onClick={() => {
-                    const weddingObj = homeSettings.banners?.find((b: any) => b.id === "wedding") || {};
-                    handleSaveSettingsPart({
-                      banners: homeSettings.banners,
-                      offerBanner: weddingObj.description || ""
-                    }, "Seasonal Banners");
+                    const weddingObj =
+                      homeSettings.banners?.find((b: any) => b.id === "wedding") || {};
+                    handleSaveSettingsPart(
+                      {
+                        banners: homeSettings.banners,
+                        offerBanner: weddingObj.description || "",
+                      },
+                      "Seasonal Banners",
+                    );
                   }}
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
@@ -1472,7 +1697,9 @@ function AdminSettings() {
             <div className="rounded-2xl border border-[#e8dfd8] bg-white p-6 shadow-soft space-y-6">
               <div className="border-b border-[#f3ede8] pb-4">
                 <h3 className="font-display text-lg font-bold">Homepage Active Section Toggles</h3>
-                <p className="text-[10px] text-muted-foreground">Dynamically turn on/off visual grids across the main storefront portal.</p>
+                <p className="text-[10px] text-muted-foreground">
+                  Dynamically turn on/off visual grids across the main storefront portal.
+                </p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2 text-sm text-[#2c2623]">
@@ -1491,10 +1718,15 @@ function AdminSettings() {
                 }).map(([key, label]) => {
                   const isActive = homeSettings.toggles?.[key] !== false;
                   return (
-                    <div key={key} className="flex items-center justify-between rounded-xl bg-[#fbfaf7] border border-[#f3ede8] p-3.5">
+                    <div
+                      key={key}
+                      className="flex items-center justify-between rounded-xl bg-[#fbfaf7] border border-[#f3ede8] p-3.5"
+                    >
                       <div>
                         <p className="font-bold text-xs">{label}</p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">Toggle visibility on home page.</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">
+                          Toggle visibility on home page.
+                        </p>
                       </div>
                       <button
                         type="button"
@@ -1519,7 +1751,9 @@ function AdminSettings() {
               <div className="flex justify-end pt-4 border-t border-[#f3ede8]">
                 <button
                   type="button"
-                  onClick={() => handleSaveSettingsPart({ toggles: homeSettings.toggles }, "Section Toggles")}
+                  onClick={() =>
+                    handleSaveSettingsPart({ toggles: homeSettings.toggles }, "Section Toggles")
+                  }
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save size={14} /> Save Toggles
@@ -1532,50 +1766,75 @@ function AdminSettings() {
           {activeTab === "categories" && (
             <div className="rounded-2xl border border-[#e8dfd8] bg-white p-6 shadow-soft space-y-6">
               <div className="border-b border-[#f3ede8] pb-4">
-                <h3 className="font-display text-lg font-bold">House of Silk Collections showcase</h3>
-                <p className="text-[10px] text-muted-foreground">Adjust section headers displayed above category card grids.</p>
+                <h3 className="font-display text-lg font-bold">
+                  House of Silk Collections showcase
+                </h3>
+                <p className="text-[10px] text-muted-foreground">
+                  Adjust section headers displayed above category card grids.
+                </p>
               </div>
 
               <div className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Section Eyebrow</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Section Eyebrow
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.categoriesSection?.eyebrow || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        categoriesSection: { ...homeSettings.categoriesSection, eyebrow: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          categoriesSection: {
+                            ...homeSettings.categoriesSection,
+                            eyebrow: e.target.value,
+                          },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Section Title</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Section Title
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.categoriesSection?.title || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        categoriesSection: { ...homeSettings.categoriesSection, title: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          categoriesSection: {
+                            ...homeSettings.categoriesSection,
+                            title: e.target.value,
+                          },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Section Subtitle</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Section Subtitle
+                  </label>
                   <textarea
                     rows={2}
                     required
                     value={homeSettings.categoriesSection?.subtitle || ""}
-                    onChange={(e) => setHomeSettings({
-                      ...homeSettings,
-                      categoriesSection: { ...homeSettings.categoriesSection, subtitle: e.target.value }
-                    })}
+                    onChange={(e) =>
+                      setHomeSettings({
+                        ...homeSettings,
+                        categoriesSection: {
+                          ...homeSettings.categoriesSection,
+                          subtitle: e.target.value,
+                        },
+                      })
+                    }
                     className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                   />
                 </div>
@@ -1584,7 +1843,12 @@ function AdminSettings() {
               <div className="flex justify-end pt-4 border-t border-[#f3ede8]">
                 <button
                   type="button"
-                  onClick={() => handleSaveSettingsPart({ categoriesSection: homeSettings.categoriesSection }, "Collections Highlight")}
+                  onClick={() =>
+                    handleSaveSettingsPart(
+                      { categoriesSection: homeSettings.categoriesSection },
+                      "Collections Highlight",
+                    )
+                  }
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save size={14} /> Save Section Content
@@ -1598,34 +1862,50 @@ function AdminSettings() {
             <div className="rounded-2xl border border-[#e8dfd8] bg-white p-6 shadow-soft space-y-6">
               <div className="border-b border-[#f3ede8] pb-4">
                 <h3 className="font-display text-lg font-bold">Trending & Featured Saree Grids</h3>
-                <p className="text-[10px] text-muted-foreground">Adjust visual subtitles and product quantities for hot grids.</p>
+                <p className="text-[10px] text-muted-foreground">
+                  Adjust visual subtitles and product quantities for hot grids.
+                </p>
               </div>
 
               <div className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Trending Eyebrow</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Trending Eyebrow
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.trendingSections?.trendingEyebrow || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        trendingSections: { ...homeSettings.trendingSections, trendingEyebrow: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          trendingSections: {
+                            ...homeSettings.trendingSections,
+                            trendingEyebrow: e.target.value,
+                          },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Trending Title</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Trending Title
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.trendingSections?.trendingTitle || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        trendingSections: { ...homeSettings.trendingSections, trendingTitle: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          trendingSections: {
+                            ...homeSettings.trendingSections,
+                            trendingTitle: e.target.value,
+                          },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
@@ -1633,28 +1913,42 @@ function AdminSettings() {
 
                 <div className="grid gap-4 sm:grid-cols-2 border-t border-[#f3ede8] pt-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">New Arrivals Eyebrow</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      New Arrivals Eyebrow
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.trendingSections?.newArrivalsEyebrow || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        trendingSections: { ...homeSettings.trendingSections, newArrivalsEyebrow: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          trendingSections: {
+                            ...homeSettings.trendingSections,
+                            newArrivalsEyebrow: e.target.value,
+                          },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">New Arrivals Title</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      New Arrivals Title
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.trendingSections?.newArrivalsTitle || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        trendingSections: { ...homeSettings.trendingSections, newArrivalsTitle: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          trendingSections: {
+                            ...homeSettings.trendingSections,
+                            newArrivalsTitle: e.target.value,
+                          },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
@@ -1662,43 +1956,64 @@ function AdminSettings() {
 
                 <div className="grid gap-4 sm:grid-cols-2 border-t border-[#f3ede8] pt-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Celebrity Eyebrow</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Celebrity Eyebrow
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.trendingSections?.celebrityEyebrow || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        trendingSections: { ...homeSettings.trendingSections, celebrityEyebrow: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          trendingSections: {
+                            ...homeSettings.trendingSections,
+                            celebrityEyebrow: e.target.value,
+                          },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Celebrity Title</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Celebrity Title
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.trendingSections?.celebrityTitle || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        trendingSections: { ...homeSettings.trendingSections, celebrityTitle: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          trendingSections: {
+                            ...homeSettings.trendingSections,
+                            celebrityTitle: e.target.value,
+                          },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5 border-t border-[#f3ede8] pt-4">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Max Products shown per Section</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Max Products shown per Section
+                  </label>
                   <input
                     type="number"
                     required
                     value={homeSettings.trendingSections?.maxProducts || 4}
-                    onChange={(e) => setHomeSettings({
-                      ...homeSettings,
-                      trendingSections: { ...homeSettings.trendingSections, maxProducts: +e.target.value }
-                    })}
+                    onChange={(e) =>
+                      setHomeSettings({
+                        ...homeSettings,
+                        trendingSections: {
+                          ...homeSettings.trendingSections,
+                          maxProducts: +e.target.value,
+                        },
+                      })
+                    }
                     className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37] max-w-[200px]"
                   />
                 </div>
@@ -1707,7 +2022,12 @@ function AdminSettings() {
               <div className="flex justify-end pt-4 border-t border-[#f3ede8]">
                 <button
                   type="button"
-                  onClick={() => handleSaveSettingsPart({ trendingSections: homeSettings.trendingSections }, "Trending Categories")}
+                  onClick={() =>
+                    handleSaveSettingsPart(
+                      { trendingSections: homeSettings.trendingSections },
+                      "Trending Categories",
+                    )
+                  }
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save size={14} /> Save Grid Content
@@ -1721,8 +2041,12 @@ function AdminSettings() {
             <div className="rounded-2xl border border-[#e8dfd8] bg-white p-6 shadow-soft space-y-6">
               <div className="flex items-center justify-between border-b border-[#f3ede8] pb-4">
                 <div>
-                  <h3 className="font-display text-lg font-bold">Boutique Occasion Finder Configuration</h3>
-                  <p className="text-[10px] text-muted-foreground">Adjust occasions headers and icons mapped to filters.</p>
+                  <h3 className="font-display text-lg font-bold">
+                    Boutique Occasion Finder Configuration
+                  </h3>
+                  <p className="text-[10px] text-muted-foreground">
+                    Adjust occasions headers and icons mapped to filters.
+                  </p>
                 </div>
                 <button
                   type="button"
@@ -1736,54 +2060,79 @@ function AdminSettings() {
               <div className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Section Eyebrow</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Section Eyebrow
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.occasionFinder?.eyebrow || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        occasionFinder: { ...homeSettings.occasionFinder, eyebrow: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          occasionFinder: {
+                            ...homeSettings.occasionFinder,
+                            eyebrow: e.target.value,
+                          },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Section Title</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Section Title
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.occasionFinder?.title || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        occasionFinder: { ...homeSettings.occasionFinder, title: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          occasionFinder: { ...homeSettings.occasionFinder, title: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Section Subtitle</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Section Subtitle
+                  </label>
                   <input
                     type="text"
                     required
                     value={homeSettings.occasionFinder?.subtitle || ""}
-                    onChange={(e) => setHomeSettings({
-                      ...homeSettings,
-                      occasionFinder: { ...homeSettings.occasionFinder, subtitle: e.target.value }
-                    })}
+                    onChange={(e) =>
+                      setHomeSettings({
+                        ...homeSettings,
+                        occasionFinder: {
+                          ...homeSettings.occasionFinder,
+                          subtitle: e.target.value,
+                        },
+                      })
+                    }
                     className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                   />
                 </div>
 
                 <div className="space-y-3 border-t border-[#f3ede8] pt-4">
-                  <span className="text-xs font-bold text-[#3a1d13] block">Occasion Filters Repeater</span>
+                  <span className="text-xs font-bold text-[#3a1d13] block">
+                    Occasion Filters Repeater
+                  </span>
                   {homeSettings.occasionFinder?.items?.map((item: any, idx: number) => (
-                    <div key={idx} className="flex flex-col sm:flex-row gap-3 items-center border border-[#e8dfd8] rounded-xl p-3 bg-[#fbfaf7]/60">
+                    <div
+                      key={idx}
+                      className="flex flex-col sm:flex-row gap-3 items-center border border-[#e8dfd8] rounded-xl p-3 bg-[#fbfaf7]/60"
+                    >
                       <div className="flex-1 w-full grid gap-3 grid-cols-2">
                         <div className="space-y-0.5">
-                          <label className="text-[9px] uppercase font-bold text-muted-foreground">Occasion Name</label>
+                          <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                            Occasion Name
+                          </label>
                           <input
                             type="text"
                             required
@@ -1793,14 +2142,18 @@ function AdminSettings() {
                           />
                         </div>
                         <div className="space-y-0.5">
-                          <label className="text-[9px] uppercase font-bold text-muted-foreground">Lucide Icon name</label>
+                          <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                            Lucide Icon name
+                          </label>
                           <select
                             value={item.icon || "Crown"}
                             onChange={(e) => handleOccasionChange(idx, "icon", e.target.value)}
                             className="w-full rounded-lg border border-[#e8dfd8] bg-white px-2.5 py-1.5 text-xs outline-none focus:border-[#d4af37]"
                           >
                             {AVAILABLE_ICONS.map((i) => (
-                              <option key={i} value={i}>{i}</option>
+                              <option key={i} value={i}>
+                                {i}
+                              </option>
                             ))}
                           </select>
                         </div>
@@ -1838,7 +2191,12 @@ function AdminSettings() {
               <div className="flex justify-end pt-4 border-t border-[#f3ede8]">
                 <button
                   type="button"
-                  onClick={() => handleSaveSettingsPart({ occasionFinder: homeSettings.occasionFinder }, "Occasion Finder")}
+                  onClick={() =>
+                    handleSaveSettingsPart(
+                      { occasionFinder: homeSettings.occasionFinder },
+                      "Occasion Finder",
+                    )
+                  }
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save size={14} /> Save Occasion Finder
@@ -1853,7 +2211,9 @@ function AdminSettings() {
               <div className="flex items-center justify-between border-b border-[#f3ede8] pb-4">
                 <div>
                   <h3 className="font-display text-lg font-bold">Why Choose Us section</h3>
-                  <p className="text-[10px] text-muted-foreground">Adjust trust badges, title content, and promise cards.</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    Adjust trust badges, title content, and promise cards.
+                  </p>
                 </div>
                 <button
                   type="button"
@@ -1867,39 +2227,57 @@ function AdminSettings() {
               <div className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Section Eyebrow</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Section Eyebrow
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.promiseSection?.eyebrow || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        promiseSection: { ...homeSettings.promiseSection, eyebrow: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          promiseSection: {
+                            ...homeSettings.promiseSection,
+                            eyebrow: e.target.value,
+                          },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Section Title</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Section Title
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.promiseSection?.title || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        promiseSection: { ...homeSettings.promiseSection, title: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          promiseSection: { ...homeSettings.promiseSection, title: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-3 border-t border-[#f3ede8] pt-4">
-                  <span className="text-xs font-bold text-[#3a1d13] block">Trust Cards Repeater</span>
+                  <span className="text-xs font-bold text-[#3a1d13] block">
+                    Trust Cards Repeater
+                  </span>
                   {homeSettings.promiseSection?.cards?.map((item: any, idx: number) => (
-                    <div key={idx} className="border border-[#e8dfd8] rounded-xl p-3 bg-[#fbfaf7]/60 space-y-2 relative">
+                    <div
+                      key={idx}
+                      className="border border-[#e8dfd8] rounded-xl p-3 bg-[#fbfaf7]/60 space-y-2 relative"
+                    >
                       <div className="flex justify-between items-center pb-2 border-b border-[#f3ede8]">
-                        <span className="text-[10px] font-bold text-[#3a1d13]">Card #{idx + 1}</span>
+                        <span className="text-[10px] font-bold text-[#3a1d13]">
+                          Card #{idx + 1}
+                        </span>
                         <div className="flex items-center gap-1.5">
                           <button
                             type="button"
@@ -1929,7 +2307,9 @@ function AdminSettings() {
 
                       <div className="grid gap-3 sm:grid-cols-2">
                         <div className="space-y-1">
-                          <label className="text-[9px] uppercase font-bold text-muted-foreground">Card Title</label>
+                          <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                            Card Title
+                          </label>
                           <input
                             type="text"
                             required
@@ -1939,20 +2319,26 @@ function AdminSettings() {
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[9px] uppercase font-bold text-muted-foreground">Lucide Icon name</label>
+                          <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                            Lucide Icon name
+                          </label>
                           <select
                             value={item.icon || "Award"}
                             onChange={(e) => handlePromiseChange(idx, "icon", e.target.value)}
                             className="w-full rounded-lg border border-[#e8dfd8] bg-white px-2.5 py-1.5 text-xs outline-none focus:border-[#d4af37]"
                           >
                             {AVAILABLE_ICONS.map((i) => (
-                              <option key={i} value={i}>{i}</option>
+                              <option key={i} value={i}>
+                                {i}
+                              </option>
                             ))}
                           </select>
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] uppercase font-bold text-muted-foreground">Card Description</label>
+                        <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                          Card Description
+                        </label>
                         <input
                           type="text"
                           required
@@ -1969,7 +2355,12 @@ function AdminSettings() {
               <div className="flex justify-end pt-4 border-t border-[#f3ede8]">
                 <button
                   type="button"
-                  onClick={() => handleSaveSettingsPart({ promiseSection: homeSettings.promiseSection }, "Why Choose Us")}
+                  onClick={() =>
+                    handleSaveSettingsPart(
+                      { promiseSection: homeSettings.promiseSection },
+                      "Why Choose Us",
+                    )
+                  }
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save size={14} /> Save Feature Cards
@@ -1984,7 +2375,9 @@ function AdminSettings() {
               <div className="flex items-center justify-between border-b border-[#f3ede8] pb-4">
                 <div>
                   <h3 className="font-display text-lg font-bold">Bride & Customer Testimonials</h3>
-                  <p className="text-[10px] text-muted-foreground">Manage real-time customer styling validation quotes.</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    Manage real-time customer styling validation quotes.
+                  </p>
                 </div>
                 <button
                   type="button"
@@ -1997,12 +2390,19 @@ function AdminSettings() {
 
               <div className="space-y-4">
                 {(!homeSettings.testimonials || homeSettings.testimonials.length === 0) && (
-                  <p className="text-xs text-muted-foreground italic text-center py-6">No testimonials created yet. Click add to begin.</p>
+                  <p className="text-xs text-muted-foreground italic text-center py-6">
+                    No testimonials created yet. Click add to begin.
+                  </p>
                 )}
                 {homeSettings.testimonials?.map((item: any, idx: number) => (
-                  <div key={item.id || idx} className="border border-[#e8dfd8] rounded-2xl p-4 bg-[#fbfaf7]/60 space-y-3 relative">
+                  <div
+                    key={item.id || idx}
+                    className="border border-[#e8dfd8] rounded-2xl p-4 bg-[#fbfaf7]/60 space-y-3 relative"
+                  >
                     <div className="flex justify-between items-center pb-2 border-b border-[#f3ede8]">
-                      <span className="text-xs font-bold text-[#3a1d13]">Testimonial #{idx + 1}</span>
+                      <span className="text-xs font-bold text-[#3a1d13]">
+                        Testimonial #{idx + 1}
+                      </span>
                       <div className="flex items-center gap-1.5">
                         <button
                           type="button"
@@ -2032,7 +2432,9 @@ function AdminSettings() {
 
                     <div className="grid gap-3 sm:grid-cols-3">
                       <div className="space-y-1">
-                        <label className="text-[9px] uppercase font-bold text-muted-foreground">Customer Name</label>
+                        <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                          Customer Name
+                        </label>
                         <input
                           type="text"
                           required
@@ -2042,7 +2444,9 @@ function AdminSettings() {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] uppercase font-bold text-muted-foreground">City / Location</label>
+                        <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                          City / Location
+                        </label>
                         <input
                           type="text"
                           required
@@ -2052,7 +2456,9 @@ function AdminSettings() {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] uppercase font-bold text-muted-foreground">Initials Avatar (max 3 chars)</label>
+                        <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                          Initials Avatar (max 3 chars)
+                        </label>
                         <input
                           type="text"
                           required
@@ -2064,7 +2470,9 @@ function AdminSettings() {
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[9px] uppercase font-bold text-muted-foreground">Review Quote text</label>
+                      <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                        Review Quote text
+                      </label>
                       <textarea
                         rows={2}
                         required
@@ -2080,7 +2488,12 @@ function AdminSettings() {
               <div className="flex justify-end pt-4 border-t border-[#f3ede8]">
                 <button
                   type="button"
-                  onClick={() => handleSaveSettingsPart({ testimonials: homeSettings.testimonials }, "Testimonials")}
+                  onClick={() =>
+                    handleSaveSettingsPart(
+                      { testimonials: homeSettings.testimonials },
+                      "Testimonials",
+                    )
+                  }
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save size={14} /> Save Testimonials List
@@ -2095,7 +2508,9 @@ function AdminSettings() {
               <div className="flex items-center justify-between border-b border-[#f3ede8] pb-4">
                 <div>
                   <h3 className="font-display text-lg font-bold">Instagram Showcase Grid</h3>
-                  <p className="text-[10px] text-muted-foreground">Upload and configure showcase posts scrolling below categories.</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    Upload and configure showcase posts scrolling below categories.
+                  </p>
                 </div>
                 <button
                   type="button"
@@ -2109,41 +2524,53 @@ function AdminSettings() {
               <div className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Section Eyebrow</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Section Eyebrow
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.gallery?.eyebrow || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        gallery: { ...homeSettings.gallery, eyebrow: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          gallery: { ...homeSettings.gallery, eyebrow: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Section Title</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Section Title
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.gallery?.title || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        gallery: { ...homeSettings.gallery, title: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          gallery: { ...homeSettings.gallery, title: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Section Subtitle</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Section Subtitle
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.gallery?.subtitle || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        gallery: { ...homeSettings.gallery, subtitle: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          gallery: { ...homeSettings.gallery, subtitle: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
@@ -2152,9 +2579,14 @@ function AdminSettings() {
                 <div className="space-y-4 border-t border-[#f3ede8] pt-4">
                   <span className="text-xs font-bold text-[#3a1d13] block">Gallery Posts List</span>
                   {homeSettings.gallery?.items?.map((item: any, idx: number) => (
-                    <div key={idx} className="border border-[#e8dfd8] rounded-xl p-3 bg-[#fbfaf7]/60 space-y-3 relative">
+                    <div
+                      key={idx}
+                      className="border border-[#e8dfd8] rounded-xl p-3 bg-[#fbfaf7]/60 space-y-3 relative"
+                    >
                       <div className="flex justify-between items-center pb-1 border-b border-[#f3ede8]">
-                        <span className="text-[10px] font-bold text-[#3a1d13]">Post #{idx + 1}</span>
+                        <span className="text-[10px] font-bold text-[#3a1d13]">
+                          Post #{idx + 1}
+                        </span>
                         <div className="flex items-center gap-1.5">
                           <button
                             type="button"
@@ -2184,17 +2616,23 @@ function AdminSettings() {
 
                       <div className="grid gap-3 sm:grid-cols-2 text-xs">
                         <div className="space-y-1">
-                          <label className="text-[9px] uppercase font-bold text-muted-foreground">Post Caption</label>
+                          <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                            Post Caption
+                          </label>
                           <input
                             type="text"
                             value={item.caption || ""}
-                            onChange={(e) => handleGalleryItemChange(idx, "caption", e.target.value)}
+                            onChange={(e) =>
+                              handleGalleryItemChange(idx, "caption", e.target.value)
+                            }
                             placeholder="e.g. Saree styling guides"
                             className="w-full rounded-lg border border-[#e8dfd8] bg-white px-2 py-1 outline-none focus:border-[#d4af37]"
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[9px] uppercase font-bold text-muted-foreground">External Instagram link</label>
+                          <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                            External Instagram link
+                          </label>
                           <input
                             type="text"
                             value={item.link || ""}
@@ -2219,7 +2657,9 @@ function AdminSettings() {
               <div className="flex justify-end pt-4 border-t border-[#f3ede8]">
                 <button
                   type="button"
-                  onClick={() => handleSaveSettingsPart({ gallery: homeSettings.gallery }, "Instagram Gallery")}
+                  onClick={() =>
+                    handleSaveSettingsPart({ gallery: homeSettings.gallery }, "Instagram Gallery")
+                  }
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save size={14} /> Save Gallery settings
@@ -2233,49 +2673,63 @@ function AdminSettings() {
             <div className="rounded-2xl border border-[#e8dfd8] bg-white p-6 shadow-soft space-y-6">
               <div className="border-b border-[#f3ede8] pb-4">
                 <h3 className="font-display text-lg font-bold">Newsletter Circle Form</h3>
-                <p className="text-[10px] text-muted-foreground">Customize marketing subscription headlines and button values.</p>
+                <p className="text-[10px] text-muted-foreground">
+                  Customize marketing subscription headlines and button values.
+                </p>
               </div>
 
               <div className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Form Headline Title</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Form Headline Title
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.newsletter?.title || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        newsletter: { ...homeSettings.newsletter, title: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          newsletter: { ...homeSettings.newsletter, title: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Submit Button Label</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Submit Button Label
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.newsletter?.buttonText || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        newsletter: { ...homeSettings.newsletter, buttonText: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          newsletter: { ...homeSettings.newsletter, buttonText: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Subtitle description paragraph</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Subtitle description paragraph
+                  </label>
                   <textarea
                     rows={2}
                     required
                     value={homeSettings.newsletter?.subtitle || ""}
-                    onChange={(e) => setHomeSettings({
-                      ...homeSettings,
-                      newsletter: { ...homeSettings.newsletter, subtitle: e.target.value }
-                    })}
+                    onChange={(e) =>
+                      setHomeSettings({
+                        ...homeSettings,
+                        newsletter: { ...homeSettings.newsletter, subtitle: e.target.value },
+                      })
+                    }
                     className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                   />
                 </div>
@@ -2284,7 +2738,12 @@ function AdminSettings() {
               <div className="flex justify-end pt-4 border-t border-[#f3ede8]">
                 <button
                   type="button"
-                  onClick={() => handleSaveSettingsPart({ newsletter: homeSettings.newsletter }, "Newsletter Form")}
+                  onClick={() =>
+                    handleSaveSettingsPart(
+                      { newsletter: homeSettings.newsletter },
+                      "Newsletter Form",
+                    )
+                  }
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save size={14} /> Save Newsletter Settings
@@ -2298,62 +2757,81 @@ function AdminSettings() {
             <div className="rounded-2xl border border-[#e8dfd8] bg-white p-6 shadow-soft space-y-6">
               <div className="border-b border-[#f3ede8] pb-4">
                 <h3 className="font-display text-lg font-bold">Footer content & Address block</h3>
-                <p className="text-[10px] text-muted-foreground">Adjust showrooms contact locations, email hotlines, social handles, and copyright descriptors.</p>
+                <p className="text-[10px] text-muted-foreground">
+                  Adjust showrooms contact locations, email hotlines, social handles, and copyright
+                  descriptors.
+                </p>
               </div>
 
               <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Footer brand description</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Footer brand description
+                  </label>
                   <textarea
                     rows={3}
                     required
                     value={homeSettings.footer?.description || ""}
-                    onChange={(e) => setHomeSettings({
-                      ...homeSettings,
-                      footer: { ...homeSettings.footer, description: e.target.value }
-                    })}
+                    onChange={(e) =>
+                      setHomeSettings({
+                        ...homeSettings,
+                        footer: { ...homeSettings.footer, description: e.target.value },
+                      })
+                    }
                     className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Boutique showroom address</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Boutique showroom address
+                  </label>
                   <input
                     type="text"
                     required
                     value={homeSettings.footer?.address || ""}
-                    onChange={(e) => setHomeSettings({
-                      ...homeSettings,
-                      footer: { ...homeSettings.footer, address: e.target.value }
-                    })}
+                    onChange={(e) =>
+                      setHomeSettings({
+                        ...homeSettings,
+                        footer: { ...homeSettings.footer, address: e.target.value },
+                      })
+                    }
                     className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                   />
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Hotline Phone Number</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Hotline Phone Number
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.footer?.phone || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        footer: { ...homeSettings.footer, phone: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          footer: { ...homeSettings.footer, phone: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Support Email address</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Support Email address
+                    </label>
                     <input
                       type="email"
                       required
                       value={homeSettings.footer?.email || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        footer: { ...homeSettings.footer, email: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          footer: { ...homeSettings.footer, email: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
@@ -2361,28 +2839,36 @@ function AdminSettings() {
 
                 <div className="grid gap-4 sm:grid-cols-2 border-t border-[#f3ede8] pt-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Copyright statement</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Copyright statement
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.footer?.copyright || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        footer: { ...homeSettings.footer, copyright: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          footer: { ...homeSettings.footer, copyright: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Bottom note label</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Bottom note label
+                    </label>
                     <input
                       type="text"
                       required
                       value={homeSettings.footer?.bottomNote || ""}
-                      onChange={(e) => setHomeSettings({
-                        ...homeSettings,
-                        footer: { ...homeSettings.footer, bottomNote: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          footer: { ...homeSettings.footer, bottomNote: e.target.value },
+                        })
+                      }
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
@@ -2390,68 +2876,98 @@ function AdminSettings() {
 
                 {/* Social media handles */}
                 <div className="border border-[#e8dfd8] rounded-xl p-4 bg-[#fbfaf7]/60 space-y-3">
-                  <span className="text-xs font-bold text-[#3a1d13]">Boutique Social Media Handles (External URLs)</span>
+                  <span className="text-xs font-bold text-[#3a1d13]">
+                    Boutique Social Media Handles (External URLs)
+                  </span>
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="space-y-1">
-                      <label className="text-[10px] text-muted-foreground uppercase font-bold">Instagram URL</label>
+                      <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                        Instagram URL
+                      </label>
                       <input
                         type="text"
                         value={homeSettings.footer?.socialLinks?.instagram || ""}
-                        onChange={(e) => setHomeSettings({
-                          ...homeSettings,
-                          footer: {
-                            ...homeSettings.footer,
-                            socialLinks: { ...(homeSettings.footer?.socialLinks || {}), instagram: e.target.value }
-                          }
-                        })}
+                        onChange={(e) =>
+                          setHomeSettings({
+                            ...homeSettings,
+                            footer: {
+                              ...homeSettings.footer,
+                              socialLinks: {
+                                ...(homeSettings.footer?.socialLinks || {}),
+                                instagram: e.target.value,
+                              },
+                            },
+                          })
+                        }
                         placeholder="#"
                         className="w-full rounded-xl border border-[#e8dfd8] bg-white px-3 py-2 text-xs outline-none focus:border-[#d4af37]"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] text-muted-foreground uppercase font-bold">Facebook URL</label>
+                      <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                        Facebook URL
+                      </label>
                       <input
                         type="text"
                         value={homeSettings.footer?.socialLinks?.facebook || ""}
-                        onChange={(e) => setHomeSettings({
-                          ...homeSettings,
-                          footer: {
-                            ...homeSettings.footer,
-                            socialLinks: { ...(homeSettings.footer?.socialLinks || {}), facebook: e.target.value }
-                          }
-                        })}
+                        onChange={(e) =>
+                          setHomeSettings({
+                            ...homeSettings,
+                            footer: {
+                              ...homeSettings.footer,
+                              socialLinks: {
+                                ...(homeSettings.footer?.socialLinks || {}),
+                                facebook: e.target.value,
+                              },
+                            },
+                          })
+                        }
                         placeholder="#"
                         className="w-full rounded-xl border border-[#e8dfd8] bg-white px-3 py-2 text-xs outline-none focus:border-[#d4af37]"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] text-muted-foreground uppercase font-bold">YouTube URL</label>
+                      <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                        YouTube URL
+                      </label>
                       <input
                         type="text"
                         value={homeSettings.footer?.socialLinks?.youtube || ""}
-                        onChange={(e) => setHomeSettings({
-                          ...homeSettings,
-                          footer: {
-                            ...homeSettings.footer,
-                            socialLinks: { ...(homeSettings.footer?.socialLinks || {}), youtube: e.target.value }
-                          }
-                        })}
+                        onChange={(e) =>
+                          setHomeSettings({
+                            ...homeSettings,
+                            footer: {
+                              ...homeSettings.footer,
+                              socialLinks: {
+                                ...(homeSettings.footer?.socialLinks || {}),
+                                youtube: e.target.value,
+                              },
+                            },
+                          })
+                        }
                         placeholder="#"
                         className="w-full rounded-xl border border-[#e8dfd8] bg-white px-3 py-2 text-xs outline-none focus:border-[#d4af37]"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] text-muted-foreground uppercase font-bold">Twitter/X URL</label>
+                      <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                        Twitter/X URL
+                      </label>
                       <input
                         type="text"
                         value={homeSettings.footer?.socialLinks?.twitter || ""}
-                        onChange={(e) => setHomeSettings({
-                          ...homeSettings,
-                          footer: {
-                            ...homeSettings.footer,
-                            socialLinks: { ...(homeSettings.footer?.socialLinks || {}), twitter: e.target.value }
-                          }
-                        })}
+                        onChange={(e) =>
+                          setHomeSettings({
+                            ...homeSettings,
+                            footer: {
+                              ...homeSettings.footer,
+                              socialLinks: {
+                                ...(homeSettings.footer?.socialLinks || {}),
+                                twitter: e.target.value,
+                              },
+                            },
+                          })
+                        }
                         placeholder="#"
                         className="w-full rounded-xl border border-[#e8dfd8] bg-white px-3 py-2 text-xs outline-none focus:border-[#d4af37]"
                       />
@@ -2463,7 +2979,9 @@ function AdminSettings() {
               <div className="flex justify-end pt-4 border-t border-[#f3ede8]">
                 <button
                   type="button"
-                  onClick={() => handleSaveSettingsPart({ footer: homeSettings.footer }, "Footer & Contact")}
+                  onClick={() =>
+                    handleSaveSettingsPart({ footer: homeSettings.footer }, "Footer & Contact")
+                  }
                   className="rounded-xl bg-[#3a1d13] text-white px-5 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save size={14} /> Save Footer details

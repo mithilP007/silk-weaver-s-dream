@@ -54,7 +54,10 @@ const createRazorpayOrder = async (req, res) => {
 
     const keyId = paymentSettings.razorpayKeyId || process.env.RAZORPAY_KEY_ID;
     const keySecret = paymentSettings.razorpaySecret || process.env.RAZORPAY_KEY_SECRET;
-    console.log("RAZORPAY KEYS LOADED IN CONTROLLER:", { keyId, keySecret: keySecret ? "configured (length: " + keySecret.length + ")" : "missing" });
+    console.log("RAZORPAY KEYS LOADED IN CONTROLLER:", {
+      keyId,
+      keySecret: keySecret ? "configured (length: " + keySecret.length + ")" : "missing",
+    });
 
     if (!keyId || !keySecret) {
       return res.status(400).json({
@@ -134,7 +137,12 @@ const createRazorpayOrder = async (req, res) => {
     let rzpOrder;
 
     try {
-      if (keyId === "rzp_test_Kamatchi90281" || keySecret === "dummysecretvalue12345678" || keySecret === "dummysecret" || keyId.includes("modified")) {
+      if (
+        keyId === "rzp_test_Kamatchi90281" ||
+        keySecret === "dummysecretvalue12345678" ||
+        keySecret === "dummysecret" ||
+        keyId.includes("modified")
+      ) {
         throw new Error("DUMMY_CREDENTIALS");
       }
       const options = {
@@ -147,7 +155,9 @@ const createRazorpayOrder = async (req, res) => {
       const isAuthError = apiError.statusCode === 401 || apiError.message === "DUMMY_CREDENTIALS";
       const isTestKey = keyId.startsWith("rzp_test");
       if (isAuthError && isTestKey) {
-        console.warn("Razorpay API call failed due to authentication. Falling back to simulated Razorpay Order ID for sandbox developer testing.");
+        console.warn(
+          "Razorpay API call failed due to authentication. Falling back to simulated Razorpay Order ID for sandbox developer testing.",
+        );
         rzpOrder = {
           id: `order_dummy_${Math.random().toString(36).substring(2, 15)}`,
           amount: amountInPaise,
@@ -187,11 +197,7 @@ const createRazorpayOrder = async (req, res) => {
 // Verify real Razorpay Payment
 const verifyPayment = async (req, res) => {
   try {
-    const {
-      razorpay_payment_id,
-      razorpay_order_id,
-      razorpay_signature,
-    } = req.body;
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
 
     if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
       return res.status(400).json({
@@ -218,10 +224,15 @@ const verifyPayment = async (req, res) => {
       .update(signData.toString())
       .digest("hex");
 
-    const isDummy = !keySecret || keySecret.includes("dummy") || keySecret.startsWith("dummy") || keySecret === "dummysecretvalue12345678";
-    const isValidSignature = isDummy 
-      ? (razorpay_signature === "simulated_signature_hash_value" || expectedSignature === razorpay_signature)
-      : (expectedSignature === razorpay_signature);
+    const isDummy =
+      !keySecret ||
+      keySecret.includes("dummy") ||
+      keySecret.startsWith("dummy") ||
+      keySecret === "dummysecretvalue12345678";
+    const isValidSignature = isDummy
+      ? razorpay_signature === "simulated_signature_hash_value" ||
+        expectedSignature === razorpay_signature
+      : expectedSignature === razorpay_signature;
 
     if (!isValidSignature) {
       // Mark internal order as Failed if possible, but keep cart intact

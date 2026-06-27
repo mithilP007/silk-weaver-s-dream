@@ -12,7 +12,8 @@ export const Route = createFileRoute("/register")({
   component: RegisterPage,
 });
 
-const field = "w-full rounded-xl border border-border bg-card py-2.5 pl-10 pr-4 text-sm outline-none focus:border-gold";
+const field =
+  "w-full rounded-xl border border-border bg-card py-2.5 pl-10 pr-4 text-sm outline-none focus:border-gold";
 
 function RegisterPage() {
   const [name, setName] = useState("");
@@ -59,11 +60,18 @@ function RegisterPage() {
     <StoreLayout>
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:items-center">
         <div className="mx-auto w-full max-w-md lg:order-1">
-          <h1 className="font-display text-3xl font-bold text-foreground">Join Sri Kamatchi Silk</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Create an account for a personalised experience.</p>
+          <h1 className="font-display text-3xl font-bold text-foreground">
+            Join Sri Kamatchi Silk
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Create an account for a personalised experience.
+          </p>
           <form onSubmit={handleRegister} className="mt-8 space-y-4">
             <div className="relative">
-              <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <User
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
               <input
                 required
                 placeholder="Full name"
@@ -74,7 +82,10 @@ function RegisterPage() {
               />
             </div>
             <div className="relative">
-              <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Mail
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
               <input
                 required
                 type="email"
@@ -86,7 +97,10 @@ function RegisterPage() {
               />
             </div>
             <div className="relative">
-              <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Phone
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
               <input
                 required
                 placeholder="Phone number"
@@ -97,7 +111,10 @@ function RegisterPage() {
               />
             </div>
             <div className="relative">
-              <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Lock
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
               <input
                 required
                 type="password"
@@ -117,7 +134,12 @@ function RegisterPage() {
               {isLoading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
-          <p className="mt-6 text-center text-sm text-muted-foreground">Already have an account? <Link to="/login" className="font-medium text-primary hover:underline">Sign in</Link></p>
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link to="/login" className="font-medium text-primary hover:underline">
+              Sign in
+            </Link>
+          </p>
         </div>
         <div className="hidden overflow-hidden rounded-3xl lg:block">
           <img src={saree2} alt="Saree" className="h-full max-h-[560px] w-full object-cover" />

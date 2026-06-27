@@ -1,8 +1,5 @@
 const express = require("express");
-const {
-  createRazorpayOrder,
-  verifyPayment,
-} = require("../controllers/paymentController");
+const { createRazorpayOrder, verifyPayment } = require("../controllers/paymentController");
 
 const { protect } = require("../middleware/authMiddleware");
 

@@ -113,7 +113,7 @@ function AdminOrders() {
 
       toast.success(`Order status updated to ${newStatus}`);
       fetchOrders();
-      
+
       if (selectedOrder && selectedOrder.id === orderId) {
         setSelectedOrder((prev: any) => ({ ...prev, status: newStatus }));
       }
@@ -200,7 +200,9 @@ function AdminOrders() {
                     <td className="py-4 px-4">{o.createdAt}</td>
                     <td className="py-4 px-4">
                       <p className="font-bold">{o.customerName}</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">{o.shippingAddress?.email}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        {o.shippingAddress?.email}
+                      </p>
                     </td>
                     <td className="py-4 px-4 max-w-[200px] truncate">
                       {o.items?.map((i: any) => `${i.productName} (x${i.quantity})`).join(", ")}
@@ -213,10 +215,10 @@ function AdminOrders() {
                           o.status === "Delivered"
                             ? "bg-emerald-50 text-emerald-700"
                             : o.status === "Shipped"
-                            ? "bg-blue-50 text-blue-700"
-                            : o.status === "Pending"
-                            ? "bg-amber-50 text-amber-700"
-                            : "bg-red-50 text-red-700",
+                              ? "bg-blue-50 text-blue-700"
+                              : o.status === "Pending"
+                                ? "bg-amber-50 text-amber-700"
+                                : "bg-red-50 text-red-700",
                         )}
                       >
                         {o.status === "Delivered" && <CheckCircle2 size={10} />}
@@ -273,7 +275,9 @@ function AdminOrders() {
             <div className="mt-6 space-y-6 text-sm text-[#2c2623]">
               {/* Items List */}
               <div className="space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Purchased Sarees</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                  Purchased Sarees
+                </h4>
                 <div className="space-y-2">
                   {selectedOrder.items.map((item: any, idx: number) => (
                     <div
@@ -282,7 +286,9 @@ function AdminOrders() {
                     >
                       <div>
                         <p className="font-bold text-xs">{item.productName}</p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">Quantity: {item.quantity}</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">
+                          Quantity: {item.quantity}
+                        </p>
                       </div>
                       <span className="font-semibold text-primary">
                         {formatINR(item.price * item.quantity)}
@@ -294,23 +300,30 @@ function AdminOrders() {
 
               {/* Shipping Address */}
               <div className="space-y-2 border-t border-[#f3ede8] pt-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Delivery Destination</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                  Delivery Destination
+                </h4>
                 <div className="rounded-xl border border-[#f3ede8] bg-[#fbfaf7] p-4 text-xs space-y-1">
                   <p className="font-bold text-sm">{selectedOrder.customerName}</p>
                   <p className="text-muted-foreground flex items-start gap-1.5 mt-2">
                     <MapPin size={13} className="shrink-0 text-gold mt-0.5" />
                     <span>
                       {selectedOrder.shippingAddress.addressLine},<br />
-                      {selectedOrder.shippingAddress.city}, {selectedOrder.shippingAddress.state} - {selectedOrder.shippingAddress.pincode}
+                      {selectedOrder.shippingAddress.city}, {selectedOrder.shippingAddress.state} -{" "}
+                      {selectedOrder.shippingAddress.pincode}
                     </span>
                   </p>
-                  <p className="text-muted-foreground pt-1.5 font-semibold">Phone: {selectedOrder.shippingAddress.phone}</p>
+                  <p className="text-muted-foreground pt-1.5 font-semibold">
+                    Phone: {selectedOrder.shippingAddress.phone}
+                  </p>
                 </div>
               </div>
 
               {/* Status Update Actions */}
               <div className="space-y-3 border-t border-[#f3ede8] pt-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Fulfillment Actions</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                  Fulfillment Actions
+                </h4>
                 <div className="flex flex-wrap gap-2.5">
                   <button
                     onClick={() => handleUpdateStatus(selectedOrder.id, "Pending")}

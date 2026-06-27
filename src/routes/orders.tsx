@@ -1,5 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Package, ArrowRight, Loader2, Calendar, CreditCard, Banknote, ShieldCheck } from "lucide-react";
+import {
+  Package,
+  ArrowRight,
+  Loader2,
+  Calendar,
+  CreditCard,
+  Banknote,
+  ShieldCheck,
+} from "lucide-react";
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { EmptyState } from "@/components/store/EmptyState";
 import { dummyOrders as mockOrders } from "@/data/store";
@@ -79,7 +87,7 @@ function OrdersPage() {
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
         <h1 className="font-display text-3xl font-bold text-foreground sm:text-4xl">My Orders</h1>
         <p className="mt-2 text-muted-foreground">Track and review your purchases.</p>
-        
+
         <div className="mt-8 space-y-4">
           {isLoading ? (
             <div className="flex justify-center items-center py-16">
@@ -87,23 +95,43 @@ function OrdersPage() {
               <span className="text-sm text-muted-foreground">Retrieving saree order log...</span>
             </div>
           ) : orders.length === 0 ? (
-            <EmptyState icon={Package} title="No orders yet" description="When you place an order it will appear here." action={<Link to="/shop" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground">Start shopping <ArrowRight size={16} /></Link>} />
+            <EmptyState
+              icon={Package}
+              title="No orders yet"
+              description="When you place an order it will appear here."
+              action={
+                <Link
+                  to="/shop"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground"
+                >
+                  Start shopping <ArrowRight size={16} />
+                </Link>
+              }
+            />
           ) : (
             orders.map((o) => (
               <div key={o.id} className="rounded-2xl border border-border bg-card p-5 shadow-soft">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
                   <div>
-                    <p className="text-sm font-semibold text-foreground font-mono">Order #{o.orderNumber || o.id}</p>
+                    <p className="text-sm font-semibold text-foreground font-mono">
+                      Order #{o.orderNumber || o.id}
+                    </p>
                     <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
                       <Calendar size={13} /> Placed on {o.date} · {o.payment} ({o.paymentStatus})
                     </p>
                   </div>
-                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusStyle[o.status] || "bg-secondary text-secondary-foreground"}`}>{o.status}</span>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-semibold ${statusStyle[o.status] || "bg-secondary text-secondary-foreground"}`}
+                  >
+                    {o.status}
+                  </span>
                 </div>
                 <div className="mt-4 space-y-2">
                   {o.items.map((it: any, idx: number) => (
                     <div key={idx} className="flex items-center justify-between text-sm">
-                      <span className="text-foreground">{it.name} × {it.quantity}</span>
+                      <span className="text-foreground">
+                        {it.name} × {it.quantity}
+                      </span>
                       <span className="font-medium">{formatINR(it.price * it.quantity)}</span>
                     </div>
                   ))}

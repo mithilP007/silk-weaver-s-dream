@@ -31,11 +31,7 @@ export function InfoPageShell({
   );
 }
 
-export function PolicyBody({
-  sections,
-}: {
-  sections: { heading: string; body: string }[];
-}) {
+export function PolicyBody({ sections }: { sections: { heading: string; body: string }[] }) {
   return (
     <div className="prose-luxury space-y-8">
       {sections.map((s, i) => (

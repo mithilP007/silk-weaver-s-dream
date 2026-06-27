@@ -46,8 +46,8 @@ async function runTests() {
         name: "Test Customer",
         email: customerEmail,
         password: "customer123",
-        phone: "9876543210"
-      })
+        phone: "9876543210",
+      }),
     });
     const regData = await regRes.json();
     check("Customer successfully registered dynamically in DB", regRes.ok && regData.success);
@@ -57,8 +57,8 @@ async function runTests() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: customerEmail,
-        password: "customer123"
-      })
+        password: "customer123",
+      }),
     });
     const logData = await logRes.json();
     customerToken = logData.token;
@@ -74,12 +74,18 @@ async function runTests() {
   try {
     const catRes = await fetch(`${API_BASE}/categories`);
     const catData = await catRes.json();
-    check("Browse Categories: categories catalog returned", catRes.ok && catData.success && catData.data.length > 0);
+    check(
+      "Browse Categories: categories catalog returned",
+      catRes.ok && catData.success && catData.data.length > 0,
+    );
     selectedCategoryId = catData.data[0].id;
 
     const prodRes = await fetch(`${API_BASE}/products`);
     const prodData = await prodRes.json();
-    check("Browse Products: product catalog returned", prodRes.ok && prodData.success && prodData.data.length > 0);
+    check(
+      "Browse Products: product catalog returned",
+      prodRes.ok && prodData.success && prodData.data.length > 0,
+    );
     selectedProductId = prodData.data[0].id;
     console.log(`  Selected Product: "${prodData.data[0].name}" (ID: ${selectedProductId})`);
   } catch (err) {
@@ -95,23 +101,28 @@ async function runTests() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${customerToken}`
+        Authorization: `Bearer ${customerToken}`,
       },
       body: JSON.stringify({
         productId: selectedProductId,
-        quantity: 2
-      })
+        quantity: 2,
+      }),
     });
     const addData = await addRes.json();
     check("Add to Cart: item persisted to DB cart successfully", addRes.ok && addData.success);
 
     const getRes = await fetch(`${API_BASE}/cart`, {
       method: "GET",
-      headers: { "Authorization": `Bearer ${customerToken}` }
+      headers: { Authorization: `Bearer ${customerToken}` },
     });
     const getData = await getRes.json();
-    const cartHasItem = getData.data.some(item => item.productId === selectedProductId && item.quantity === 2);
-    check("Get Cart: verified persisted item and quantity match database", getRes.ok && cartHasItem);
+    const cartHasItem = getData.data.some(
+      (item) => item.productId === selectedProductId && item.quantity === 2,
+    );
+    check(
+      "Get Cart: verified persisted item and quantity match database",
+      getRes.ok && cartHasItem,
+    );
   } catch (err) {
     check(`Add to Cart failed: ${err.message}`, false);
   }
@@ -125,21 +136,24 @@ async function runTests() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${customerToken}`
+        Authorization: `Bearer ${customerToken}`,
       },
       body: JSON.stringify({
-        productId: selectedProductId
-      })
+        productId: selectedProductId,
+      }),
     });
     const addData = await addRes.json();
-    check("Add to Wishlist: item persisted to DB wishlist successfully", addRes.ok && addData.success);
+    check(
+      "Add to Wishlist: item persisted to DB wishlist successfully",
+      addRes.ok && addData.success,
+    );
 
     const getRes = await fetch(`${API_BASE}/wishlist`, {
       method: "GET",
-      headers: { "Authorization": `Bearer ${customerToken}` }
+      headers: { Authorization: `Bearer ${customerToken}` },
     });
     const getData = await getRes.json();
-    const wishlistHasItem = getData.data.some(item => item.productId === selectedProductId);
+    const wishlistHasItem = getData.data.some((item) => item.productId === selectedProductId);
     check("Get Wishlist: verified persisted item matches database", getRes.ok && wishlistHasItem);
   } catch (err) {
     check(`Add to Wishlist failed: ${err.message}`, false);
@@ -158,7 +172,7 @@ async function runTests() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${customerToken}`
+        Authorization: `Bearer ${customerToken}`,
       },
       body: JSON.stringify({
         customerName: "Test Buyer",
@@ -171,20 +185,26 @@ async function runTests() {
         items: [
           {
             productId: selectedProductId,
-            quantity: 2
-          }
-        ]
-      })
+            quantity: 2,
+          },
+        ],
+      }),
     });
     const checkData = await checkRes.json();
-    check("Checkout: COD order successfully generated in database", checkRes.ok && checkData.success);
+    check(
+      "Checkout: COD order successfully generated in database",
+      checkRes.ok && checkData.success,
+    );
     createdOrderId = checkData.data.id;
     console.log(`  Generated Order ID: ${createdOrderId}`);
 
     // Verify stock decrement in database
     const afterProduct = await prisma.product.findUnique({ where: { id: selectedProductId } });
     const stockDecremented = afterProduct.stock === initialStock - 2;
-    check(`Checkout Stock Deduction: verified stock successfully decremented by 2 in DB (${initialStock} -> ${afterProduct.stock})`, stockDecremented);
+    check(
+      `Checkout Stock Deduction: verified stock successfully decremented by 2 in DB (${initialStock} -> ${afterProduct.stock})`,
+      stockDecremented,
+    );
   } catch (err) {
     check(`Checkout with COD failed: ${err.message}`, false);
   }
@@ -202,8 +222,8 @@ async function runTests() {
         name: "Test Admin",
         email: adminEmail,
         password: "adminpassword123",
-        phone: "9999988888"
-      })
+        phone: "9999988888",
+      }),
     });
     const regData = await regRes.json();
     check("Registered test administrator profile in database", regRes.ok && regData.success);
@@ -211,7 +231,7 @@ async function runTests() {
     // 2. Programmatically promote the user to admin role using Prisma Client directly!
     await prisma.user.update({
       where: { email: adminEmail },
-      data: { role: "admin" }
+      data: { role: "admin" },
     });
     console.log("  [✓] Direct Prisma Injection: Elevated test user role to 'admin' successfully");
 
@@ -221,8 +241,8 @@ async function runTests() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: adminEmail,
-        password: "adminpassword123"
-      })
+        password: "adminpassword123",
+      }),
     });
     const logData = await logRes.json();
     adminToken = logData.token;
@@ -241,7 +261,7 @@ async function runTests() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${adminToken}`
+        Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
         name: `Dynamic Gold Saree ${timestamp}`,
@@ -252,8 +272,8 @@ async function runTests() {
         stock: 15,
         categoryId: selectedCategoryId,
         fabric: "Pure Silk",
-        color: "Golden Yellow"
-      })
+        color: "Golden Yellow",
+      }),
     });
     const addData = await addRes.json();
     check("Admin: Product successfully created in catalog", addRes.ok && addData.success);
@@ -265,20 +285,24 @@ async function runTests() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${adminToken}`
+        Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
         price: 19500,
-        description: "Exquisite handwoven luxury saree crafted in pure Kanchipuram style (Updated description text)."
-      })
+        description:
+          "Exquisite handwoven luxury saree crafted in pure Kanchipuram style (Updated description text).",
+      }),
     });
     const editData = await editRes.json();
-    check("Admin: Product details edited successfully", editRes.ok && editData.success && editData.data.price === 19500);
+    check(
+      "Admin: Product details edited successfully",
+      editRes.ok && editData.success && editData.data.price === 19500,
+    );
 
     // 3. Delete Product
     const delRes = await fetch(`${API_BASE}/products/${newProductId}`, {
       method: "DELETE",
-      headers: { "Authorization": `Bearer ${adminToken}` }
+      headers: { Authorization: `Bearer ${adminToken}` },
     });
     const delData = await delRes.json();
     check("Admin: Product deleted from catalog successfully", delRes.ok && delData.success);
@@ -296,12 +320,12 @@ async function runTests() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${adminToken}`
+        Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
         name: `Bridal Banarasi ${timestamp}`,
-        slug: `bridal-banarasi-${timestamp}`
-      })
+        slug: `bridal-banarasi-${timestamp}`,
+      }),
     });
     const addData = await addRes.json();
     check("Admin: Category created successfully", addRes.ok && addData.success);
@@ -312,19 +336,22 @@ async function runTests() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${adminToken}`
+        Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        name: `Bridal Banarasi (Updated) ${timestamp}`
-      })
+        name: `Bridal Banarasi (Updated) ${timestamp}`,
+      }),
     });
     const editData = await editRes.json();
-    check("Admin: Category renamed successfully", editRes.ok && editData.success && editData.data.name.includes("Updated"));
+    check(
+      "Admin: Category renamed successfully",
+      editRes.ok && editData.success && editData.data.name.includes("Updated"),
+    );
 
     // 3. Delete Category
     const delRes = await fetch(`${API_BASE}/categories/${newCategoryId}`, {
       method: "DELETE",
-      headers: { "Authorization": `Bearer ${adminToken}` }
+      headers: { Authorization: `Bearer ${adminToken}` },
     });
     const delData = await delRes.json();
     check("Admin: Category deleted successfully from catalog", delRes.ok && delData.success);
@@ -340,39 +367,48 @@ async function runTests() {
     // 1. View Orders
     const listRes = await fetch(`${API_BASE}/orders`, {
       method: "GET",
-      headers: { "Authorization": `Bearer ${adminToken}` }
+      headers: { Authorization: `Bearer ${adminToken}` },
     });
     const listData = await listRes.json();
-    const orderFound = listData.data.some(o => o.id === createdOrderId);
-    check("Admin: Verified customer's checkout order is listed in administrative log", listRes.ok && orderFound);
+    const orderFound = listData.data.some((o) => o.id === createdOrderId);
+    check(
+      "Admin: Verified customer's checkout order is listed in administrative log",
+      listRes.ok && orderFound,
+    );
 
     // 2. Update Order Status to Shipped
     const statRes = await fetch(`${API_BASE}/orders/${createdOrderId}/status`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${adminToken}`
+        Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        orderStatus: "Shipped"
-      })
+        orderStatus: "Shipped",
+      }),
     });
     const statData = await statRes.json();
-    check("Admin: Order delivery status updated to 'Shipped' successfully", statRes.ok && statData.success && statData.data.orderStatus === "Shipped");
+    check(
+      "Admin: Order delivery status updated to 'Shipped' successfully",
+      statRes.ok && statData.success && statData.data.orderStatus === "Shipped",
+    );
 
     // 3. Update Order Payment Status to Paid
     const payRes = await fetch(`${API_BASE}/orders/${createdOrderId}/payment`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${adminToken}`
+        Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        paymentStatus: "Paid"
-      })
+        paymentStatus: "Paid",
+      }),
     });
     const payData = await payRes.json();
-    check("Admin: Order payment status updated to 'Paid' successfully", payRes.ok && payData.success && payData.data.paymentStatus === "Paid");
+    check(
+      "Admin: Order payment status updated to 'Paid' successfully",
+      payRes.ok && payData.success && payData.data.paymentStatus === "Paid",
+    );
   } catch (err) {
     check(`Orders Management failed: ${err.message}`, false);
   }
@@ -387,14 +423,14 @@ async function runTests() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${adminToken}`
+        Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
         title: `Heritage Care Guide ${timestamp}`,
         slug: `heritage-care-${timestamp}`,
         content: "Always store pure silk sarees folded inside cotton wraps and dry clean only.",
-        isPublished: true
-      })
+        isPublished: true,
+      }),
     });
     const addData = await addRes.json();
     check("Admin: CMS Page published successfully in database", addRes.ok && addData.success);
@@ -405,19 +441,23 @@ async function runTests() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${adminToken}`
+        Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        content: "Always store pure silk sarees folded inside cotton wraps, dry clean only, and air out every six months."
-      })
+        content:
+          "Always store pure silk sarees folded inside cotton wraps, dry clean only, and air out every six months.",
+      }),
     });
     const editData = await editRes.json();
-    check("Admin: CMS Page editorial body updated successfully", editRes.ok && editData.success && editData.data.content.includes("six months"));
+    check(
+      "Admin: CMS Page editorial body updated successfully",
+      editRes.ok && editData.success && editData.data.content.includes("six months"),
+    );
 
     // 3. Delete Page
     const delRes = await fetch(`${API_BASE}/pages/${newPageId}`, {
       method: "DELETE",
-      headers: { "Authorization": `Bearer ${adminToken}` }
+      headers: { Authorization: `Bearer ${adminToken}` },
     });
     const delData = await delRes.json();
     check("Admin: CMS Page deleted from database successfully", delRes.ok && delData.success);
@@ -435,49 +475,58 @@ async function runTests() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${adminToken}`
+        Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
         freeShippingAbove: 5999,
         shippingCharge: 120,
         codEnabled: true,
-        deliveryDays: 4
-      })
+        deliveryDays: 4,
+      }),
     });
     const shipData = await shipRes.json();
-    check("Admin: Shipping rules (Logistics charges, delivery days) updated live in DB", shipRes.ok && shipData.success && shipData.data.freeShippingAbove === 5999);
+    check(
+      "Admin: Shipping rules (Logistics charges, delivery days) updated live in DB",
+      shipRes.ok && shipData.success && shipData.data.freeShippingAbove === 5999,
+    );
 
     // 2. Payment Settings
     const payRes = await fetch(`${API_BASE}/settings/payment`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${adminToken}`
+        Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
         razorpayKeyId: "rzp_test_modified999",
         razorpaySecret: "secretkey999",
-        razorpayEnabled: true
-      })
+        razorpayEnabled: true,
+      }),
     });
     const payData = await payRes.json();
-    check("Admin: Razorpay credentials and status configuration successfully persisted", payRes.ok && payData.success && payData.data.razorpayKeyId === "rzp_test_modified999");
+    check(
+      "Admin: Razorpay credentials and status configuration successfully persisted",
+      payRes.ok && payData.success && payData.data.razorpayKeyId === "rzp_test_modified999",
+    );
 
     // 3. Homepage Settings
     const homeRes = await fetch(`${API_BASE}/settings/home`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${adminToken}`
+        Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
         heroTitle: "Elegance of Silk Handlooms",
         heroSubtitle: "Handcrafted pure Kanchipuram bridal drapes for your special events.",
-        offerBanner: "Flat 25% Off on Wedding Silk Sarees"
-      })
+        offerBanner: "Flat 25% Off on Wedding Silk Sarees",
+      }),
     });
     const homeData = await homeRes.json();
-    check("Admin: Dynamic homepage banners and editorial copy updated successfully in DB", homeRes.ok && homeData.success && homeData.data.heroTitle === "Elegance of Silk Handlooms");
+    check(
+      "Admin: Dynamic homepage banners and editorial copy updated successfully in DB",
+      homeRes.ok && homeData.success && homeData.data.heroTitle === "Elegance of Silk Handlooms",
+    );
   } catch (err) {
     check(`Boutique Settings failed: ${err.message}`, false);
   }
@@ -501,7 +550,7 @@ async function runTests() {
   console.log(`\n========================================`);
   console.log(`🎉 ALL 12 FUNCTIONAL FLOWS SUCCESSFULLY VERIFIED!`);
   console.log(`========================================`);
-  
+
   process.exit(0);
 }
 

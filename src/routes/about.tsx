@@ -11,7 +11,10 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About Us — Sri Kamatchi Silk" },
-      { name: "description", content: "The heritage, craft and passion behind Sri Kamatchi Silk sarees." },
+      {
+        name: "description",
+        content: "The heritage, craft and passion behind Sri Kamatchi Silk sarees.",
+      },
     ],
   }),
   component: AboutPage,
@@ -24,7 +27,10 @@ function AboutPage() {
       <section className="bg-gradient-champagne relative overflow-hidden py-20 text-center">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <nav className="mb-4 text-xs text-muted-foreground">
-            <Link to="/" className="hover:text-primary">Home</Link> / <span className="text-foreground">About Us</span>
+            <Link to="/" className="hover:text-primary">
+              Home
+            </Link>{" "}
+            / <span className="text-foreground">About Us</span>
           </nav>
           <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-card/60 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.25em] text-gold mb-6">
             <Sparkles size={13} /> Our Legacy
@@ -33,7 +39,8 @@ function AboutPage() {
             The Legend of <span className="text-gradient-gold">Sri Kamatchi Silk</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Weaving stories of grace, purity, and heritage for over twenty-five years. Handcrafted silk sarees direct from the sacred handlooms of Kanchipuram.
+            Weaving stories of grace, purity, and heritage for over twenty-five years. Handcrafted
+            silk sarees direct from the sacred handlooms of Kanchipuram.
           </p>
           <div className="gold-divider mx-auto mt-8 w-32" />
         </div>
@@ -58,7 +65,9 @@ function AboutPage() {
             </div>
             <div className="absolute -bottom-6 -right-2 rounded-2xl border border-border bg-card p-6 shadow-card max-w-[200px] text-center hidden sm:block">
               <span className="font-display text-3xl font-bold text-primary block">100%</span>
-              <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Pure Mulberry Silk</span>
+              <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+                Pure Mulberry Silk
+              </span>
             </div>
           </motion.div>
 
@@ -69,13 +78,23 @@ function AboutPage() {
             transition={{ duration: 0.7 }}
             className="space-y-6"
           >
-            <span className="text-xs uppercase tracking-widest text-gold font-semibold">The Sacred Loom</span>
-            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">Born in the Temple Town of Kanchipuram</h2>
+            <span className="text-xs uppercase tracking-widest text-gold font-semibold">
+              The Sacred Loom
+            </span>
+            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
+              Born in the Temple Town of Kanchipuram
+            </h2>
             <p className="text-muted-foreground leading-relaxed">
-              Every saree from Sri Kamatchi Silk carries the blessing of centuries-old weaving traditions. Our journey began with a simple mission: to preserve the unparalleled majesty of authentic Kanchipuram handloom silk while making it accessible to global connoisseurs.
+              Every saree from Sri Kamatchi Silk carries the blessing of centuries-old weaving
+              traditions. Our journey began with a simple mission: to preserve the unparalleled
+              majesty of authentic Kanchipuram handloom silk while making it accessible to global
+              connoisseurs.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              From selecting the finest grade mulberry silk threads to testing the purity of gold and silver zari motifs, our master weavers dedicate up to 200 hours to weave a single masterwork. Each motif—be it the royal peacock, the sacred temple border, or the intricate floral vine—tells a story of divine craftsmanship.
+              From selecting the finest grade mulberry silk threads to testing the purity of gold
+              and silver zari motifs, our master weavers dedicate up to 200 hours to weave a single
+              masterwork. Each motif—be it the royal peacock, the sacred temple border, or the
+              intricate floral vine—tells a story of divine craftsmanship.
             </p>
             <div className="pt-4">
               <div className="grid grid-cols-2 gap-4">
@@ -85,7 +104,9 @@ function AboutPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground text-sm">Zari Tested Purity</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Tested pure gold and silver threads.</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Tested pure gold and silver threads.
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-3">
@@ -94,7 +115,9 @@ function AboutPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground text-sm">Silk Mark Certified</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">100% authentic handloom fabrics.</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      100% authentic handloom fabrics.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -118,22 +141,25 @@ function AboutPage() {
                 role: "Master Kanchipuram Weaver",
                 experience: "40+ Years of Craftsmanship",
                 image: saree2,
-                quote: "To me, weaving is not just a profession; it is a sacred prayer of colors, gold zari, and pure thread."
+                quote:
+                  "To me, weaving is not just a profession; it is a sacred prayer of colors, gold zari, and pure thread.",
               },
               {
                 name: "Lakshmi Narayanan",
                 role: "Bridal Collection Specialist",
                 experience: "25+ Years of Dedication",
                 image: saree3,
-                quote: "Creating a bridal saree requires more than skill. It requires the blessing of design and absolute patience."
+                quote:
+                  "Creating a bridal saree requires more than skill. It requires the blessing of design and absolute patience.",
               },
               {
                 name: "Subramaniam Devadoss",
                 role: "Traditional Jacquard Master",
                 experience: "35+ Years of Legacy",
                 image: heroSaree,
-                quote: "Each thread that crosses the shuttle carries the weight of Kanchipuram's glorious, living heritage."
-              }
+                quote:
+                  "Each thread that crosses the shuttle carries the weight of Kanchipuram's glorious, living heritage.",
+              },
             ].map((weaver, idx) => (
               <motion.div
                 key={idx}
@@ -151,9 +177,15 @@ function AboutPage() {
                   />
                 </div>
                 <div className="p-6">
-                  <span className="text-xs font-semibold text-gold uppercase tracking-wider">{weaver.role}</span>
-                  <h3 className="font-display text-xl font-bold text-foreground mt-1">{weaver.name}</h3>
-                  <p className="text-xs text-muted-foreground font-medium mt-0.5">{weaver.experience}</p>
+                  <span className="text-xs font-semibold text-gold uppercase tracking-wider">
+                    {weaver.role}
+                  </span>
+                  <h3 className="font-display text-xl font-bold text-foreground mt-1">
+                    {weaver.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                    {weaver.experience}
+                  </p>
                   <p className="text-sm italic text-muted-foreground mt-4 border-l-2 border-gold pl-3">
                     "{weaver.quote}"
                   </p>
@@ -166,27 +198,24 @@ function AboutPage() {
 
       {/* Brand Values */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 text-center">
-        <SectionHeading
-          eyebrow="Our Pillars"
-          title="What Defines Sri Kamatchi Silk"
-        />
+        <SectionHeading eyebrow="Our Pillars" title="What Defines Sri Kamatchi Silk" />
         <div className="mt-12 grid gap-8 sm:grid-cols-3">
           {[
             {
               icon: Award,
               title: "Heritage Preservation",
-              desc: "We ensure traditional handloom weaving techniques are supported, protected, and properly compensated."
+              desc: "We ensure traditional handloom weaving techniques are supported, protected, and properly compensated.",
             },
             {
               icon: Heart,
               title: "Unmatched Purity",
-              desc: "Zero compromises on mulberry silk thread quality, pure zari compositions, and traditional color dyes."
+              desc: "Zero compromises on mulberry silk thread quality, pure zari compositions, and traditional color dyes.",
             },
             {
               icon: Sparkles,
               title: "Modern Luxury",
-              desc: "Marrying centuries-old artistry with contemporary pastel shades and celebrity-inspired silhouettes."
-            }
+              desc: "Marrying centuries-old artistry with contemporary pastel shades and celebrity-inspired silhouettes.",
+            },
           ].map((val, idx) => (
             <motion.div
               key={idx}
@@ -214,7 +243,8 @@ function AboutPage() {
             Experience Handloom Luxury
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm text-primary-foreground/80">
-            Browse our curated collections of pure bridal silks, daily cotton silks, and award-winning handwoven pieces.
+            Browse our curated collections of pure bridal silks, daily cotton silks, and
+            award-winning handwoven pieces.
           </p>
           <div className="mt-8 flex justify-center">
             <Link

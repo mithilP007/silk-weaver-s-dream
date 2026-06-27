@@ -25,7 +25,7 @@ function CategoryPage() {
       try {
         const [prodRes, catRes] = await Promise.all([
           fetch(`${API_BASE}/api/products`),
-          fetch(`${API_BASE}/api/categories`)
+          fetch(`${API_BASE}/api/categories`),
         ]);
 
         const prods = await prodRes.json();
@@ -45,9 +45,7 @@ function CategoryPage() {
   const liveProducts = useMemo(() => {
     if (dbProducts.length === 0) return mockProducts;
     return dbProducts.map((p) => {
-      const img = p.image?.startsWith("http")
-        ? p.image
-        : (p.image ? `${API_BASE}${p.image}` : "");
+      const img = p.image?.startsWith("http") ? p.image : p.image ? `${API_BASE}${p.image}` : "";
       return {
         id: p.id,
         slug: p.slug,
@@ -100,11 +98,18 @@ function CategoryPage() {
       <section className="bg-gradient-champagne">
         <div className="mx-auto max-w-4xl px-4 py-14 text-center sm:px-6 lg:py-20">
           <nav className="mb-4 text-xs text-muted-foreground">
-            <Link to="/" className="hover:text-primary">Home</Link> /{" "}
-            <Link to="/silk-sarees" className="hover:text-primary">Silk Sarees</Link> /{" "}
-            <span className="text-foreground">{sub?.name ?? "Collection"}</span>
+            <Link to="/" className="hover:text-primary">
+              Home
+            </Link>{" "}
+            /{" "}
+            <Link to="/silk-sarees" className="hover:text-primary">
+              Silk Sarees
+            </Link>{" "}
+            / <span className="text-foreground">{sub?.name ?? "Collection"}</span>
           </nav>
-          <h1 className="font-display text-4xl font-bold text-foreground sm:text-5xl">{sub?.name ?? "Collection"}</h1>
+          <h1 className="font-display text-4xl font-bold text-foreground sm:text-5xl">
+            {sub?.name ?? "Collection"}
+          </h1>
           {sub && <p className="mx-auto mt-4 max-w-xl text-muted-foreground">{sub.description}</p>}
           <div className="gold-divider mx-auto mt-6 w-24" />
         </div>
@@ -119,10 +124,24 @@ function CategoryPage() {
           <>
             <p className="mb-6 text-sm text-muted-foreground">{list.length} products</p>
             {list.length === 0 ? (
-              <EmptyState icon={Search} title="No sarees yet" description="This collection is being woven. Check back soon." action={<Link to="/shop" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground">Browse all <ArrowRight size={16} /></Link>} />
+              <EmptyState
+                icon={Search}
+                title="No sarees yet"
+                description="This collection is being woven. Check back soon."
+                action={
+                  <Link
+                    to="/shop"
+                    className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground"
+                  >
+                    Browse all <ArrowRight size={16} />
+                  </Link>
+                }
+              />
             ) : (
               <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-                {list.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
+                {list.map((p, i) => (
+                  <ProductCard key={p.id} product={p} index={i} />
+                ))}
               </div>
             )}
           </>

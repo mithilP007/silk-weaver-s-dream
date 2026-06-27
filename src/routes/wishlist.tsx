@@ -24,7 +24,10 @@ function WishlistPage() {
               title="Your wishlist is empty"
               description="Start saving the sarees you love and find them all here."
               action={
-                <Link to="/shop" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground">
+                <Link
+                  to="/shop"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground"
+                >
                   <ShoppingBag size={16} /> Explore Sarees
                 </Link>
               }

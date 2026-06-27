@@ -9,7 +9,11 @@ const uploadImage = (req, res) => {
       });
     }
 
-    const imageUrl = `/uploads/${type}s/${req.file.filename}`;
+    let folder = `${type}s`;
+    if (type === "category") {
+      folder = "categories";
+    }
+    const imageUrl = `/uploads/${folder}/${req.file.filename}`;
 
     res.status(200).json({
       success: true,

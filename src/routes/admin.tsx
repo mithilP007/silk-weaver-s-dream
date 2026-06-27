@@ -70,12 +70,13 @@ function AdminLayout() {
       <div className="flex min-h-screen items-center justify-center bg-[#fbfaf7] text-[#2c2623]">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#3a1d13] border-t-transparent"></div>
-          <p className="text-sm font-semibold tracking-wider uppercase text-[#6e5d53]">Checking authorization...</p>
+          <p className="text-sm font-semibold tracking-wider uppercase text-[#6e5d53]">
+            Checking authorization...
+          </p>
         </div>
       </div>
     );
   }
-
 
   return (
     <div className="flex min-h-screen bg-[#fbfaf7] text-[#2c2623] antialiased">
@@ -87,9 +88,7 @@ function AdminLayout() {
             <h1 className="font-display text-sm font-bold tracking-wider text-white">
               Sri Kamatchi Silk
             </h1>
-            <p className="text-[10px] uppercase tracking-widest text-[#d4af37]/80">
-              Admin Portal
-            </p>
+            <p className="text-[10px] uppercase tracking-widest text-[#d4af37]/80">Admin Portal</p>
           </div>
         </div>
         <nav className="space-y-1 px-3 py-6">

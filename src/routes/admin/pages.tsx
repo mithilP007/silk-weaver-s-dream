@@ -12,10 +12,34 @@ export const Route = createFileRoute("/admin/pages")({
 const INITIAL_PAGES = [
   { id: "1", title: "About Us", slug: "about", status: true, lastUpdated: "May 28, 2026" },
   { id: "2", title: "Contact Us", slug: "contact", status: true, lastUpdated: "May 29, 2026" },
-  { id: "3", title: "Privacy Policy", slug: "privacy-policy", status: true, lastUpdated: "May 10, 2026" },
-  { id: "4", title: "Terms and Conditions", slug: "terms", status: true, lastUpdated: "May 10, 2026" },
-  { id: "5", title: "Shipping Policy", slug: "shipping-policy", status: true, lastUpdated: "May 12, 2026" },
-  { id: "6", title: "Return Policy", slug: "return-policy", status: true, lastUpdated: "May 15, 2026" },
+  {
+    id: "3",
+    title: "Privacy Policy",
+    slug: "privacy-policy",
+    status: true,
+    lastUpdated: "May 10, 2026",
+  },
+  {
+    id: "4",
+    title: "Terms and Conditions",
+    slug: "terms",
+    status: true,
+    lastUpdated: "May 10, 2026",
+  },
+  {
+    id: "5",
+    title: "Shipping Policy",
+    slug: "shipping-policy",
+    status: true,
+    lastUpdated: "May 12, 2026",
+  },
+  {
+    id: "6",
+    title: "Return Policy",
+    slug: "return-policy",
+    status: true,
+    lastUpdated: "May 15, 2026",
+  },
 ];
 
 import { Loader2, Plus, Trash2 } from "lucide-react";
@@ -43,7 +67,7 @@ function AdminPages() {
         setPages(res.data);
         if (res.data.length > 0) {
           // If a specific ID is requested, select it. Otherwise select the first page.
-          const pageToSelect = selectId 
+          const pageToSelect = selectId
             ? res.data.find((p: any) => p.id === selectId) || res.data[0]
             : res.data[0];
           selectPage(pageToSelect);
@@ -123,11 +147,9 @@ function AdminPages() {
   const handleSavePage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedPage) return;
-    
+
     const isNew = selectedPage.id === "new";
-    const url = isNew 
-      ? `${API_BASE}/api/pages` 
-      : `${API_BASE}/api/pages/${selectedPage.id}`;
+    const url = isNew ? `${API_BASE}/api/pages` : `${API_BASE}/api/pages/${selectedPage.id}`;
     const method = isNew ? "POST" : "PUT";
 
     try {
@@ -149,8 +171,12 @@ function AdminPages() {
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Failed to save page contents");
       }
-      
-      toast.success(isNew ? `"${pageTitle}" page published successfully!` : `"${pageTitle}" page contents updated & deployed live!`);
+
+      toast.success(
+        isNew
+          ? `"${pageTitle}" page published successfully!`
+          : `"${pageTitle}" page contents updated & deployed live!`,
+      );
       fetchPages(data.data?.id);
     } catch (err: any) {
       console.error(err);
@@ -198,7 +224,9 @@ function AdminPages() {
                 <span>Loading CMS pages...</span>
               </div>
             ) : pages.length === 0 ? (
-              <p className="text-center text-xs text-muted-foreground py-8">No editorial pages found. Click "Create Saree Page" above to add one.</p>
+              <p className="text-center text-xs text-muted-foreground py-8">
+                No editorial pages found. Click "Create Saree Page" above to add one.
+              </p>
             ) : (
               pages.map((p) => {
                 const active = selectedPage?.id === p.id;
@@ -214,12 +242,22 @@ function AdminPages() {
                     )}
                   >
                     <div className="flex items-center gap-3">
-                      <FileText size={16} className={active ? "text-[#d4af37]" : "text-[#6e5d53]"} />
+                      <FileText
+                        size={16}
+                        className={active ? "text-[#d4af37]" : "text-[#6e5d53]"}
+                      />
                       <div>
-                        <p className={cn("text-xs font-bold", active ? "text-[#2c2623]" : "text-[#6e5d53]")}>
+                        <p
+                          className={cn(
+                            "text-xs font-bold",
+                            active ? "text-[#2c2623]" : "text-[#6e5d53]",
+                          )}
+                        >
                           {p.title}
                         </p>
-                        <p className="text-[9px] text-muted-foreground mt-0.5 font-mono">/{p.slug}</p>
+                        <p className="text-[9px] text-muted-foreground mt-0.5 font-mono">
+                          /{p.slug}
+                        </p>
                       </div>
                     </div>
                     <button
@@ -249,11 +287,18 @@ function AdminPages() {
               <div className="flex items-center justify-between border-b border-[#f3ede8] pb-4">
                 <div>
                   <h3 className="font-display text-lg font-bold">
-                    {selectedPage.id === "new" ? "Publish New Saree Page" : `Edit Editorial: ${selectedPage.title}`}
+                    {selectedPage.id === "new"
+                      ? "Publish New Saree Page"
+                      : `Edit Editorial: ${selectedPage.title}`}
                   </h3>
                   {selectedPage.id !== "new" && selectedPage.updatedAt && (
                     <p className="text-[10px] text-muted-foreground mt-0.5 font-mono">
-                      Last updated: {new Date(selectedPage.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                      Last updated:{" "}
+                      {new Date(selectedPage.updatedAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
                     </p>
                   )}
                 </div>
@@ -279,7 +324,9 @@ function AdminPages() {
 
               <div className="grid gap-5 sm:grid-cols-2">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">Page Title</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    Page Title
+                  </label>
                   <input
                     type="text"
                     required
@@ -290,7 +337,9 @@ function AdminPages() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">URL Slug Path</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    URL Slug Path
+                  </label>
                   <input
                     type="text"
                     required
@@ -305,7 +354,9 @@ function AdminPages() {
               <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53] flex items-center justify-between">
                   <span>Rich Text Body Content</span>
-                  <span className="text-[10px] text-muted-foreground font-mono">HTML tags accepted</span>
+                  <span className="text-[10px] text-muted-foreground font-mono">
+                    HTML tags accepted
+                  </span>
                 </label>
                 {/* Visual rich text Mock area UI */}
                 <div className="rounded-xl border border-[#e8dfd8] overflow-hidden">
@@ -336,7 +387,7 @@ function AdminPages() {
                   />
                   Activate Page live on storefront navigation links
                 </label>
-                
+
                 <button
                   type="submit"
                   className="rounded-xl bg-[#3a1d13] text-white px-6 py-3 text-xs font-bold hover:bg-[#4d2d22] flex items-center gap-1.5 cursor-pointer"
@@ -346,7 +397,9 @@ function AdminPages() {
               </div>
             </form>
           ) : (
-            <p className="text-center text-xs text-muted-foreground py-16">Select a page on the sidebar directory to load content.</p>
+            <p className="text-center text-xs text-muted-foreground py-16">
+              Select a page on the sidebar directory to load content.
+            </p>
           )}
         </div>
       </div>

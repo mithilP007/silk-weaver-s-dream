@@ -49,8 +49,12 @@ const updateShippingSettings = async (req, res) => {
       settings = await prisma.shippingSettings.update({
         where: { id: settings.id },
         data: {
-          freeShippingAbove: freeShippingAbove !== undefined ? parseFloat(freeShippingAbove) : settings.freeShippingAbove,
-          shippingCharge: shippingCharge !== undefined ? parseFloat(shippingCharge) : settings.shippingCharge,
+          freeShippingAbove:
+            freeShippingAbove !== undefined
+              ? parseFloat(freeShippingAbove)
+              : settings.freeShippingAbove,
+          shippingCharge:
+            shippingCharge !== undefined ? parseFloat(shippingCharge) : settings.shippingCharge,
           codEnabled: codEnabled !== undefined ? codEnabled : settings.codEnabled,
           deliveryDays: deliveryDays !== undefined ? parseInt(deliveryDays) : settings.deliveryDays,
         },
@@ -116,7 +120,11 @@ const updatePaymentSettings = async (req, res) => {
     // Prepare update body (preserve existing secret if masked bullet string is received)
     const updateData = {};
     if (razorpayKeyId !== undefined) updateData.razorpayKeyId = razorpayKeyId;
-    if (razorpaySecret !== undefined && razorpaySecret !== "••••••••••••••••••••••••" && !razorpaySecret.includes("••••")) {
+    if (
+      razorpaySecret !== undefined &&
+      razorpaySecret !== "••••••••••••••••••••••••" &&
+      !razorpaySecret.includes("••••")
+    ) {
       updateData.razorpaySecret = razorpaySecret;
     }
     if (razorpayEnabled !== undefined) updateData.razorpayEnabled = razorpayEnabled;
@@ -126,7 +134,10 @@ const updatePaymentSettings = async (req, res) => {
       settings = await prisma.paymentSettings.create({
         data: {
           razorpayKeyId: razorpayKeyId || "rzp_test_Kamatchi90281",
-          razorpaySecret: razorpaySecret && !razorpaySecret.includes("••••") ? razorpaySecret : "dummysecretvalue12345678",
+          razorpaySecret:
+            razorpaySecret && !razorpaySecret.includes("••••")
+              ? razorpaySecret
+              : "dummysecretvalue12345678",
           razorpayMode: razorpayMode || "test",
           razorpayEnabled: razorpayEnabled !== undefined ? razorpayEnabled : true,
         },
@@ -166,9 +177,11 @@ const getHomeSettings = async (req, res) => {
       settings = await prisma.homeSettings.create({
         data: {
           heroTitle: "Draped in Timeless Elegance",
-          heroSubtitle: "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees.",
+          heroSubtitle:
+            "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees.",
           heroImage: "/uploads/products/hero-saree.jpg",
-          offerBanner: "Up to 30% off on bridal Kanchipuram silks. Make your big day unforgettable.",
+          offerBanner:
+            "Up to 30% off on bridal Kanchipuram silks. Make your big day unforgettable.",
         },
       });
     }
@@ -177,7 +190,11 @@ const getHomeSettings = async (req, res) => {
     const fallbackAnnouncements = [
       { text: "Free shipping on orders above ₹4,999", link: "", enabled: true },
       { text: "Up to 30% off on the Wedding Collection", link: "", enabled: true },
-      { text: "Contact us on WhatsApp for styling & custom orders", link: "https://wa.me/919443210987", enabled: true }
+      {
+        text: "Contact us on WhatsApp for styling & custom orders",
+        link: "https://wa.me/919443210987",
+        enabled: true,
+      },
     ];
 
     const fallbackHeader = {
@@ -190,15 +207,16 @@ const getHomeSettings = async (req, res) => {
         { label: "Celebrity Silks", to: "/category/celebrity-silks" },
         { label: "Silk Cotton", to: "/category/cotton-silks" },
         { label: "Shop", to: "/shop" },
-        { label: "Contact WhatsApp", to: "https://wa.me/919443210987" }
+        { label: "Contact WhatsApp", to: "https://wa.me/919443210987" },
       ],
-      contactNumber: ""
+      contactNumber: "",
     };
 
     const fallbackHero = {
       eyebrow: "Heritage Weaves",
       title: "Draped in Timeless Elegance",
-      subtitle: "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees, made for the moments you'll cherish forever.",
+      subtitle:
+        "Discover the soul of South Indian craftsmanship. Handwoven Kanchipuram and luxury silk sarees, made for the moments you'll cherish forever.",
       primaryCtaText: "Explore Collection",
       primaryCtaLink: "/silk-sarees",
       secondaryCtaText: "Shop All Sarees",
@@ -209,8 +227,8 @@ const getHomeSettings = async (req, res) => {
       stats: [
         { value: "25+", label: "Years of Heritage" },
         { value: "50k+", label: "Happy Customers" },
-        { value: "100%", label: "Pure Silk" }
-      ]
+        { value: "100%", label: "Pure Silk" },
+      ],
     };
 
     const fallbackBanners = [
@@ -221,7 +239,7 @@ const getHomeSettings = async (req, res) => {
         description: "Up to 30% off on bridal Kanchipuram silks. Make your big day unforgettable.",
         ctaText: "Shop the Sale",
         ctaLink: "/shop",
-        imageUrl: ""
+        imageUrl: "",
       },
       {
         id: "festival",
@@ -230,8 +248,8 @@ const getHomeSettings = async (req, res) => {
         description: "Radiant cotton silks & semi silks to light up every celebration.",
         ctaText: "Discover Now",
         ctaLink: "/shop",
-        imageUrl: ""
-      }
+        imageUrl: "",
+      },
     ];
 
     const fallbackToggles = {
@@ -245,13 +263,14 @@ const getHomeSettings = async (req, res) => {
       newArrivals: true,
       celebritySection: true,
       instagramGallery: true,
-      newsletter: true
+      newsletter: true,
     };
 
     const fallbackCategoriesSection = {
       eyebrow: "The House of Silk",
       title: "Silk Sarees",
-      subtitle: "Handwoven heritage drapes crafted by master weavers — explore our signature collections."
+      subtitle:
+        "Handwoven heritage drapes crafted by master weavers — explore our signature collections.",
     };
 
     const fallbackTrendingSections = {
@@ -261,7 +280,7 @@ const getHomeSettings = async (req, res) => {
       newArrivalsEyebrow: "Fresh Off the Loom",
       celebrityTitle: "Celebrity Inspired",
       celebrityEyebrow: "As Seen on Stars",
-      maxProducts: 4
+      maxProducts: 4,
     };
 
     const fallbackOccasionFinder = {
@@ -274,47 +293,85 @@ const getHomeSettings = async (req, res) => {
         { name: "Festival", icon: "PartyPopper" },
         { name: "Temple Visit", icon: "Landmark" },
         { name: "Daily Wear", icon: "Sun" },
-        { name: "Gift", icon: "Gift" }
-      ]
+        { name: "Gift", icon: "Gift" },
+      ],
     };
 
     const fallbackPromiseSection = {
       eyebrow: "The Promise",
       title: "Why Choose Sri Kamatchi Silk",
       cards: [
-        { title: "Authentic Handloom", text: "Certified pure silk woven by master artisans.", icon: "Award" },
-        { title: "Trusted Quality", text: "Each saree quality-checked & zari-tested.", icon: "ShieldCheck" },
-        { title: "Pan-India Delivery", text: "Safe, insured shipping to your doorstep.", icon: "Truck" },
-        { title: "Personal Styling", text: "Dedicated stylists to help you choose.", icon: "Headphones" }
-      ]
+        {
+          title: "Authentic Handloom",
+          text: "Certified pure silk woven by master artisans.",
+          icon: "Award",
+        },
+        {
+          title: "Trusted Quality",
+          text: "Each saree quality-checked & zari-tested.",
+          icon: "ShieldCheck",
+        },
+        {
+          title: "Pan-India Delivery",
+          text: "Safe, insured shipping to your doorstep.",
+          icon: "Truck",
+        },
+        {
+          title: "Personal Styling",
+          text: "Dedicated stylists to help you choose.",
+          icon: "Headphones",
+        },
+      ],
     };
 
     const fallbackTestimonials = [
-      { id: "t1", name: "Priya Lakshmi", location: "Chennai", text: "The Kanchipuram bridal saree I ordered was absolutely breathtaking. The zari work is pure and the weight feels authentic.", rating: 5, avatar: "PL" },
-      { id: "t2", name: "Anjali Menon", location: "Bengaluru", text: "Superb online buying experience. Their customer styling consultant guided me over video call to inspect the drape details.", rating: 5, avatar: "AM" },
-      { id: "t3", name: "Deepa Subramaniam", location: "Coimbatore", text: "Beautiful packaging and very fast shipping. The saree quality matches their showroom standards. Definitely purchasing again.", rating: 5, avatar: "DS" }
+      {
+        id: "t1",
+        name: "Priya Lakshmi",
+        location: "Chennai",
+        text: "The Kanchipuram bridal saree I ordered was absolutely breathtaking. The zari work is pure and the weight feels authentic.",
+        rating: 5,
+        avatar: "PL",
+      },
+      {
+        id: "t2",
+        name: "Anjali Menon",
+        location: "Bengaluru",
+        text: "Superb online buying experience. Their customer styling consultant guided me over video call to inspect the drape details.",
+        rating: 5,
+        avatar: "AM",
+      },
+      {
+        id: "t3",
+        name: "Deepa Subramaniam",
+        location: "Coimbatore",
+        text: "Beautiful packaging and very fast shipping. The saree quality matches their showroom standards. Definitely purchasing again.",
+        rating: 5,
+        avatar: "DS",
+      },
     ];
 
     const fallbackGallery = {
       eyebrow: "@srikamatchisilk",
       title: "Follow Our Journey",
       subtitle: "Tag us with #DrapedInKamatchi to be featured.",
-      items: []
+      items: [],
     };
 
     const fallbackNewsletter = {
       title: "Join the Kamatchi Circle",
       subtitle: "Be the first to know about new weaves, private sales and styling tips.",
-      buttonText: "Subscribe"
+      buttonText: "Subscribe",
     };
 
     const fallbackFooter = {
-      description: "Weaving heritage into every drape. Sri Kamatchi Silk brings you handcrafted Kanchipuram and luxury silk sarees, made by master artisans for life's most treasured moments.",
+      description:
+        "Weaving heritage into every drape. Sri Kamatchi Silk brings you handcrafted Kanchipuram and luxury silk sarees, made by master artisans for life's most treasured moments.",
       address: "No. 24, Silk Bazaar Road, Kanchipuram, Tamil Nadu 631502",
       phone: "",
       email: "care@srikamatchisilk.com",
       copyright: "Sri Kamatchi Silk. All rights reserved.",
-      bottomNote: "Handwoven with love in Kanchipuram, India."
+      bottomNote: "Handwoven with love in Kanchipuram, India.",
     };
 
     const data = {

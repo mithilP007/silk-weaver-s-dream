@@ -33,7 +33,9 @@ export function Footer() {
   }, []);
 
   const footer = settings?.footer;
-  const description = footer?.description || "Weaving heritage into every drape. Sri Kamatchi Silk brings you handcrafted Kanchipuram and luxury silk sarees, made by master artisans for life's most treasured moments.";
+  const description =
+    footer?.description ||
+    "Weaving heritage into every drape. Sri Kamatchi Silk brings you handcrafted Kanchipuram and luxury silk sarees, made by master artisans for life's most treasured moments.";
   const address = footer?.address || "No. 24, Silk Bazaar Road, Kanchipuram, Tamil Nadu 631502";
   const phone = footer?.phone || "";
   const email = footer?.email || "care@srikamatchisilk.com";
@@ -45,15 +47,15 @@ export function Footer() {
     instagram: "#",
     facebook: "#",
     youtube: "#",
-    twitter: "#"
+    twitter: "#",
   };
 
   const socials = [
     { Icon: Instagram, link: socialLinks.instagram, name: "Instagram" },
     { Icon: Facebook, link: socialLinks.facebook, name: "Facebook" },
     { Icon: Youtube, link: socialLinks.youtube, name: "YouTube" },
-    { Icon: Twitter, link: socialLinks.twitter, name: "Twitter" }
-  ].filter(s => s.link);
+    { Icon: Twitter, link: socialLinks.twitter, name: "Twitter" },
+  ].filter((s) => s.link);
 
   return (
     <footer className="mt-24 bg-sidebar text-sidebar-foreground">
@@ -136,12 +138,21 @@ export function Footer() {
               )}
               <li className="flex items-center gap-3">
                 <span className="shrink-0 text-gold font-bold text-xs">WA</span>
-                <a href="https://wa.me/919443210987" target="_blank" rel="noreferrer" className="hover:underline">WhatsApp Support</a>
+                <a
+                  href="https://wa.me/919443210987"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:underline"
+                >
+                  WhatsApp Support
+                </a>
               </li>
               {email && (
                 <li className="flex items-center gap-3">
                   <Mail size={16} className="shrink-0 text-gold" />
-                  <a href={`mailto:${email}`} className="hover:underline">{email}</a>
+                  <a href={`mailto:${email}`} className="hover:underline">
+                    {email}
+                  </a>
                 </li>
               )}
             </ul>
@@ -149,7 +160,9 @@ export function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-sidebar-border pt-8 text-xs text-sidebar-foreground/60 sm:flex-row">
-          <p>© {new Date().getFullYear()} {copyright}</p>
+          <p>
+            © {new Date().getFullYear()} {copyright}
+          </p>
           <p>{bottomNote}</p>
         </div>
       </div>
