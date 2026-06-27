@@ -13,7 +13,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { subcategories as initialSubs } from "@/data/categories";
-import { API_BASE } from "@/lib/api";
+import { API_BASE, safeFetchJson } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/categories")({
   component: AdminCategories,
@@ -150,7 +150,7 @@ function AdminCategories() {
     setIsLoading(true);
     try {
       const response = await fetch(`${API_BASE}/api/categories`);
-      const res = await response.json();
+      const res = await safeFetchJson(response);
       if (res.success) {
         const mapped = res.data.map((c: any) => {
           const localMatch = initialSubs.find((local) => local.slug === c.slug);
@@ -247,7 +247,7 @@ function AdminCategories() {
           },
         });
 
-        const data = await response.json();
+        const data = await safeFetchJson(response);
         if (!response.ok || !data.success) {
           throw new Error(data.message || "Failed to delete category");
         }
@@ -288,27 +288,7 @@ function AdminCategories() {
             body: formData,
           });
 
-          const contentType = uploadRes.headers.get("content-type");
-          if (!uploadRes.ok) {
-            let errMsg = `Upload failed with status ${uploadRes.status}`;
-            if (contentType && contentType.includes("application/json")) {
-              const errData = await uploadRes.json();
-              errMsg = errData.message || errMsg;
-            } else {
-              errMsg = await uploadRes.text();
-            }
-            throw new Error(errMsg);
-          }
-
-          let uploadData;
-          if (contentType && contentType.includes("application/json")) {
-            uploadData = await uploadRes.json();
-          } else {
-            const rawText = await uploadRes.text();
-            throw new Error(
-              `Unexpected non-JSON response from upload: ${rawText.substring(0, 100)}`,
-            );
-          }
+          const uploadData = await safeFetchJson(uploadRes);
 
           if (uploadData.success && uploadData.imageUrl) {
             uploadedImages.push(uploadData.imageUrl);
@@ -335,6 +315,10 @@ function AdminCategories() {
       const method = editingSub ? "PUT" : "POST";
 
       const primaryImage = uploadedImages.length > 0 ? uploadedImages[0] : "";
+      // Strip API_BASE prefix before saving image and gallery URLs to the database
+      const cleanPrimaryImage = primaryImage.startsWith(API_BASE) ? primaryImage.substring(API_BASE.length) : primaryImage;
+      const cleanGallery = uploadedImages.map(img => img.startsWith(API_BASE) ? img.substring(API_BASE.length) : img);
+
       const response = await fetch(url, {
         method,
         headers,
@@ -342,30 +326,12 @@ function AdminCategories() {
           name: formName,
           slug: newSlug,
           description: formDesc,
-          image: primaryImage,
-          gallery: uploadedImages,
+          image: cleanPrimaryImage,
+          gallery: cleanGallery,
         }),
       });
 
-      const contentType = response.headers.get("content-type");
-      if (!response.ok) {
-        let errMsg = `Save failed with status ${response.status}`;
-        if (contentType && contentType.includes("application/json")) {
-          const errData = await response.json();
-          errMsg = errData.message || errMsg;
-        } else {
-          errMsg = await response.text();
-        }
-        throw new Error(errMsg);
-      }
-
-      let data;
-      if (contentType && contentType.includes("application/json")) {
-        data = await response.json();
-      } else {
-        const rawText = await response.text();
-        throw new Error(`Unexpected non-JSON response from server: ${rawText.substring(0, 100)}`);
-      }
+      const data = await safeFetchJson(response);
 
       if (!data.success) {
         throw new Error(data.message || "Failed to save category");

@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require("path");
 
 const categoryRoutes = require("./routes/categoryRoutes");
 const productRoutes = require("./routes/productRoutes");
@@ -21,7 +22,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/uploads", express.static("src/uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {
   res.json({
@@ -41,6 +42,15 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/pages", pageRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/payments/razorpay", paymentRoutes);
+
+// Global error handling middleware to guarantee JSON responses on errors
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 

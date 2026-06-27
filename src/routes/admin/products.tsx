@@ -14,7 +14,7 @@ import {
   FileImage,
   Loader2,
 } from "lucide-react";
-import { API_BASE } from "@/lib/api";
+import { API_BASE, safeFetchJson } from "@/lib/api";
 import { FABRICS, COLORS } from "@/data/categories";
 import { formatINR, discountPercent } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -59,7 +59,7 @@ function AdminProducts() {
     setIsLoading(true);
     try {
       const response = await fetch(`${API_BASE}/api/products`);
-      const res = await response.json();
+      const res = await safeFetchJson(response);
       if (res.success) {
         setProductList(res.data);
       } else {
@@ -76,7 +76,7 @@ function AdminProducts() {
   const fetchCategories = async () => {
     try {
       const response = await fetch(`${API_BASE}/api/categories`);
-      const res = await response.json();
+      const res = await safeFetchJson(response);
       if (res.success) {
         setCategories(res.data);
       }
@@ -195,7 +195,7 @@ function AdminProducts() {
           },
         });
 
-        const data = await response.json();
+        const data = await safeFetchJson(response);
         if (!response.ok || !data.success) {
           throw new Error(data.message || "Failed to delete product");
         }
@@ -236,7 +236,7 @@ function AdminProducts() {
           body: formData,
         });
 
-        const uploadData = await uploadResponse.json();
+        const uploadData = await safeFetchJson(uploadResponse);
         if (!uploadResponse.ok || !uploadData.success) {
           throw new Error(uploadData.message || "Failed to upload image file");
         }
@@ -252,6 +252,12 @@ function AdminProducts() {
         .replace(/(^-|-$)/g, "");
       const generatedSlug = `${baseSlug}-${Date.now()}`;
 
+      // Strip API_BASE from finalImageUrl if it was prepended by the frontend for rendering
+      let savedImageUrl = finalImageUrl;
+      if (savedImageUrl.startsWith(API_BASE)) {
+        savedImageUrl = savedImageUrl.substring(API_BASE.length);
+      }
+
       // 2. Prepare payload
       const productPayload = {
         name: formName,
@@ -260,7 +266,7 @@ function AdminProducts() {
         price: parseFloat(formPrice.toString()),
         discountPrice: formDiscount ? parseFloat(formDiscount.toString()) : null,
         stock: parseInt(formStock.toString()),
-        image: finalImageUrl,
+        image: savedImageUrl,
         fabric: formFabric,
         color: formColor,
         occasion: "Wedding",
@@ -281,7 +287,7 @@ function AdminProducts() {
           body: JSON.stringify(productPayload),
         });
 
-        const data = await response.json();
+        const data = await safeFetchJson(response);
         if (!response.ok || !data.success) {
           throw new Error(data.message || "Failed to update product");
         }
@@ -298,7 +304,7 @@ function AdminProducts() {
           body: JSON.stringify(productPayload),
         });
 
-        const data = await response.json();
+        const data = await safeFetchJson(response);
         if (!response.ok || !data.success) {
           throw new Error(data.message || "Failed to create product");
         }
