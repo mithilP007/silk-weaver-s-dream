@@ -3,6 +3,7 @@ import { useMemo, useState, useEffect } from "react";
 import { SlidersHorizontal, X, Search, Loader2 } from "lucide-react";
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { ProductCard } from "@/components/store/ProductCard";
+import { ProductCardSkeleton } from "@/components/store/ProductCardSkeleton";
 import { EmptyState } from "@/components/store/EmptyState";
 import { products as mockProducts } from "@/data/products";
 import {
@@ -69,9 +70,9 @@ function ShopPage() {
 
   // Map db products to frontend spec model
   const liveProducts = useMemo(() => {
-    if (dbProducts.length === 0) return mockProducts;
+    if (dbProducts.length === 0) return [];
     return dbProducts.map((p) => {
-      const img = p.image?.startsWith("http") ? p.image : p.image ? `${API_BASE}${p.image}` : "";
+      const img = p.image?.startsWith("http") ? p.image : p.image ? `${API_BASE}${p.image}` : "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk";
       return {
         id: p.id,
         slug: p.slug,
@@ -103,7 +104,7 @@ function ShopPage() {
   }, [dbProducts]);
 
   const liveSubcategories = useMemo(() => {
-    if (dbCategories.length === 0) return mockSubcategories;
+    if (dbCategories.length === 0) return [];
     return dbCategories.map((c) => {
       const localMatch = mockSubcategories.find((m) => m.slug === c.slug);
       return {
@@ -260,7 +261,13 @@ function ShopPage() {
               </select>
             </div>
 
-            {filtered.length === 0 ? (
+            {isLoading ? (
+              <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <ProductCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : filtered.length === 0 ? (
               <EmptyState
                 icon={Search}
                 title="No sarees found"

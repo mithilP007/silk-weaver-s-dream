@@ -86,7 +86,15 @@ function CategoryImageUpload({
             key={idx}
             className="relative group aspect-square rounded-xl border border-[#e8dfd8] overflow-hidden bg-[#fbfaf7]"
           >
-            <img src={img} alt={`Category ${idx}`} className="h-full w-full object-cover" />
+            <img
+              src={img || "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk"}
+              alt={`Category ${idx}`}
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk";
+              }}
+            />
             {idx === 0 && (
               <span className="absolute bottom-1 left-1 bg-[#3a1d13] text-[#f7f2ed] text-[8px] px-1.5 py-0.5 rounded font-bold uppercase">
                 Primary
@@ -424,9 +432,13 @@ function AdminCategories() {
                   <tr key={s.id} className="hover:bg-[#fbfaf7]/65 transition-colors">
                     <td className="py-3 px-4">
                       <img
-                        src={s.image}
+                        src={s.image || "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk"}
                         alt={s.name}
                         className="h-10 w-10 rounded-xl object-cover border border-[#e8dfd8]"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk";
+                        }}
                       />
                     </td>
                     <td className="py-3 px-4">

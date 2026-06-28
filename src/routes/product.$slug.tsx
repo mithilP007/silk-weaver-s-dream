@@ -57,9 +57,9 @@ function ProductPage() {
   }, [slug]);
 
   const liveProducts = useMemo(() => {
-    if (dbProducts.length === 0) return mockProducts;
+    if (dbProducts.length === 0) return [];
     return dbProducts.map((p) => {
-      const img = p.image?.startsWith("http") ? p.image : p.image ? `${API_BASE}${p.image}` : "";
+      const img = p.image?.startsWith("http") ? p.image : p.image ? `${API_BASE}${p.image}` : "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk";
       return {
         id: p.id,
         slug: p.slug,
@@ -178,15 +178,27 @@ function ProductPage() {
                     activeImg === i ? "border-gold" : "border-transparent",
                   )}
                 >
-                  <img src={img} alt="thumbnail" className="h-full w-full object-cover" />
+                  <img
+                    src={img || "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk"}
+                    alt="thumbnail"
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk";
+                    }}
+                  />
                 </button>
               ))}
             </div>
             <div className="relative flex-1 overflow-hidden rounded-2xl border border-border bg-muted">
               <img
-                src={gallery[activeImg] || product.image}
+                src={gallery[activeImg] || product.image || "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk"}
                 alt={product.name}
                 className="aspect-[4/5] w-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk";
+                }}
               />
               {off > 0 && (
                 <span className="absolute left-4 top-4 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">

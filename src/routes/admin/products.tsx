@@ -93,7 +93,7 @@ function AdminProducts() {
   // Map backend product data to frontend schema
   const mappedProducts = useMemo(() => {
     return productList.map((p) => {
-      const img = p.image?.startsWith("http") ? p.image : p.image ? `${API_BASE}${p.image}` : "";
+      const img = p.image?.startsWith("http") ? p.image : p.image ? `${API_BASE}${p.image}` : "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk";
       return {
         id: p.id,
         slug: p.slug,
@@ -414,6 +414,10 @@ function AdminProducts() {
                               src={p.image}
                               alt={p.name}
                               className="h-12 w-10 shrink-0 rounded object-cover"
+                              onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk";
+                              }}
                             />
                           ) : (
                             <div className="grid h-12 w-10 shrink-0 place-items-center rounded bg-[#f3ede8] text-[#6e5d53]">
@@ -539,6 +543,10 @@ function AdminProducts() {
                         src={previewUrl}
                         alt="Preview"
                         className="h-20 w-16 rounded object-cover border border-[#e8dfd8] shadow-sm bg-white"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk";
+                        }}
                       />
                     ) : (
                       <div className="grid h-20 w-16 place-items-center rounded border border-dashed border-[#e8dfd8] bg-[#fbfaf7] text-[#6e5d53]">

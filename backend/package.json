@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "prisma": "prisma"
+    "prisma": "prisma",
+    "migrate-images": "node src/utils/migrateImages.js"
   },
   "keywords": [
     "saree",

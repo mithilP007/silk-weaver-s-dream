@@ -33,12 +33,16 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       <div className="relative aspect-[4/5] overflow-hidden bg-muted">
         <Link to="/product/$slug" params={{ slug: product.slug }}>
           <img
-            src={product.image}
+            src={product.image || "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk"}
             alt={product.name}
             loading="lazy"
             width={800}
             height={1000}
             className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk";
+            }}
           />
         </Link>
 
@@ -96,9 +100,13 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               <div className="grid gap-6 mt-4 md:grid-cols-2">
                 <div className="overflow-hidden rounded-xl bg-muted border border-border">
                   <img
-                    src={product.image}
+                    src={product.image || "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk"}
                     alt={product.name}
                     className="aspect-[4/5] w-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk";
+                    }}
                   />
                 </div>
                 <div className="flex flex-col justify-between">
