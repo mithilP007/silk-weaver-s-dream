@@ -139,7 +139,7 @@ export function Footer() {
               <li className="flex items-center gap-3">
                 <span className="shrink-0 text-gold font-bold text-xs">WA</span>
                 <a
-                  href="https://wa.me/919443210987"
+                  href={footer?.whatsapp || settings?.header?.whatsapp || "https://wa.me/919443210987"}
                   target="_blank"
                   rel="noreferrer"
                   className="hover:underline"

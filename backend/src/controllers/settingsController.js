@@ -210,6 +210,7 @@ const getHomeSettings = async (req, res) => {
         { label: "Contact WhatsApp", to: "https://wa.me/919443210987" },
       ],
       contactNumber: "",
+      whatsapp: "https://wa.me/919443210987",
     };
 
     const fallbackHero = {
@@ -372,6 +373,7 @@ const getHomeSettings = async (req, res) => {
       email: "care@srikamatchisilk.com",
       copyright: "Sri Kamatchi Silk. All rights reserved.",
       bottomNote: "Handwoven with love in Kanchipuram, India.",
+      whatsapp: "https://wa.me/919443210987",
     };
 
     const data = {

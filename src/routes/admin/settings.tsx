@@ -240,6 +240,8 @@ function AdminSettings() {
   const [heroImage, setHeroImage] = useState("");
   const [offerBanner, setOfferBanner] = useState("");
 
+  const [categories, setCategories] = useState<any[]>([]);
+
   // Grouped Storefront settings JSON object
   const [homeSettings, setHomeSettings] = useState<any>({
     announcements: [],
@@ -297,6 +299,17 @@ function AdminSettings() {
         setHeroSubtitle(homeData.data.heroSubtitle || "");
         setHeroImage(homeData.data.heroImage || "");
         setOfferBanner(homeData.data.offerBanner || "");
+      }
+
+      // 4. Fetch Categories
+      try {
+        const catRes = await fetch(`${API_BASE}/api/categories`);
+        const catData = await catRes.json();
+        if (catData.success && catData.data) {
+          setCategories(catData.data);
+        }
+      } catch (catErr) {
+        console.error("Error fetching categories for dropdown:", catErr);
       }
     } catch (err) {
       console.error("Error loading boutique settings:", err);
@@ -561,6 +574,72 @@ function AdminSettings() {
     list.push({ imageUrl: "", caption: "", link: "#" });
     gal.items = list;
     setHomeSettings({ ...homeSettings, gallery: gal });
+  };
+
+  // Categories Section items
+  const handleCategoryItemChange = (index: number, key: string, value: any) => {
+    const catSec = { ...homeSettings.categoriesSection };
+    const list = [...(catSec.items || [])];
+    list[index] = { ...list[index], [key]: value };
+    catSec.items = list;
+    setHomeSettings({ ...homeSettings, categoriesSection: catSec });
+  };
+  const moveCategoryItem = (index: number, direction: "up" | "down") => {
+    const catSec = { ...homeSettings.categoriesSection };
+    const list = [...(catSec.items || [])];
+    const target = direction === "up" ? index - 1 : index + 1;
+    if (target < 0 || target >= list.length) return;
+    const temp = list[index];
+    list[index] = list[target];
+    list[target] = temp;
+    catSec.items = list;
+    setHomeSettings({ ...homeSettings, categoriesSection: catSec });
+  };
+  const removeCategoryItem = (index: number) => {
+    const catSec = { ...homeSettings.categoriesSection };
+    catSec.items = (catSec.items || []).filter((_: any, i: number) => i !== index);
+    setHomeSettings({ ...homeSettings, categoriesSection: catSec });
+  };
+  const addCategoryItem = () => {
+    const catSec = { ...homeSettings.categoriesSection };
+    const list = [...(catSec.items || [])];
+    const defaultSlug = categories[0]?.slug || "";
+    const defaultName = categories[0]?.name || "";
+    list.push({ slug: defaultSlug, name: defaultName, imageUrl: "" });
+    catSec.items = list;
+    setHomeSettings({ ...homeSettings, categoriesSection: catSec });
+  };
+
+  // Navigation Links
+  const handleNavLinkChange = (index: number, key: string, value: any) => {
+    const header = { ...homeSettings.header };
+    const list = [...(header.navLinks || [])];
+    list[index] = { ...list[index], [key]: value };
+    header.navLinks = list;
+    setHomeSettings({ ...homeSettings, header });
+  };
+  const moveNavLink = (index: number, direction: "up" | "down") => {
+    const header = { ...homeSettings.header };
+    const list = [...(header.navLinks || [])];
+    const target = direction === "up" ? index - 1 : index + 1;
+    if (target < 0 || target >= list.length) return;
+    const temp = list[index];
+    list[index] = list[target];
+    list[target] = temp;
+    header.navLinks = list;
+    setHomeSettings({ ...homeSettings, header });
+  };
+  const removeNavLink = (index: number) => {
+    const header = { ...homeSettings.header };
+    header.navLinks = (header.navLinks || []).filter((_: any, i: number) => i !== index);
+    setHomeSettings({ ...homeSettings, header });
+  };
+  const addNavLink = () => {
+    const header = { ...homeSettings.header };
+    const list = [...(header.navLinks || [])];
+    list.push({ label: "New Link", to: "/" });
+    header.navLinks = list;
+    setHomeSettings({ ...homeSettings, header });
   };
 
   const tabs = [
@@ -1010,22 +1089,42 @@ function AdminSettings() {
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
-                    Customer Hotline phone
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={homeSettings.header?.contactNumber || ""}
-                    onChange={(e) =>
-                      setHomeSettings({
-                        ...homeSettings,
-                        header: { ...homeSettings.header, contactNumber: e.target.value },
-                      })
-                    }
-                    className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
-                  />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Customer Hotline phone
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={homeSettings.header?.contactNumber || ""}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          header: { ...homeSettings.header, contactNumber: e.target.value },
+                        })
+                      }
+                      className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                      Contact WhatsApp URL / Link
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={homeSettings.header?.whatsapp || ""}
+                      onChange={(e) =>
+                        setHomeSettings({
+                          ...homeSettings,
+                          header: { ...homeSettings.header, whatsapp: e.target.value },
+                        })
+                      }
+                      placeholder="https://wa.me/919443210987"
+                      className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
+                    />
+                  </div>
                 </div>
 
                 <ImageUploadField
@@ -1166,6 +1265,88 @@ function AdminSettings() {
                         className="w-full rounded-xl border border-[#e8dfd8] bg-white px-3 py-2 text-xs outline-none focus:border-[#d4af37]"
                       />
                     </div>
+                  </div>
+                </div>
+
+                {/* New navLinks list editor */}
+                <div className="border border-[#e8dfd8] rounded-xl p-4 bg-[#fbfaf7]/60 space-y-4 pt-4">
+                  <div className="flex justify-between items-center border-b border-[#f3ede8] pb-2">
+                    <span className="text-xs font-bold text-[#3a1d13]">
+                      Dynamic Navigation Links List (Header Menu)
+                    </span>
+                    <button
+                      type="button"
+                      onClick={addNavLink}
+                      className="rounded-lg bg-secondary text-primary border border-border px-2.5 py-1 text-xs font-bold hover:bg-muted flex items-center gap-1 cursor-pointer"
+                    >
+                      <Plus size={12} /> Add Link
+                    </button>
+                  </div>
+                  {(!homeSettings.header?.navLinks || homeSettings.header.navLinks.length === 0) && (
+                    <p className="text-xs text-muted-foreground italic text-center py-2">
+                      No navigation links configured yet. Defaulting to standard links.
+                    </p>
+                  )}
+                  <div className="space-y-3">
+                    {homeSettings.header?.navLinks?.map((item: any, idx: number) => (
+                      <div
+                        key={idx}
+                        className="flex flex-col sm:flex-row gap-3 items-center border border-[#e8dfd8] rounded-lg p-2.5 bg-white"
+                      >
+                        <div className="flex-1 w-full grid gap-2 grid-cols-2 text-xs">
+                          <div className="space-y-0.5">
+                            <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                              Link Label
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              value={item.label || ""}
+                              onChange={(e) => handleNavLinkChange(idx, "label", e.target.value)}
+                              className="w-full rounded-md border border-[#e8dfd8] bg-white px-2 py-1 outline-none focus:border-[#d4af37]"
+                            />
+                          </div>
+                          <div className="space-y-0.5">
+                            <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                              Link Path / URL
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              value={item.to || ""}
+                              onChange={(e) => handleNavLinkChange(idx, "to", e.target.value)}
+                              placeholder="e.g. /shop or https://..."
+                              className="w-full rounded-md border border-[#e8dfd8] bg-white px-2 py-1 outline-none focus:border-[#d4af37]"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0 self-end sm:self-center">
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={() => moveNavLink(idx, "up")}
+                            className="p-1 rounded-md border border-border bg-white text-muted-foreground disabled:opacity-40"
+                          >
+                            <ArrowUp size={11} />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === homeSettings.header.navLinks.length - 1}
+                            onClick={() => moveNavLink(idx, "down")}
+                            className="p-1 rounded-md border border-border bg-white text-muted-foreground disabled:opacity-40"
+                          >
+                            <ArrowDown size={11} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeNavLink(idx)}
+                            className="p-1 rounded-md border border-red-200 bg-white text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 size={11} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -1765,13 +1946,22 @@ function AdminSettings() {
           {/* 7. COLLECTIONS / CATEGORY DISPLAY */}
           {activeTab === "categories" && (
             <div className="rounded-2xl border border-[#e8dfd8] bg-white p-6 shadow-soft space-y-6">
-              <div className="border-b border-[#f3ede8] pb-4">
-                <h3 className="font-display text-lg font-bold">
-                  House of Silk Collections showcase
-                </h3>
-                <p className="text-[10px] text-muted-foreground">
-                  Adjust section headers displayed above category card grids.
-                </p>
+              <div className="flex items-center justify-between border-b border-[#f3ede8] pb-4">
+                <div>
+                  <h3 className="font-display text-lg font-bold">
+                    House of Silk Collections showcase
+                  </h3>
+                  <p className="text-[10px] text-muted-foreground">
+                    Adjust section headers and customize which category highlights are displayed.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={addCategoryItem}
+                  className="rounded-xl bg-secondary text-primary border border-border px-3.5 py-2 text-xs font-bold hover:bg-muted flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Plus size={14} /> Add Category Highlight
+                </button>
               </div>
 
               <div className="space-y-4">
@@ -1837,6 +2027,104 @@ function AdminSettings() {
                     }
                     className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                   />
+                </div>
+
+                {/* Categories Items Repeater */}
+                <div className="space-y-3 border-t border-[#f3ede8] pt-4">
+                  <span className="text-xs font-bold text-[#3a1d13] block">
+                    Category Highlight Cards (Custom Display & Order)
+                  </span>
+                  {(!homeSettings.categoriesSection?.items || homeSettings.categoriesSection.items.length === 0) && (
+                    <p className="text-xs text-muted-foreground italic text-center py-6">
+                      No custom category highlights selected. Defaulting to show all categories.
+                    </p>
+                  )}
+                  {homeSettings.categoriesSection?.items?.map((item: any, idx: number) => (
+                    <div
+                      key={idx}
+                      className="border border-[#e8dfd8] rounded-xl p-4 bg-[#fbfaf7]/60 space-y-3 relative text-xs"
+                    >
+                      <div className="flex justify-between items-center pb-1 border-b border-[#f3ede8]">
+                        <span className="text-[10px] font-bold text-[#3a1d13]">
+                          Highlight #{idx + 1}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={() => moveCategoryItem(idx, "up")}
+                            className="p-1 rounded-lg border border-border bg-white text-muted-foreground disabled:opacity-40"
+                          >
+                            <ArrowUp size={11} />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === homeSettings.categoriesSection.items.length - 1}
+                            onClick={() => moveCategoryItem(idx, "down")}
+                            className="p-1 rounded-lg border border-border bg-white text-muted-foreground disabled:opacity-40"
+                          >
+                            <ArrowDown size={11} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeCategoryItem(idx)}
+                            className="p-1 rounded-lg border border-red-200 bg-white text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 size={11} />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div className="space-y-1">
+                          <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                            Select Category
+                          </label>
+                          <select
+                            value={item.slug || ""}
+                            onChange={(e) => {
+                              const selectedSlug = e.target.value;
+                              const selectedName = categories.find((c) => c.slug === selectedSlug)?.name || "";
+                              const list = [...(homeSettings.categoriesSection.items || [])];
+                              list[idx] = { ...list[idx], slug: selectedSlug, name: list[idx].name || selectedName };
+                              setHomeSettings({
+                                ...homeSettings,
+                                categoriesSection: { ...homeSettings.categoriesSection, items: list },
+                              });
+                            }}
+                            className="w-full rounded-lg border border-[#e8dfd8] bg-white px-2.5 py-1.5 outline-none focus:border-[#d4af37]"
+                          >
+                            <option value="">-- Choose Category --</option>
+                            {categories.map((c) => (
+                              <option key={c.id} value={c.slug}>
+                                {c.name} ({c.slug})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                            Custom Display Name (Override)
+                          </label>
+                          <input
+                            type="text"
+                            value={item.name || ""}
+                            onChange={(e) => handleCategoryItemChange(idx, "name", e.target.value)}
+                            placeholder="Leave empty for category default name"
+                            className="w-full rounded-lg border border-[#e8dfd8] bg-white px-2.5 py-1.5 outline-none focus:border-[#d4af37]"
+                          />
+                        </div>
+                      </div>
+
+                      <ImageUploadField
+                        label="Custom Category Image (Override)"
+                        value={item.imageUrl || ""}
+                        onChange={(val) => handleCategoryItemChange(idx, "imageUrl", val)}
+                        onRemove={() => handleCategoryItemChange(idx, "imageUrl", "")}
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -2128,7 +2416,7 @@ function AdminSettings() {
                       key={idx}
                       className="flex flex-col sm:flex-row gap-3 items-center border border-[#e8dfd8] rounded-xl p-3 bg-[#fbfaf7]/60"
                     >
-                      <div className="flex-1 w-full grid gap-3 grid-cols-2">
+                      <div className="flex-1 w-full grid gap-3 grid-cols-3">
                         <div className="space-y-0.5">
                           <label className="text-[9px] uppercase font-bold text-muted-foreground">
                             Occasion Name
@@ -2156,6 +2444,18 @@ function AdminSettings() {
                               </option>
                             ))}
                           </select>
+                        </div>
+                        <div className="space-y-0.5">
+                          <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                            Redirect Link Path
+                          </label>
+                          <input
+                            type="text"
+                            value={item.link || ""}
+                            onChange={(e) => handleOccasionChange(idx, "link", e.target.value)}
+                            placeholder="/shop or /shop?q=Wedding"
+                            className="w-full rounded-lg border border-[#e8dfd8] bg-white px-2.5 py-1.5 text-xs outline-none focus:border-[#d4af37]"
+                          />
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
@@ -2430,7 +2730,7 @@ function AdminSettings() {
                       </div>
                     </div>
 
-                    <div className="grid gap-3 sm:grid-cols-3">
+                    <div className="grid gap-3 sm:grid-cols-4">
                       <div className="space-y-1">
                         <label className="text-[9px] uppercase font-bold text-muted-foreground">
                           Customer Name
@@ -2466,6 +2766,22 @@ function AdminSettings() {
                           onChange={(e) => handleTestimonialChange(idx, "avatar", e.target.value)}
                           className="w-full rounded-lg border border-[#e8dfd8] bg-white px-2.5 py-1.5 text-xs outline-none focus:border-[#d4af37]"
                         />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] uppercase font-bold text-muted-foreground">
+                          Rating (1-5 Stars)
+                        </label>
+                        <select
+                          value={item.rating || 5}
+                          onChange={(e) => handleTestimonialChange(idx, "rating", parseInt(e.target.value))}
+                          className="w-full rounded-lg border border-[#e8dfd8] bg-white px-2.5 py-1.5 text-xs outline-none focus:border-[#d4af37]"
+                        >
+                          {[5, 4, 3, 2, 1].map((r) => (
+                            <option key={r} value={r}>
+                              {r} Star{r > 1 ? "s" : ""}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
 
@@ -2835,6 +3151,25 @@ function AdminSettings() {
                       className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
                     />
                   </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#6e5d53]">
+                    WhatsApp Support URL / Link
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={homeSettings.footer?.whatsapp || ""}
+                    onChange={(e) =>
+                      setHomeSettings({
+                        ...homeSettings,
+                        footer: { ...homeSettings.footer, whatsapp: e.target.value },
+                      })
+                    }
+                    placeholder="https://wa.me/919443210987"
+                    className="w-full rounded-xl border border-[#e8dfd8] bg-[#fbfaf7] px-3.5 py-3 outline-none focus:border-[#d4af37]"
+                  />
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2 border-t border-[#f3ede8] pt-4">

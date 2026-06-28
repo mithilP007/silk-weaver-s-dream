@@ -545,7 +545,7 @@ function HomePage() {
                       transition={{ duration: 0.4, delay: i * 0.05 }}
                     >
                       <Link
-                        to="/shop"
+                        to={(o.link as any) || "/shop"}
                         className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center shadow-soft transition-all hover:border-gold hover:shadow-card"
                       >
                         <div className="grid h-14 w-14 place-items-center rounded-full bg-secondary text-primary transition-colors group-hover:bg-gold group-hover:text-gold-foreground">

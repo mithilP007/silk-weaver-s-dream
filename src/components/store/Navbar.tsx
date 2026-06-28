@@ -36,7 +36,18 @@ export function Navbar() {
       ? brandName.substring(0, brandName.length - tagline.length).trim()
       : brandName;
 
-  const whatsappUrl = "https://wa.me/919443210987"; // Placeholder to be customized later
+  const whatsappUrl = header?.whatsapp || "https://wa.me/919443210987";
+
+  const navLinks = header?.navLinks && Array.isArray(header.navLinks) && header.navLinks.length > 0
+    ? header.navLinks
+    : [
+        { label: "Home", to: "/" },
+        { label: "Semi Silks", to: "/category/semi-silks" },
+        { label: "Celebrity Silks", to: "/category/celebrity-silks" },
+        { label: "Silk Cotton", to: "/category/cotton-silks" },
+        { label: "Shop", to: "/shop" },
+        { label: "Contact WhatsApp", to: whatsappUrl },
+      ];
 
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,53 +85,33 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-7 lg:flex">
-          <Link
-            to="/"
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-            activeProps={{ className: "text-primary" }}
-            activeOptions={{ exact: true }}
-          >
-            Home
-          </Link>
-          <Link
-            to="/category/$slug"
-            params={{ slug: "semi-silks" }}
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-            activeProps={{ className: "text-primary" }}
-          >
-            Semi Silks
-          </Link>
-          <Link
-            to="/category/$slug"
-            params={{ slug: "celebrity-silks" }}
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-            activeProps={{ className: "text-primary" }}
-          >
-            Celebrity Silks
-          </Link>
-          <Link
-            to="/category/$slug"
-            params={{ slug: "cotton-silks" }}
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-            activeProps={{ className: "text-primary" }}
-          >
-            Silk Cotton
-          </Link>
-          <Link
-            to="/shop"
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-            activeProps={{ className: "text-primary" }}
-          >
-            Shop
-          </Link>
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-          >
-            Contact WhatsApp
-          </a>
+          {navLinks.map((link: any, i: number) => {
+            const isExt = link.to.startsWith("http");
+            if (isExt) {
+              return (
+                <a
+                  key={i}
+                  href={link.to}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
+                >
+                  {link.label}
+                </a>
+              );
+            }
+            return (
+              <Link
+                key={i}
+                to={link.to as any}
+                className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
+                activeProps={{ className: "text-primary" }}
+                activeOptions={link.to === "/" ? { exact: true } : undefined}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Icons */}
@@ -223,59 +214,35 @@ export function Navbar() {
               </div>
               <div className="flex-1 overflow-y-auto px-5 py-4">
                 <nav className="flex flex-col gap-1">
-                  <Link
-                    to="/"
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
-                    activeProps={{ className: "bg-secondary text-primary font-semibold" }}
-                    activeOptions={{ exact: true }}
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    to="/category/$slug"
-                    params={{ slug: "semi-silks" }}
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
-                    activeProps={{ className: "bg-secondary text-primary font-semibold" }}
-                  >
-                    Semi Silks
-                  </Link>
-                  <Link
-                    to="/category/$slug"
-                    params={{ slug: "celebrity-silks" }}
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
-                    activeProps={{ className: "bg-secondary text-primary font-semibold" }}
-                  >
-                    Celebrity Silks
-                  </Link>
-                  <Link
-                    to="/category/$slug"
-                    params={{ slug: "cotton-silks" }}
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
-                    activeProps={{ className: "bg-secondary text-primary font-semibold" }}
-                  >
-                    Silk Cotton
-                  </Link>
-                  <Link
-                    to="/shop"
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
-                    activeProps={{ className: "bg-secondary text-primary font-semibold" }}
-                  >
-                    Shop
-                  </Link>
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
-                  >
-                    Contact WhatsApp
-                  </a>
+                  {navLinks.map((link: any, i: number) => {
+                    const isExt = link.to.startsWith("http");
+                    if (isExt) {
+                      return (
+                        <a
+                          key={i}
+                          href={link.to}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={() => setMobileOpen(false)}
+                          className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
+                        >
+                          {link.label}
+                        </a>
+                      );
+                    }
+                    return (
+                      <Link
+                        key={i}
+                        to={link.to as any}
+                        onClick={() => setMobileOpen(false)}
+                        className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 hover:bg-secondary"
+                        activeProps={{ className: "bg-secondary text-primary font-semibold" }}
+                        activeOptions={link.to === "/" ? { exact: true } : undefined}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  })}
                 </nav>
               </div>
               <div className="border-t border-border p-5">
