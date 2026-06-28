@@ -1,7 +1,17 @@
+const path = require("path");
+const dotenv = require("dotenv");
+
+// Load environment variables from absolute path
+dotenv.config({ path: path.join(__dirname, "../.env") });
+
+console.log("Supabase Env Existence Logs:", {
+  supabaseUrl: !!process.env.SUPABASE_URL,
+  serviceRole: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+  bucket: !!process.env.SUPABASE_BUCKET
+});
+
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
-const path = require("path");
 
 const categoryRoutes = require("./routes/categoryRoutes");
 const productRoutes = require("./routes/productRoutes");
@@ -14,8 +24,6 @@ const wishlistRoutes = require("./routes/wishlistRoutes");
 const pageRoutes = require("./routes/pageRoutes");
 const settingsRoutes = require("./routes/settingsRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
-
-dotenv.config();
 
 const app = express();
 

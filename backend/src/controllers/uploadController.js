@@ -1,4 +1,3 @@
-const fs = require("fs");
 const path = require("path");
 
 const uploadImage = async (req, res) => {
@@ -17,10 +16,6 @@ const uploadImage = async (req, res) => {
     const supabaseBucket = process.env.SUPABASE_BUCKET || "sri-kamatchi-images";
 
     if (!supabaseUrl || !supabaseServiceKey) {
-      // Clean up the uploaded local file
-      if (fs.existsSync(req.file.path)) {
-        fs.unlinkSync(req.file.path);
-      }
       return res.status(500).json({
         success: false,
         message: "Server is not configured for image uploads (missing Supabase configuration)",
@@ -32,8 +27,17 @@ const uploadImage = async (req, res) => {
       folder = "categories";
     }
 
-    const fileBuffer = fs.readFileSync(req.file.path);
-    const uploadUrl = `${supabaseUrl}/storage/v1/object/${supabaseBucket}/${folder}/${req.file.filename}`;
+    // Generate unique filename using original filename & timestamp
+    const baseName = req.file.originalname.split(".")[0].replace(/\s+/g, "-").toLowerCase();
+    let extension = path.extname(req.file.originalname).toLowerCase();
+    if (!extension) {
+      if (req.file.mimetype === "image/png") extension = ".png";
+      else if (req.file.mimetype === "image/webp") extension = ".webp";
+      else extension = ".jpg";
+    }
+    const uniqueFilename = `${Date.now()}-${baseName}${extension}`;
+
+    const uploadUrl = `${supabaseUrl}/storage/v1/object/${supabaseBucket}/${folder}/${uniqueFilename}`;
 
     const uploadResponse = await fetch(uploadUrl, {
       method: "POST",
@@ -42,7 +46,7 @@ const uploadImage = async (req, res) => {
         "apikey": supabaseServiceKey,
         "Content-Type": req.file.mimetype,
       },
-      body: fileBuffer,
+      body: req.file.buffer, // Raw file buffer in memory
     });
 
     let uploadData;
@@ -54,11 +58,6 @@ const uploadImage = async (req, res) => {
       uploadData = { message: text };
     }
 
-    // Clean up local temp file immediately after upload
-    if (fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
-    }
-
     if (!uploadResponse.ok) {
       return res.status(uploadResponse.status).json({
         success: false,
@@ -67,24 +66,15 @@ const uploadImage = async (req, res) => {
       });
     }
 
-    const imageUrl = `${supabaseUrl}/storage/v1/object/public/${supabaseBucket}/${folder}/${req.file.filename}`;
+    const imageUrl = `${supabaseUrl}/storage/v1/object/public/${supabaseBucket}/${folder}/${uniqueFilename}`;
 
     res.status(200).json({
       success: true,
       message: "Image uploaded successfully",
       imageUrl,
-      fileName: req.file.filename,
+      fileName: uniqueFilename,
     });
   } catch (error) {
-    // Make sure we clean up the file if an error occurred during reading or sending
-    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
-      try {
-        fs.unlinkSync(req.file.path);
-      } catch (err) {
-        console.error("Failed to clean up temp file:", err);
-      }
-    }
-
     res.status(500).json({
       success: false,
       message: "Image upload failed due to internal error",
