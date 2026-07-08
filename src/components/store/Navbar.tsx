@@ -58,7 +58,7 @@ export function Navbar() {
           <img
             src={getLogoSrc()}
             alt={brandName}
-            className="h-10 sm:h-12 w-auto object-contain max-h-12"
+            className="h-12 sm:h-16 w-auto object-contain max-h-16"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               if (target.src !== logoImg) {
