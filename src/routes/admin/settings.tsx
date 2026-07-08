@@ -169,7 +169,11 @@ function ImageUploadField({
           {value ? (
             <div className="relative group w-full flex flex-col items-center">
               <img
-                src={value}
+                src={
+                  value.startsWith("data:") || value.startsWith("http")
+                    ? value
+                    : `${API_BASE}${value}`
+                }
                 alt="Preview"
                 className="max-h-[120px] rounded-lg object-contain border border-[#e8dfd8]"
               />

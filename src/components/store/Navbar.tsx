@@ -13,6 +13,7 @@ export function Navbar() {
   const navigate = useNavigate();
 
   const [settings, setSettings] = useState<any>(null);
+  const [imgFailed, setImgFailed] = useState(false);
 
   useEffect(() => {
     fetch(`${API_BASE}/api/settings/home`)
@@ -53,23 +54,21 @@ export function Navbar() {
         </button>
 
         <Link to="/" className="flex items-center gap-3">
-          {logoUrl ? (
+          {logoUrl && !imgFailed ? (
             <img
-              src={logoUrl}
+              src={logoUrl.startsWith("http") ? logoUrl : `${API_BASE}${logoUrl}`}
               alt={brandName}
-              className="h-10 sm:h-12 w-auto object-contain"
-              onError={(e) => {
-                // If image fails to load, fallback to text by clearing logoUrl locally
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
+              className="h-12 sm:h-16 w-auto object-contain max-h-16 py-1"
+              onError={() => setImgFailed(true)}
             />
-          ) : null}
-          <div className="flex flex-col items-center lg:items-start">
-            <span className="font-display text-xl font-bold leading-none tracking-tight text-primary sm:text-2xl">
-              {displayBrand}
-            </span>
-            <span className="text-[10px] uppercase tracking-[0.4em] text-gold">{tagline}</span>
-          </div>
+          ) : (
+            <div className="flex flex-col items-center lg:items-start">
+              <span className="font-display text-xl font-bold leading-none tracking-tight text-primary sm:text-2xl">
+                {displayBrand}
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.4em] text-gold">{tagline}</span>
+            </div>
+          )}
         </Link>
 
         {/* Desktop nav */}

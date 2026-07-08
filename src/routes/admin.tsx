@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
+import logoImg from "@/assets/logo.png";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -82,13 +83,12 @@ function AdminLayout() {
     <div className="flex min-h-screen bg-[#fbfaf7] text-[#2c2623] antialiased">
       {/* Sidebar - Desktop */}
       <aside className="relative hidden w-64 shrink-0 border-r border-[#e8dfd8] bg-[#3a1d13] text-[#f7f2ed] lg:block">
-        <div className="flex h-16 items-center gap-2 border-b border-[#4d2d22] px-6">
-          <Crown className="text-[#d4af37]" size={22} />
-          <div>
-            <h1 className="font-display text-sm font-bold tracking-wider text-white">
-              Sri Kamatchi Silk
-            </h1>
-            <p className="text-[10px] uppercase tracking-widest text-[#d4af37]/80">Admin Portal</p>
+        <div className="flex h-20 items-center gap-2 border-b border-[#4d2d22] px-4 py-2">
+          <img src={logoImg} alt="Sri Kamatchi Silks" className="h-12 w-auto object-contain" />
+          <div className="ml-1">
+            <p className="text-[9px] uppercase tracking-widest text-[#d4af37]/80 font-semibold">
+              Admin Portal
+            </p>
           </div>
         </div>
         <nav className="space-y-1 px-3 py-6">
@@ -168,12 +168,13 @@ function AdminLayout() {
           <div className="absolute inset-y-0 left-0 w-72 bg-[#3a1d13] text-[#f7f2ed] p-5 shadow-2xl flex flex-col">
             <div className="flex items-center justify-between border-b border-[#4d2d22] pb-4">
               <div className="flex items-center gap-2">
-                <Crown className="text-[#d4af37]" size={20} />
-                <div>
-                  <h1 className="font-display text-sm font-bold tracking-wider text-white">
-                    Sri Kamatchi Silk
-                  </h1>
-                  <p className="text-[9px] uppercase tracking-widest text-[#d4af37]/80">
+                <img
+                  src={logoImg}
+                  alt="Sri Kamatchi Silks"
+                  className="h-10 w-auto object-contain"
+                />
+                <div className="ml-1">
+                  <p className="text-[8px] uppercase tracking-widest text-[#d4af37]/80 font-semibold">
                     Admin Portal
                   </p>
                 </div>
