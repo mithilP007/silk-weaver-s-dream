@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, Heart, ShoppingBag, User, Menu, X } from "lucide-react";
 import { useStore } from "@/store/StoreContext";
 import { API_BASE } from "@/lib/api";
+import logoImg from "@/assets/logo.png";
 
 export function Navbar() {
   const { cartCount, wishlist } = useStore();
@@ -13,7 +14,6 @@ export function Navbar() {
   const navigate = useNavigate();
 
   const [settings, setSettings] = useState<any>(null);
-  const [imgFailed, setImgFailed] = useState(false);
 
   useEffect(() => {
     fetch(`${API_BASE}/api/settings/home`)
@@ -31,11 +31,12 @@ export function Navbar() {
   const tagline = header?.tagline || "Silk";
   const logoUrl = header?.logoUrl || "";
 
-  // Helper to split brand name gracefully
-  const displayBrand =
-    brandName.endsWith(tagline) && tagline
-      ? brandName.substring(0, brandName.length - tagline.length).trim()
-      : brandName;
+  const getLogoSrc = () => {
+    if (!logoUrl) return logoImg;
+    if (logoUrl.startsWith("http") || logoUrl.startsWith("data:")) return logoUrl;
+    if (logoUrl.startsWith("/")) return `${API_BASE}${logoUrl}`;
+    return logoUrl;
+  };
 
   const whatsappUrl = "https://wa.me/919443210987"; // Placeholder to be customized later
 
@@ -54,21 +55,17 @@ export function Navbar() {
         </button>
 
         <Link to="/" className="flex items-center gap-3">
-          {logoUrl && !imgFailed ? (
-            <img
-              src={logoUrl.startsWith("http") ? logoUrl : `${API_BASE}${logoUrl}`}
-              alt={brandName}
-              className="h-12 sm:h-16 w-auto object-contain max-h-16 py-1"
-              onError={() => setImgFailed(true)}
-            />
-          ) : (
-            <div className="flex flex-col items-center lg:items-start">
-              <span className="font-display text-xl font-bold leading-none tracking-tight text-primary sm:text-2xl">
-                {displayBrand}
-              </span>
-              <span className="text-[10px] uppercase tracking-[0.4em] text-gold">{tagline}</span>
-            </div>
-          )}
+          <img
+            src={getLogoSrc()}
+            alt={brandName}
+            className="h-10 sm:h-12 w-auto object-contain max-h-12"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              if (target.src !== logoImg) {
+                target.src = logoImg;
+              }
+            }}
+          />
         </Link>
 
         {/* Desktop nav */}
