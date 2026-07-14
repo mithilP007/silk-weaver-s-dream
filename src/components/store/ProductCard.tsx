@@ -16,7 +16,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
+export function ProductCard({
+  product,
+  index = 0,
+  variant = "default",
+}: {
+  product: Product;
+  index?: number;
+  variant?: "default" | "square";
+}) {
   const { addToCart, toggleWishlist, isWishlisted } = useStore();
   const wished = isWishlisted(product.id);
   const off = product.discountPrice ? discountPercent(product.price, product.discountPrice) : 0;
@@ -30,7 +38,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       transition={{ duration: 0.5, delay: (index % 4) * 0.06, ease: [0.22, 1, 0.36, 1] }}
       className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft hover-lift"
     >
-      <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+      <div className={cn("relative overflow-hidden bg-muted", variant === "square" ? "aspect-square" : "aspect-[4/5]")}>
         <Link to="/product/$slug" params={{ slug: product.slug }}>
           <img
             src={product.image || "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk"}

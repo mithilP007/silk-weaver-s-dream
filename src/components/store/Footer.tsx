@@ -67,17 +67,19 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <img
-                src={getLogoSrc()}
-                alt={brandName}
-                className="h-10 sm:h-12 w-auto object-contain max-h-12"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  if (target.src !== logoImg) {
-                    target.src = logoImg;
-                  }
-                }}
-              />
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full overflow-hidden border border-border bg-white p-1 shadow-sm flex items-center justify-center shrink-0">
+                <img
+                  src={getLogoSrc()}
+                  alt={brandName}
+                  className="h-full w-full object-cover rounded-full"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    if (target.src !== logoImg) {
+                      target.src = logoImg;
+                    }
+                  }}
+                />
+              </div>
               <span className="font-display text-xl font-bold text-primary">{brandName}</span>
             </div>
             <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">

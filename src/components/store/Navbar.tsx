@@ -91,17 +91,19 @@ export function Navbar() {
 
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-3 shrink-0">
-          <img
-            src={getLogoSrc()}
-            alt={brandName}
-            className="h-12 sm:h-16 w-auto object-contain max-h-16"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              if (target.src !== logoImg) {
-                target.src = logoImg;
-              }
-            }}
-          />
+          <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full overflow-hidden border border-border bg-white p-1 shadow-sm flex items-center justify-center">
+            <img
+              src={getLogoSrc()}
+              alt={brandName}
+              className="h-full w-full object-cover rounded-full"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (target.src !== logoImg) {
+                  target.src = logoImg;
+                }
+              }}
+            />
+          </div>
         </Link>
 
         {/* Desktop Search Bar: Centered and Always Visible */}

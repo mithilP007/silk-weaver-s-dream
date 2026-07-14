@@ -196,6 +196,13 @@ function HomePage() {
   const celebrity = products.filter((p) => p.subcategory === "Celebrity Silks").slice(0, limit);
   const todaysDeals = products.filter((p) => p.offer || (p.discountPrice && p.discountPrice < p.price));
   const bestSellers = products.filter((p) => p.bestSeller || p.trending);
+  const pochampalliProducts = products.filter(
+    (p) =>
+      p.subcategory === "Pure Cotton Silks" ||
+      p.subcategory === "Cotton Silks" ||
+      p.fabric === "Cotton Silk" ||
+      p.fabric === "Pure Cotton"
+  );
 
   // Category sorting & selection if specified in settings, falling back to database categories, then local file categories
   const displayedCategories = useMemo(() => {
@@ -376,7 +383,7 @@ function HomePage() {
                   params={{ slug: s.slug }}
                   className="group block text-center"
                 >
-                  <div className="h-28 w-28 sm:h-36 sm:w-36 rounded-full overflow-hidden border-2 border-gold/25 group-hover:border-gold/90 bg-card shadow-sm transition-all duration-300">
+                  <div className="h-28 w-28 sm:h-36 sm:w-36 rounded-full overflow-hidden border border-gold/30 hover:border-gold shadow-md bg-card transition-all duration-300">
                     <img
                       src={s.image}
                       alt={s.name}
@@ -459,10 +466,35 @@ function HomePage() {
               View All <ArrowRight size={14} />
             </Link>
           </div>
-          <div className="flex gap-6 overflow-x-auto no-scrollbar pb-4 scroll-smooth">
+          <div className="flex gap-4 sm:gap-6 overflow-x-auto no-scrollbar pb-4 scroll-smooth">
             {bestSellers.map((p) => (
-              <div key={p.id} className="min-w-[240px] sm:min-w-[280px] flex-shrink-0">
-                <ProductCard product={p} />
+              <div key={p.id} className="min-w-[180px] sm:min-w-[220px] flex-shrink-0">
+                <ProductCard product={p} variant="square" />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Pochampalli Pure Cotton Silk Sarees section */}
+      {pochampalliProducts.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+          <div className="flex items-end justify-between border-b border-border/40 pb-4 mb-8">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-gold">Traditional Weaves</span>
+              <h2 className="font-display text-2xl font-bold text-foreground mt-1">Pochampalli Pure Cotton Silk Sarees</h2>
+            </div>
+            <Link
+              to="/shop"
+              className="text-xs font-semibold uppercase tracking-wider text-primary hover:underline flex items-center gap-1"
+            >
+              View All <ArrowRight size={14} />
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 justify-items-center">
+            {pochampalliProducts.slice(0, 4).map((p, i) => (
+              <div key={p.id} className="w-full">
+                <ProductCard product={p} index={i} variant="square" />
               </div>
             ))}
           </div>
@@ -494,10 +526,10 @@ function HomePage() {
                 View All <ArrowRight size={14} />
               </Link>
             </div>
-            <div className="flex gap-6 overflow-x-auto no-scrollbar pb-4 scroll-smooth">
+            <div className="flex gap-4 sm:gap-6 overflow-x-auto no-scrollbar pb-4 scroll-smooth">
               {catProducts.map((p) => (
-                <div key={p.id} className="min-w-[220px] sm:min-w-[260px] flex-shrink-0">
-                  <ProductCard product={p} />
+                <div key={p.id} className="min-w-[180px] sm:min-w-[220px] flex-shrink-0">
+                  <ProductCard product={p} variant="square" />
                 </div>
               ))}
             </div>
@@ -583,189 +615,26 @@ function HomePage() {
         </section>
       )}
 
-      {/* New arrivals */}
+      {/* New Products section */}
       {toggles.newArrivals !== false && (
-        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-          <SectionHeading
-            eyebrow={trendingSections.newArrivalsEyebrow}
-            title={trendingSections.newArrivalsTitle}
-            subtitle="The latest weaves to grace our boutique, just for you."
-          />
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-            {newArrivals.map((p, i) => (
-              <ProductCard key={p.id} product={p} index={i} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Find by occasion */}
-      {toggles.curatedOccasions !== false && (
-        <section className="bg-secondary/20 border-y border-border/45 py-24 sm:py-32">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <SectionHeading
-              eyebrow={occasionFinder.eyebrow}
-              title={occasionFinder.title}
-              subtitle={occasionFinder.subtitle}
-            />
-            <div className="mt-12 grid grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-6">
-              {occasionFinder.items &&
-                occasionFinder.items.map((o: any, i: number) => {
-                  const IconComponent = getIconByName(o.icon);
-                  return (
-                    <motion.div
-                      key={o.name}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: i * 0.05 }}
-                    >
-                      <Link
-                        to="/shop"
-                        className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center shadow-soft transition-all hover:border-gold hover:shadow-card"
-                      >
-                        <div className="grid h-14 w-14 place-items-center rounded-full bg-secondary text-primary transition-colors group-hover:bg-gold group-hover:text-gold-foreground">
-                          <IconComponent size={24} />
-                        </div>
-                        <span className="text-sm font-medium text-foreground">{o.name}</span>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
+        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+          <div className="flex items-end justify-between border-b border-border/40 pb-4 mb-8">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-gold">Fresh Off the Loom</span>
+              <h2 className="font-display text-2xl font-bold text-foreground mt-1">New Products</h2>
             </div>
-          </div>
-        </section>
-      )}
-
-      {/* Celebrity inspired */}
-      {toggles.celebritySection !== false && (
-        <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:py-32">
-          <div className="flex items-end justify-between">
-            <SectionHeading
-              eyebrow={trendingSections.celebrityEyebrow}
-              title={trendingSections.celebrityTitle}
-              align="left"
-            />
             <Link
-              to="/category/$slug"
-              params={{ slug: "celebrity-silks" }}
-              className="hidden items-center gap-1.5 text-sm font-medium text-primary hover:gap-2.5 sm:inline-flex"
+              to="/shop"
+              className="text-xs font-semibold uppercase tracking-wider text-primary hover:underline flex items-center gap-1"
             >
-              View all <ArrowRight size={15} />
+              View All <ArrowRight size={14} />
             </Link>
           </div>
-          <div className="mt-10 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-            {celebrity.map((p, i) => (
-              <ProductCard key={p.id} product={p} index={i} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Why choose us / Promise */}
-      {toggles.heroCarousel !== false && (
-        <section className="bg-gradient-champagne border-y border-border/45 py-24 sm:py-32">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <SectionHeading eyebrow={promiseSection.eyebrow} title={promiseSection.title} />
-            <div className="mt-12 grid grid-cols-2 gap-5 lg:grid-cols-4">
-              {promiseSection.cards &&
-                promiseSection.cards.map((w: any, i: number) => {
-                  const IconComponent = getIconByName(w.icon);
-                  return (
-                    <motion.div
-                      key={w.title}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.45, delay: i * 0.07 }}
-                      className="rounded-2xl border border-border bg-card p-6 text-center shadow-soft"
-                    >
-                      <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary text-primary-foreground">
-                        <IconComponent size={24} />
-                      </div>
-                      <h3 className="mt-5 text-base font-semibold text-foreground">{w.title}</h3>
-                      <p className="mt-2 text-sm text-muted-foreground">{w.text}</p>
-                    </motion.div>
-                  );
-                })}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Testimonials */}
-      {toggles.customerTestimonials !== false && (
-        <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:py-32">
-          <SectionHeading eyebrow="Loved by Thousands" title="What Our Customers Say" />
-          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {dbTestimonials.map((t: any, i: number) => (
-              <motion.div
-                key={t.id || i}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.45, delay: i * 0.07 }}
-                className="flex flex-col rounded-2xl border border-border bg-card p-6 shadow-soft"
-              >
-                <Quote className="text-gold" size={26} />
-                <p className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground">
-                  "{t.text}"
-                </p>
-                <StarRating rating={t.rating || 5} className="mt-4" />
-                <div className="mt-4 flex items-center gap-3 border-t border-border pt-4">
-                  {t.avatar && t.avatar.length <= 3 ? (
-                    <div className="grid h-10 w-10 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                      {t.avatar}
-                    </div>
-                  ) : (
-                    <img
-                      src={t.avatar || "/uploads/avatar-placeholder.png"}
-                      alt={t.name}
-                      className="h-10 w-10 rounded-full object-cover border border-border"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name || "User")}&background=800020&color=fff`;
-                      }}
-                    />
-                  )}
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                    <p className="text-xs text-muted-foreground">{t.location}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Instagram gallery */}
-      {toggles.instagramGallery !== false && (
-        <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
-          <SectionHeading
-            eyebrow={gallery.eyebrow}
-            title={gallery.title}
-            subtitle={gallery.subtitle}
-          />
-          <div className="mt-12 grid grid-cols-3 gap-2 sm:gap-3 lg:grid-cols-6">
-            {galleryItemsToShow.map((item: any, i: number) => (
-              <a
-                key={i}
-                href={item.link || "#"}
-                target={item.link && item.link !== "#" ? "_blank" : undefined}
-                rel="noopener noreferrer"
-                className="group relative aspect-square overflow-hidden rounded-xl border border-border"
-              >
-                <img
-                  src={item.imageUrl}
-                  alt={item.caption || "Instagram post"}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 grid place-items-center bg-primary/0 opacity-0 transition-all group-hover:bg-primary/40 group-hover:opacity-100">
-                  <Instagram className="text-primary-foreground" size={24} />
-                </div>
-              </a>
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 justify-items-center">
+            {newArrivals.slice(0, 4).map((p, i) => (
+              <div key={p.id} className="w-full">
+                <ProductCard product={p} index={i} variant="square" />
+              </div>
             ))}
           </div>
         </section>
@@ -806,36 +675,6 @@ function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Newsletter */}
-      {toggles.newsletter !== false && (
-        <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6">
-          <div className="overflow-hidden rounded-3xl bg-gradient-maroon px-6 py-14 text-center text-primary-foreground sm:px-12">
-            <Sparkles className="mx-auto text-gold" size={28} />
-            <h2 className="mt-4 font-display text-3xl font-bold sm:text-4xl">{newsletter.title}</h2>
-            <p className="mx-auto mt-3 max-w-md text-sm text-primary-foreground/80">
-              {newsletter.subtitle}
-            </p>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert("Thank you for subscribing to our newsletter!");
-              }}
-              className="mx-auto mt-7 flex max-w-md flex-col gap-3 sm:flex-row"
-            >
-              <input
-                type="email"
-                required
-                placeholder="Enter your email address"
-                className="flex-1 rounded-full border border-primary-foreground/20 bg-card/10 px-5 py-3 text-sm text-primary-foreground placeholder:text-primary-foreground/60 outline-none focus:border-gold"
-              />
-              <button className="rounded-full bg-gold px-7 py-3 text-sm font-semibold text-gold-foreground transition-transform hover:-translate-y-0.5">
-                {newsletter.buttonText || "Subscribe"}
-              </button>
-            </form>
-          </div>
-        </section>
-      )}
     </StoreLayout>
   );
 }
