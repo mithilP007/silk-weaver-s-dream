@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import * as Icons from "lucide-react";
-import { ArrowRight, Quote, Instagram, HelpCircle } from "lucide-react";
+import { ArrowRight, Quote, Instagram, HelpCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { SectionHeading } from "@/components/store/SectionHeading";
 import { ProductCard } from "@/components/store/ProductCard";
@@ -13,6 +13,7 @@ import { testimonials as staticTestimonials } from "@/data/store";
 import { API_BASE } from "@/lib/api";
 import { formatINR } from "@/lib/format";
 import sriKamatchiSilksBanner from "@/assets/sri-kamatchi-silks-banner.png";
+import sriKamatchiSilksBanner2 from "@/assets/sri-kamatchi-silks-banner-2.jpg";
 import saree2 from "@/assets/saree-2.jpg";
 import saree5 from "@/assets/saree-5.jpg";
 
@@ -43,6 +44,24 @@ const getIconByName = (name: string) => {
 function HomePage() {
   const [settings, setSettings] = useState<any>(null);
   const [dbCategories, setDbCategories] = useState<any[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const images = [sriKamatchiSilksBanner, sriKamatchiSilksBanner2];
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [currentIndex]);
 
   useEffect(() => {
     fetch(`${API_BASE}/api/settings/home`)
@@ -277,19 +296,85 @@ function HomePage() {
 
   return (
     <StoreLayout>
-      {/* Hero / Banner */}
+      {/* Hero / Banner Slider */}
       <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full overflow-hidden rounded-[2rem] border border-gold/10 shadow-card bg-card"
+          className="relative w-full aspect-[16/9] sm:aspect-[2.47/1] overflow-hidden rounded-[2rem] border border-gold/10 shadow-card bg-card group"
         >
-          <img
-            src={sriKamatchiSilksBanner}
-            alt="Sri Kamatchi Silks - Exquisite Kanchipuram & Pure Gold Zari Silk Sarees"
-            className="w-full h-auto block"
-          />
+          {/* Slides */}
+          <div className="w-full h-full relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentIndex}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="absolute inset-0 w-full h-full"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={(event, info) => {
+                  const swipeThreshold = 50;
+                  if (info.offset.x < -swipeThreshold) {
+                    nextSlide();
+                  } else if (info.offset.x > swipeThreshold) {
+                    prevSlide();
+                  }
+                }}
+              >
+                <img
+                  src={images[currentIndex]}
+                  alt={`Sri Kamatchi Silks Banner ${currentIndex + 1}`}
+                  draggable="false"
+                  className="w-full h-full object-cover object-center block select-none"
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              prevSlide();
+            }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-black/35 hover:bg-black/55 text-white border border-white/10 hover:border-gold/50 transition-all duration-300 group/btn shadow-md opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="h-6 w-6 sm:h-7 sm:w-7 group-hover/btn:-translate-x-0.5 transition-transform" />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              nextSlide();
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-black/35 hover:bg-black/55 text-white border border-white/10 hover:border-gold/50 transition-all duration-300 group/btn shadow-md opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="h-6 w-6 sm:h-7 sm:w-7 group-hover/btn:translate-x-0.5 transition-transform" />
+          </button>
+
+          {/* Bottom Dots Navigation */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentIndex(index);
+                }}
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  currentIndex === index ? "w-8 bg-gold shadow-sm" : "w-2.5 bg-white/40 hover:bg-white/70"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
         </motion.div>
       </section>
 
