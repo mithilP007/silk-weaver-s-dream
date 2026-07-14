@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import * as Icons from "lucide-react";
-import { ArrowRight, Quote, Instagram, HelpCircle, Sparkles } from "lucide-react";
+import { ArrowRight, Quote, Instagram, HelpCircle } from "lucide-react";
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { SectionHeading } from "@/components/store/SectionHeading";
 import { ProductCard } from "@/components/store/ProductCard";
@@ -12,7 +12,7 @@ import { subcategories } from "@/data/categories";
 import { testimonials as staticTestimonials } from "@/data/store";
 import { API_BASE } from "@/lib/api";
 import { formatINR } from "@/lib/format";
-import heroSaree from "@/assets/hero-saree.jpg";
+import sriKamatchiSilksBanner from "@/assets/sri-kamatchi-silks-banner.png";
 import saree2 from "@/assets/saree-2.jpg";
 import saree5 from "@/assets/saree-5.jpg";
 
@@ -279,85 +279,18 @@ function HomePage() {
     <StoreLayout>
       {/* Hero / Banner */}
       <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-champagne border border-gold/10 p-8 sm:p-12 lg:p-16 flex flex-col-reverse lg:flex-row items-center gap-12">
-          {/* Decorative gradients */}
-          <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-gold/10 blur-3xl pointer-events-none" />
-          <div className="absolute left-0 bottom-0 h-64 w-64 rounded-full bg-maroon/5 blur-3xl pointer-events-none" />
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="flex-1 text-center lg:text-left z-10"
-          >
-            {hero.eyebrow && (
-              <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-card/85 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.25em] text-gold shadow-sm">
-                <Sparkles size={13} /> {hero.eyebrow}
-              </span>
-            )}
-            <h1 className="mt-6 font-display text-3xl sm:text-4xl lg:text-6xl font-bold leading-[1.1] text-foreground">
-              {parseHeroTitle(hero.title)}
-            </h1>
-            <p className="mt-6 max-w-md mx-auto lg:mx-0 text-sm sm:text-base leading-relaxed text-muted-foreground">
-              {hero.subtitle}
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center lg:justify-start gap-4">
-              {hero.primaryCtaText && (
-                <Link
-                  to={(hero.primaryCtaLink as any) || "/silk-sarees"}
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground shadow-soft transition-transform hover:-translate-y-0.5"
-                >
-                  {hero.primaryCtaText} <ArrowRight size={16} />
-                </Link>
-              )}
-              {hero.secondaryCtaText && (
-                <Link
-                  to={(hero.secondaryCtaLink as any) || "/shop"}
-                  className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-card px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-foreground transition-colors hover:border-gold"
-                >
-                  {hero.secondaryCtaText}
-                </Link>
-              )}
-            </div>
-            {hero.stats && Array.isArray(hero.stats) && hero.stats.length > 0 && (
-              <div className="mt-10 flex items-center justify-center lg:justify-start gap-8">
-                {hero.stats.map((stat: any, index: number) => (
-                  <div key={index} className="flex items-center gap-8">
-                    {index > 0 && <div className="h-8 w-px bg-border/80" />}
-                    <div>
-                      <p className="font-display text-xl sm:text-2xl font-bold text-primary">{stat.value}</p>
-                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="flex-1 w-full max-w-md lg:max-w-lg z-10"
-          >
-            <div className="relative aspect-[16/11] sm:aspect-[16/9] lg:aspect-[4/3] w-full overflow-hidden rounded-[2rem] shadow-card border border-border/20">
-              <img
-                src={
-                  hero.imageUrl
-                    ? hero.imageUrl.startsWith("http")
-                      ? hero.imageUrl
-                      : `${API_BASE}${hero.imageUrl}`
-                    : heroSaree
-                }
-                alt={hero.altText || "Model wearing a deep maroon Kanchipuram silk saree"}
-                className="h-full w-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = heroSaree;
-                }}
-              />
-            </div>
-          </motion.div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full overflow-hidden rounded-[2rem] border border-gold/10 shadow-card bg-card"
+        >
+          <img
+            src={sriKamatchiSilksBanner}
+            alt="Sri Kamatchi Silks - Exquisite Kanchipuram & Pure Gold Zari Silk Sarees"
+            className="w-full h-auto block"
+          />
+        </motion.div>
       </section>
 
       {/* Featured Categories (Circular grid) */}
