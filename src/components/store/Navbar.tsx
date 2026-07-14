@@ -91,11 +91,11 @@ export function Navbar() {
 
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-3 shrink-0">
-          <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full overflow-hidden border border-border bg-white p-1 shadow-sm flex items-center justify-center">
+          <div className="h-14 sm:h-18 w-auto px-3 py-1 flex items-center justify-center bg-white border border-border/60 rounded-xl shadow-sm">
             <img
               src={getLogoSrc()}
               alt={brandName}
-              className="h-full w-full object-cover rounded-full"
+              className="h-full w-auto object-contain"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 if (target.src !== logoImg) {
