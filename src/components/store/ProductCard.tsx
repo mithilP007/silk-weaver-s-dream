@@ -23,7 +23,7 @@ export function ProductCard({
 }: {
   product: Product;
   index?: number;
-  variant?: "default" | "square";
+  variant?: "default" | "square" | "square-compact";
 }) {
   const { addToCart, toggleWishlist, isWishlisted } = useStore();
   const wished = isWishlisted(product.id);
@@ -36,9 +36,9 @@ export function ProductCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.5, delay: (index % 4) * 0.06, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft hover-lift"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft hover-lift h-full w-full"
     >
-      <div className={cn("relative overflow-hidden bg-muted", variant === "square" ? "aspect-square" : "aspect-[4/5]")}>
+      <div className={cn("relative overflow-hidden bg-muted", (variant === "square" || variant === "square-compact") ? "aspect-square" : "aspect-[4/5]")}>
         <Link to="/product/$slug" params={{ slug: product.slug }}>
           <img
             src={product.image || "https://placehold.co/600x800/fafaf9/78350f?text=Sri+Kamatchi+Silk"}
@@ -188,12 +188,12 @@ export function ProductCard({
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className={cn("flex flex-1 flex-col", variant === "square-compact" ? "p-3" : "p-4")}>
         <span className="text-[11px] uppercase tracking-wider text-gold">
           {product.subcategory}
         </span>
         <Link to="/product/$slug" params={{ slug: product.slug }}>
-          <h3 className="mt-1 line-clamp-2 text-[15px] font-medium leading-snug text-foreground transition-colors hover:text-primary">
+          <h3 className={cn("mt-1 line-clamp-2 text-[15px] font-medium leading-snug text-foreground transition-colors hover:text-primary", variant === "square-compact" && "text-sm")}>
             {product.name}
           </h3>
         </Link>
@@ -201,14 +201,14 @@ export function ProductCard({
           rating={product.rating || 5}
           reviews={product.reviews || 0}
           showValue
-          className="mt-2"
+          className={cn("mt-2", variant === "square-compact" && "mt-1.5 text-xs")}
         />
-        <div className="mt-3 flex items-center gap-2">
-          <span className="text-lg font-semibold text-primary">
+        <div className={cn("mt-3 flex items-center gap-2", variant === "square-compact" && "mt-2")}>
+          <span className={cn("text-lg font-semibold text-primary", variant === "square-compact" && "text-base")}>
             {formatINR(product.discountPrice ?? product.price)}
           </span>
           {off > 0 && (
-            <span className="text-sm text-muted-foreground line-through">
+            <span className={cn("text-sm text-muted-foreground line-through", variant === "square-compact" && "text-xs")}>
               {formatINR(product.price)}
             </span>
           )}

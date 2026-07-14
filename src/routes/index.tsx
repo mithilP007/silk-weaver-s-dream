@@ -466,10 +466,10 @@ function HomePage() {
               View All <ArrowRight size={14} />
             </Link>
           </div>
-          <div className="flex gap-4 sm:gap-6 overflow-x-auto no-scrollbar pb-4 scroll-smooth">
-            {bestSellers.map((p) => (
-              <div key={p.id} className="min-w-[180px] sm:min-w-[220px] flex-shrink-0">
-                <ProductCard product={p} variant="square" />
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-2 lg:grid-cols-4 justify-items-center">
+            {bestSellers.slice(0, 4).map((p, i) => (
+              <div key={p.id} className="w-full max-w-[240px] sm:max-w-[260px] lg:max-w-[220px]">
+                <ProductCard product={p} index={i} variant="square-compact" />
               </div>
             ))}
           </div>
