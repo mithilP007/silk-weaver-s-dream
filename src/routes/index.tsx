@@ -11,6 +11,7 @@ import { products } from "@/data/products";
 import { subcategories } from "@/data/categories";
 import { testimonials as staticTestimonials } from "@/data/store";
 import { API_BASE } from "@/lib/api";
+import { formatINR } from "@/lib/format";
 import heroSaree from "@/assets/hero-saree.jpg";
 import saree2 from "@/assets/saree-2.jpg";
 import saree5 from "@/assets/saree-5.jpg";
@@ -193,6 +194,8 @@ function HomePage() {
   const trending = products.filter((p) => p.trending).slice(0, limit);
   const newArrivals = products.filter((p) => p.newArrival).slice(0, limit);
   const celebrity = products.filter((p) => p.subcategory === "Celebrity Silks").slice(0, limit);
+  const todaysDeals = products.filter((p) => p.offer || (p.discountPrice && p.discountPrice < p.price));
+  const bestSellers = products.filter((p) => p.bestSeller || p.trending);
 
   // Category sorting & selection if specified in settings, falling back to database categories, then local file categories
   const displayedCategories = useMemo(() => {
@@ -267,30 +270,35 @@ function HomePage() {
 
   return (
     <StoreLayout>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-champagne border-b border-border/40">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:py-28">
+      {/* Hero / Banner */}
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-champagne border border-gold/10 p-8 sm:p-12 lg:p-16 flex flex-col-reverse lg:flex-row items-center gap-12">
+          {/* Decorative gradients */}
+          <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-gold/10 blur-3xl pointer-events-none" />
+          <div className="absolute left-0 bottom-0 h-64 w-64 rounded-full bg-maroon/5 blur-3xl pointer-events-none" />
+          
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="flex-1 text-center lg:text-left z-10"
           >
             {hero.eyebrow && (
-              <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-card/60 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.25em] text-gold">
+              <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-card/85 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.25em] text-gold shadow-sm">
                 <Sparkles size={13} /> {hero.eyebrow}
               </span>
             )}
-            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.1] text-foreground sm:text-5xl lg:text-6xl">
+            <h1 className="mt-6 font-display text-3xl sm:text-4xl lg:text-6xl font-bold leading-[1.1] text-foreground">
               {parseHeroTitle(hero.title)}
             </h1>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p className="mt-6 max-w-md mx-auto lg:mx-0 text-sm sm:text-base leading-relaxed text-muted-foreground">
               {hero.subtitle}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap justify-center lg:justify-start gap-4">
               {hero.primaryCtaText && (
                 <Link
                   to={(hero.primaryCtaLink as any) || "/silk-sarees"}
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-medium text-primary-foreground shadow-soft transition-transform hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground shadow-soft transition-transform hover:-translate-y-0.5"
                 >
                   {hero.primaryCtaText} <ArrowRight size={16} />
                 </Link>
@@ -298,20 +306,20 @@ function HomePage() {
               {hero.secondaryCtaText && (
                 <Link
                   to={(hero.secondaryCtaLink as any) || "/shop"}
-                  className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-card px-7 py-3.5 text-sm font-medium text-foreground transition-colors hover:border-gold"
+                  className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-card px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-foreground transition-colors hover:border-gold"
                 >
                   {hero.secondaryCtaText}
                 </Link>
               )}
             </div>
             {hero.stats && Array.isArray(hero.stats) && hero.stats.length > 0 && (
-              <div className="mt-10 flex items-center gap-8">
+              <div className="mt-10 flex items-center justify-center lg:justify-start gap-8">
                 {hero.stats.map((stat: any, index: number) => (
                   <div key={index} className="flex items-center gap-8">
-                    {index > 0 && <div className="h-10 w-px bg-border" />}
+                    {index > 0 && <div className="h-8 w-px bg-border/80" />}
                     <div>
-                      <p className="font-display text-2xl font-bold text-primary">{stat.value}</p>
-                      <p className="text-xs text-muted-foreground">{stat.label}</p>
+                      <p className="font-display text-xl sm:text-2xl font-bold text-primary">{stat.value}</p>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
                     </div>
                   </div>
                 ))}
@@ -323,9 +331,9 @@ function HomePage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="relative"
+            className="flex-1 w-full max-w-md lg:max-w-lg z-10"
           >
-            <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-[2rem] shadow-card">
+            <div className="relative aspect-[16/11] sm:aspect-[16/9] lg:aspect-[4/3] w-full overflow-hidden rounded-[2rem] shadow-card border border-border/20">
               <img
                 src={
                   hero.imageUrl
@@ -335,55 +343,45 @@ function HomePage() {
                     : heroSaree
                 }
                 alt={hero.altText || "Model wearing a deep maroon Kanchipuram silk saree"}
-                width={1080}
-                height={1440}
                 className="h-full w-full object-cover"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = heroSaree;
                 }}
               />
             </div>
-            {hero.ratingValue && (
-              <div className="absolute -bottom-5 -left-2 rounded-2xl border border-border bg-card/95 p-4 shadow-card backdrop-blur sm:left-4">
-                <div className="flex items-center gap-3">
-                  <StarRating rating={5} />
-                  <span className="text-sm font-semibold">{hero.ratingValue}</span>
-                </div>
-                <p className="mt-1 text-xs text-muted-foreground">{hero.ratingText}</p>
-              </div>
-            )}
           </motion.div>
         </div>
       </section>
 
-      {/* Main category highlight */}
+      {/* Featured Categories (Circular grid) */}
       {toggles.featuredCollections !== false && (
-        <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:py-32">
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
           <SectionHeading
             eyebrow={categoriesSection.eyebrow}
             title={categoriesSection.title}
             subtitle={categoriesSection.subtitle}
           />
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-5">
+          <div className="mt-12 grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-5 justify-center">
             {displayedCategories.map((s: any, i: number) => (
               <motion.div
                 key={s.id}
-                initial={{ opacity: 0, y: 24 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: i * 0.06 }}
+                transition={{ duration: 0.5, delay: i * 0.05 }}
+                className="flex flex-col items-center"
               >
                 <Link
                   to="/category/$slug"
                   params={{ slug: s.slug }}
-                  className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-soft hover-lift"
+                  className="group block text-center"
                 >
-                  <div className="aspect-square overflow-hidden">
+                  <div className="h-28 w-28 sm:h-36 sm:w-36 rounded-full overflow-hidden border-2 border-gold/25 group-hover:border-gold/90 bg-card shadow-sm transition-all duration-300">
                     <img
                       src={s.image}
                       alt={s.name}
                       loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                       onError={(e) => {
                         const localMatch = subcategories.find((sub) => sub.slug === s.slug);
                         (e.target as HTMLImageElement).src =
@@ -391,11 +389,9 @@ function HomePage() {
                       }}
                     />
                   </div>
-                  <div className="p-3 text-center">
-                    <h3 className="text-sm font-semibold text-foreground group-hover:text-primary">
-                      {s.name}
-                    </h3>
-                  </div>
+                  <h3 className="mt-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-foreground group-hover:text-primary transition-colors">
+                    {s.name}
+                  </h3>
                 </Link>
               </motion.div>
             ))}
@@ -403,37 +399,117 @@ function HomePage() {
         </section>
       )}
 
-      {/* Trending */}
-      {toggles.trendingArrivals !== false && (
-        <section className="bg-secondary/20 border-y border-border/45 py-24 sm:py-32">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="flex items-end justify-between">
-              <SectionHeading
-                eyebrow={trendingSections.trendingEyebrow}
-                title={trendingSections.trendingTitle}
-                align="left"
-              />
+      {/* Today's Deal section */}
+      {todaysDeals.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+          <div className="flex items-end justify-between border-b border-border/40 pb-4 mb-8">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-gold">Exclusive Offers</span>
+              <h2 className="font-display text-2xl font-bold text-foreground mt-1">Today's Deals</h2>
+            </div>
+            <Link
+              to="/shop"
+              className="text-xs font-semibold uppercase tracking-wider text-primary hover:underline flex items-center gap-1"
+            >
+              View All <ArrowRight size={14} />
+            </Link>
+          </div>
+          <div className="flex gap-6 overflow-x-auto no-scrollbar pb-4 scroll-smooth">
+            {todaysDeals.map((p) => (
               <Link
-                to="/shop"
-                className="hidden items-center gap-1.5 text-sm font-medium text-primary hover:gap-2.5 sm:inline-flex"
+                key={p.id}
+                to="/product/$slug"
+                params={{ slug: p.slug }}
+                className="group min-w-[130px] sm:min-w-[170px] flex-shrink-0 text-center flex flex-col items-center"
               >
-                View all <ArrowRight size={15} />
+                <div className="relative aspect-square w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border border-border/80 shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:border-gold">
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <h4 className="mt-3 text-xs font-medium text-foreground line-clamp-1 max-w-[120px] sm:max-w-[160px]">
+                  {p.name}
+                </h4>
+                <div className="mt-1 flex items-center gap-1.5 justify-center">
+                  <span className="text-xs font-bold text-primary">{formatINR(p.discountPrice ?? p.price)}</span>
+                  {p.discountPrice && p.discountPrice < p.price && (
+                    <span className="text-[10px] text-muted-foreground line-through">{formatINR(p.price)}</span>
+                  )}
+                </div>
               </Link>
-            </div>
-            <div className="mt-10 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-              {trending.map((p, i) => (
-                <ProductCard key={p.id} product={p} index={i} />
-              ))}
-            </div>
+            ))}
           </div>
         </section>
       )}
 
+      {/* Best Selling section */}
+      {bestSellers.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+          <div className="flex items-end justify-between border-b border-border/40 pb-4 mb-8">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-gold">Most Popular</span>
+              <h2 className="font-display text-2xl font-bold text-foreground mt-1">Best Selling Sarees</h2>
+            </div>
+            <Link
+              to="/shop"
+              className="text-xs font-semibold uppercase tracking-wider text-primary hover:underline flex items-center gap-1"
+            >
+              View All <ArrowRight size={14} />
+            </Link>
+          </div>
+          <div className="flex gap-6 overflow-x-auto no-scrollbar pb-4 scroll-smooth">
+            {bestSellers.map((p) => (
+              <div key={p.id} className="min-w-[240px] sm:min-w-[280px] flex-shrink-0">
+                <ProductCard product={p} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Category-wise rows */}
+      {displayedCategories.map((cat: any) => {
+        const catProducts = products.filter(
+          (p) =>
+            p.category === cat.name ||
+            p.subcategory === cat.name ||
+            p.subcategorySlug === cat.slug
+        );
+        if (catProducts.length === 0) return null;
+
+        return (
+          <section key={cat.id} className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+            <div className="flex items-end justify-between border-b border-border/40 pb-4 mb-8">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-gold">Collections</span>
+                <h2 className="font-display text-2xl font-bold text-foreground mt-1">{cat.name}</h2>
+              </div>
+              <Link
+                to="/category/$slug"
+                params={{ slug: cat.slug }}
+                className="text-xs font-semibold uppercase tracking-wider text-primary hover:underline flex items-center gap-1"
+              >
+                View All <ArrowRight size={14} />
+              </Link>
+            </div>
+            <div className="flex gap-6 overflow-x-auto no-scrollbar pb-4 scroll-smooth">
+              {catProducts.map((p) => (
+                <div key={p.id} className="min-w-[220px] sm:min-w-[260px] flex-shrink-0">
+                  <ProductCard product={p} />
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+
       {/* Offer banners */}
       {(toggles.weddingBanner !== false || toggles.festivalBanner !== false) && (
-        <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
           <div
-            className={`grid gap-5 ${toggles.weddingBanner !== false && toggles.festivalBanner !== false ? "lg:grid-cols-2" : "grid-cols-1"}`}
+            className={`grid gap-6 ${toggles.weddingBanner !== false && toggles.festivalBanner !== false ? "lg:grid-cols-2" : "grid-cols-1"}`}
           >
             {toggles.weddingBanner !== false && (
               <div className="relative overflow-hidden rounded-3xl bg-gradient-maroon p-8 text-primary-foreground sm:p-12">
@@ -509,7 +585,7 @@ function HomePage() {
 
       {/* New arrivals */}
       {toggles.newArrivals !== false && (
-        <section className="mx-auto max-w-7xl px-4 pb-24 sm:pb-32">
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
           <SectionHeading
             eyebrow={trendingSections.newArrivalsEyebrow}
             title={trendingSections.newArrivalsTitle}
@@ -694,6 +770,42 @@ function HomePage() {
           </div>
         </section>
       )}
+
+      {/* Policy/Service Strip */}
+      <section className="bg-card border-y border-border/40 py-8 mb-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-4 text-center">
+            <Link to="/terms" className="flex flex-col items-center gap-2 group">
+              <div className="grid h-10 w-10 place-items-center rounded-full bg-secondary text-primary group-hover:bg-gold group-hover:text-gold-foreground transition-all">
+                <Icons.ShieldCheck size={18} />
+              </div>
+              <span className="text-xs font-semibold text-foreground group-hover:text-primary">Terms & Conditions</span>
+              <span className="text-[10px] text-muted-foreground">Fair & clear terms</span>
+            </Link>
+            <Link to="/return-policy" className="flex flex-col items-center gap-2 group">
+              <div className="grid h-10 w-10 place-items-center rounded-full bg-secondary text-primary group-hover:bg-gold group-hover:text-gold-foreground transition-all">
+                <Icons.RefreshCw size={18} />
+              </div>
+              <span className="text-xs font-semibold text-foreground group-hover:text-primary">Return Policy</span>
+              <span className="text-[10px] text-muted-foreground">Easy returns within 7 days</span>
+            </Link>
+            <Link to="/shipping-policy" className="flex flex-col items-center gap-2 group">
+              <div className="grid h-10 w-10 place-items-center rounded-full bg-secondary text-primary group-hover:bg-gold group-hover:text-gold-foreground transition-all">
+                <Icons.Truck size={18} />
+              </div>
+              <span className="text-xs font-semibold text-foreground group-hover:text-primary">Shipping Policy</span>
+              <span className="text-[10px] text-muted-foreground">Pan-India insured delivery</span>
+            </Link>
+            <a href="https://wa.me/919443210987" target="_blank" rel="noreferrer" className="flex flex-col items-center gap-2 group">
+              <div className="grid h-10 w-10 place-items-center rounded-full bg-secondary text-primary group-hover:bg-gold group-hover:text-gold-foreground transition-all">
+                <Icons.Headphones size={18} />
+              </div>
+              <span className="text-xs font-semibold text-foreground group-hover:text-primary">Customer Support</span>
+              <span className="text-[10px] text-muted-foreground">24/7 WhatsApp support</span>
+            </a>
+          </div>
+        </div>
+      </section>
 
       {/* Newsletter */}
       {toggles.newsletter !== false && (
