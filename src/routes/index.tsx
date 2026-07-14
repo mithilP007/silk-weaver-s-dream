@@ -14,8 +14,12 @@ import { API_BASE } from "@/lib/api";
 import { formatINR } from "@/lib/format";
 import sriKamatchiSilksBanner from "@/assets/sri-kamatchi-silks-banner.png";
 import sriKamatchiSilksBanner2 from "@/assets/sri-kamatchi-silks-banner-2.jpg";
+import saree1 from "@/assets/saree-1.jpg";
 import saree2 from "@/assets/saree-2.jpg";
+import saree3 from "@/assets/saree-3.jpg";
+import saree4 from "@/assets/saree-4.jpg";
 import saree5 from "@/assets/saree-5.jpg";
+import saree6 from "@/assets/saree-6.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -225,11 +229,12 @@ function HomePage() {
 
   // Category sorting & selection if specified in settings, falling back to database categories, then local file categories
   const displayedCategories = useMemo(() => {
+    // 1. Get database categories mapped cleanly
     const baseList =
       dbCategories.length > 0
         ? dbCategories.map((c) => {
             const localMatch = subcategories.find((s) => s.slug === c.slug);
-            const rawImage = c.image || localMatch?.image || subcategories[0].image;
+            const rawImage = c.image || localMatch?.image;
             return {
               id: c.id,
               name: c.name,
@@ -244,26 +249,48 @@ function HomePage() {
           })
         : subcategories;
 
-    if (categoriesSection.items && Array.isArray(categoriesSection.items)) {
-      return categoriesSection.items
-        .map((item: any) => {
-          const match = baseList.find((b: any) => b.slug === item.slug || b.name === item.name);
-          if (!match) return null;
-          const rawImage = item.imageUrl || match.image;
-          return {
-            ...match,
-            image:
-              typeof rawImage === "string" && rawImage.startsWith("/uploads")
-                ? `${API_BASE}${rawImage}`
-                : rawImage,
-            name: item.name || match.name,
-          };
-        })
-        .filter(Boolean);
+    // 2. Ensure we have exactly 5 categories by backfilling with unique local subcategories if needed
+    let mergedList = [...baseList];
+    for (const sub of subcategories) {
+      if (mergedList.length >= 5) break;
+      const exists = mergedList.some(
+        (m) =>
+          m.slug === sub.slug ||
+          m.name.toLowerCase().trim() === sub.name.toLowerCase().trim()
+      );
+      if (!exists) {
+        mergedList.push({
+          ...sub,
+          image: sub.image,
+        });
+      }
     }
 
-    return baseList;
-  }, [dbCategories, categoriesSection.items]);
+    // 3. Guarantee that each of the 5 categories gets a completely unique image from our local assets
+    const availableAssets = [saree1, saree2, saree3, saree4, saree5, saree6];
+    const usedImages = new Set<string>();
+
+    return mergedList.slice(0, 5).map((item) => {
+      let finalImg = item.image;
+
+      // If image is missing, duplicate, or fallback, assign a unique one from our available assets
+      if (!finalImg || usedImages.has(String(finalImg))) {
+        const unusedAsset = availableAssets.find((asset) => !usedImages.has(String(asset)));
+        if (unusedAsset) {
+          finalImg = unusedAsset;
+        }
+      }
+
+      if (finalImg) {
+        usedImages.add(String(finalImg));
+      }
+
+      return {
+        ...item,
+        image: finalImg,
+      };
+    });
+  }, [dbCategories, subcategories]);
 
   // Instagram gallery items
   const galleryImgs = products.slice(0, 6).map((p) => p.image);
