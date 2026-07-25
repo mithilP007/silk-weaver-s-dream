@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import {
@@ -13,6 +13,7 @@ import {
   X,
   FileImage,
   Loader2,
+  TableProperties,
 } from "lucide-react";
 import { API_BASE, safeFetchJson } from "@/lib/api";
 import { FABRICS, COLORS } from "@/data/categories";
@@ -335,12 +336,20 @@ function AdminProducts() {
             items.
           </p>
         </div>
-        <button
-          onClick={openCreateModal}
-          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#3a1d13] text-[#f7f2ed] px-5 py-3 text-sm font-semibold shadow-soft hover:bg-[#4d2d22] transition-colors"
-        >
-          <Plus size={16} /> Catalog New Saree
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            to="/admin/products/bulk"
+            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#3a1d13] bg-white text-[#3a1d13] px-5 py-3 text-sm font-semibold shadow-soft hover:bg-[#fbfaf7] transition-colors"
+          >
+            <TableProperties size={16} /> Bulk Product Upload
+          </Link>
+          <button
+            onClick={openCreateModal}
+            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#3a1d13] text-[#f7f2ed] px-5 py-3 text-sm font-semibold shadow-soft hover:bg-[#4d2d22] transition-colors"
+          >
+            <Plus size={16} /> Catalog New Saree
+          </button>
+        </div>
       </div>
 
       {/* Filters Bar */}

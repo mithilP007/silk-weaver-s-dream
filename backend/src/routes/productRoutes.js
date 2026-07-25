@@ -2,6 +2,7 @@ const express = require("express");
 
 const {
   createProduct,
+  createProductBulk,
   getProducts,
   getSingleProduct,
   updateProduct,
@@ -17,6 +18,7 @@ router.get("/", getProducts);
 router.get("/:id", getSingleProduct);
 
 router.post("/", protect, adminOnly, createProduct);
+router.post("/bulk", protect, adminOnly, createProductBulk);
 router.put("/:id", protect, adminOnly, updateProduct);
 router.delete("/:id", protect, adminOnly, deleteProduct);
 

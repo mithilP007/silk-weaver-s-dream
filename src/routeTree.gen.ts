@@ -34,6 +34,7 @@ import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as AdminPagesRouteImport } from './routes/admin/pages'
 import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
+import { Route as AdminProductsBulkRouteImport } from './routes/admin/products_.bulk'
 import { Route as AdminCategoriesBulkRouteImport } from './routes/admin/categories_.bulk'
 
 const WishlistRoute = WishlistRouteImport.update({
@@ -161,6 +162,11 @@ const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   path: '/categories',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminProductsBulkRoute = AdminProductsBulkRouteImport.update({
+  id: '/products_/bulk',
+  path: '/products/bulk',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCategoriesBulkRoute = AdminCategoriesBulkRouteImport.update({
   id: '/categories_/bulk',
   path: '/categories/bulk',
@@ -194,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/product/$slug': typeof ProductSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/categories/bulk': typeof AdminCategoriesBulkRoute
+  '/admin/products/bulk': typeof AdminProductsBulkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -221,6 +228,7 @@ export interface FileRoutesByTo {
   '/product/$slug': typeof ProductSlugRoute
   '/admin': typeof AdminIndexRoute
   '/admin/categories/bulk': typeof AdminCategoriesBulkRoute
+  '/admin/products/bulk': typeof AdminProductsBulkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/product/$slug': typeof ProductSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/categories_/bulk': typeof AdminCategoriesBulkRoute
+  '/admin/products_/bulk': typeof AdminProductsBulkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
     | '/product/$slug'
     | '/admin/'
     | '/admin/categories/bulk'
+    | '/admin/products/bulk'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -307,6 +317,7 @@ export interface FileRouteTypes {
     | '/product/$slug'
     | '/admin'
     | '/admin/categories/bulk'
+    | '/admin/products/bulk'
   id:
     | '__root__'
     | '/'
@@ -335,6 +346,7 @@ export interface FileRouteTypes {
     | '/product/$slug'
     | '/admin/'
     | '/admin/categories_/bulk'
+    | '/admin/products_/bulk'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -535,6 +547,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCategoriesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/products_/bulk': {
+      id: '/admin/products_/bulk'
+      path: '/products/bulk'
+      fullPath: '/admin/products/bulk'
+      preLoaderRoute: typeof AdminProductsBulkRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/categories_/bulk': {
       id: '/admin/categories_/bulk'
       path: '/categories/bulk'
@@ -554,6 +573,7 @@ interface AdminRouteChildren {
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminCategoriesBulkRoute: typeof AdminCategoriesBulkRoute
+  AdminProductsBulkRoute: typeof AdminProductsBulkRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -565,6 +585,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminCategoriesBulkRoute: AdminCategoriesBulkRoute,
+  AdminProductsBulkRoute: AdminProductsBulkRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
